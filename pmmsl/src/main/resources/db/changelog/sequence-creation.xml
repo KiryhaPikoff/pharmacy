@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+<!--
+======================================================< START >=========================================================
+!-->
+<!--
+======================================================< MedicalService sequence >=======================================
+!-->
+    <changeSet author="Pikoff" id="medical_service_sequence_creation">
+        <createSequence
+                sequenceName="medical_service_seq"
+                startValue="1"
+                incrementBy="1"
+                minValue="0"
+        />
+    </changeSet>
+<!--
+======================================================< Medicament sequence >===========================================
+!-->
+    <changeSet author="Pikoff" id="medicament_sequence_creation">
+        <createSequence
+                sequenceName="medicament_seq"
+                startValue="1"
+                incrementBy="1"
+                minValue="0"
+        />
+    </changeSet>
+<!--
+======================================================< MedicamentMedicalService sequence >=============================
+!-->
+    <changeSet author="Pikoff" id="medicament_medical_service_sequence_creation">
+        <createSequence
+                sequenceName="medicament_medical_service_seq"
+                startValue="1"
+                incrementBy="1"
+                minValue="0"
+        />
+    </changeSet>
+<!--
+======================================================< Pharmacy sequence >=============================================
+!-->
+    <changeSet author="Pikoff" id="pharmacy_sequence_creation">
+        <createSequence
+                sequenceName="pharmacy_seq"
+                startValue="1"
+                incrementBy="1"
+                minValue="0"
+        />
+    </changeSet>
+<!--
+======================================================< PharmacyMedicament sequence >===================================
+!-->
+    <changeSet author="Pikoff" id="pharmcy_medicament_sequence_creation">
+        <createSequence
+                sequenceName="pharmcy_medicament_seq"
+                startValue="1"
+                incrementBy="1"
+                minValue="0"
+        />
+    </changeSet>
+<!--
+======================================================< END >===========================================================
+!-->
+</databaseChangeLog>

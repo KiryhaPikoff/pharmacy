@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+<!--
+======================================================< START >=========================================================
+!-->
+<!--
+======================================================< Medicament >====================================================
+!-->
+    <changeSet id="medicament_table_creation" author="Pikoff">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="medicament"/>
+            </not>
+        </preConditions>
+        <createTable tableName="medicament">
+            <column name="id"                   type="bigint" />
+            <column name="name"                 type="varchar(127)" />
+            <column name="description"          type="text" />
+            <column name="contraindications"    type="text" />
+            <column name="instruction"          type="text" />
+            <column name="price"                type="decimal" />
+        </createTable>
+        <addNotNullConstraint tableName="medicament" columnName="name" />
+        <addNotNullConstraint tableName="medicament" columnName="description" />
+        <addNotNullConstraint tableName="medicament" columnName="contraindications" />
+        <addNotNullConstraint tableName="medicament" columnName="instruction" />
+        <addNotNullConstraint tableName="medicament" columnName="price" />
+    </changeSet>
+
+    <changeSet id="medicament_pk_constraint_creation" author="Pikoff">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <primaryKeyExists tableName="medicament" primaryKeyName="id"/>
+            </not>
+        </preConditions>
+        <addPrimaryKey constraintName="medicament_pk" tableName="medicament" columnNames="id" />
+    </changeSet>
+<!--
+======================================================< Pharmacy >======================================================
+!-->
+    <changeSet id="pharmacy_table_creation" author="Pikoff">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="pharmacy"/>
+            </not>
+        </preConditions>
+        <createTable tableName="pharmacy">
+            <column name="id"       type="bigint" />
+            <column name="name"     type="varchar(127)" />
+        </createTable>
+        <addNotNullConstraint tableName="pharmacy" columnName="name" />
+    </changeSet>
+
+    <changeSet id="pharmacy_pk_constraint_creation" author="Pikoff">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <primaryKeyExists tableName="pharmacy" primaryKeyName="id"/>
+            </not>
+        </preConditions>
+        <addPrimaryKey constraintName="pharmacy_pk" tableName="pharmacy" columnNames="id" />
+    </changeSet>
+<!--
+======================================================< MedicalService >================================================
+!-->
+    <changeSet id="medical_service_table_creation" author="Pikoff">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="medical_service"/>
+            </not>
+        </preConditions>
+        <createTable tableName="medical_service">
+            <column name="id"                   type="bigint" />
+            <column name="provision_date"       type="timestamp" />
+        </createTable>
+        <addNotNullConstraint tableName="medical_service" columnName="provision_date" />
+    </changeSet>
+
+    <changeSet id="medical_service_pk_constraint_creation" author="Pikoff">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <primaryKeyExists tableName="medical_service" primaryKeyName="id"/>
+            </not>
+        </preConditions>
+        <addPrimaryKey constraintName="medical_service_pk" tableName="medical_service" columnNames="id" />
+    </changeSet>
+<!--
+======================================================< MedicamentMedicalService >======================================
+!-->
+    <changeSet id="medicament_medical_service_table_creation" author="Pikoff">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="medicament_medical_service"/>
+            </not>
+        </preConditions>
+        <createTable tableName="medicament_medical_service">
+            <column name="id"                       type="bigint" />
+            <column name="medical_service_id"       type="bigint" />
+            <column name="medicament_id"            type="bigint" />
+            <column name="count"                    type="integer" />
+            <column name="price"                    type="decimal" />
+        </createTable>
+        <addNotNullConstraint tableName="medicament_medical_service" columnName="price" />
+    </changeSet>
+
+    <changeSet id="medicament_medical_service_pk_constraint_creation" author="Pikoff">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <primaryKeyExists tableName="medicament_medical_service" primaryKeyName="id"/>
+            </not>
+        </preConditions>
+        <addPrimaryKey constraintName="medicament_medical_service_pk" tableName="medicament_medical_service" columnNames="id" />
+    </changeSet>
+
+    <changeSet id="medicament_medical_service_medicament_fk_constraint_creation" author="Pikoff">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyTableName="medicament_medical_service" foreignKeyName="medicament_id"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseTableName="medicament_medical_service" baseColumnNames="medicament_id"
+                                 constraintName="medicament_medical_service_medicament_fk"
+                                 referencedTableName="medicament" referencedColumnNames="id" />
+    </changeSet>
+
+    <changeSet id="medicament_medical_service_medical_service_fk_constraint_creation" author="Pikoff">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyTableName="medicament_medical_service" foreignKeyName="medical_service_id"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseTableName="medicament_medical_service" baseColumnNames="medical_service_id"
+                                 constraintName="medicament_medical_service_medical_service_fk"
+                                 referencedTableName="medical_service" referencedColumnNames="id" />
+    </changeSet>
+<!--
+======================================================< PharmacyMedicament >============================================
+!-->
+    <changeSet id="pharmacy_medicament_table_creation" author="Pikoff">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="pharmacy_medicament"/>
+            </not>
+        </preConditions>
+        <createTable tableName="pharmacy_medicament">
+            <column name="id"                       type="bigint" />
+            <column name="medicament_id"            type="bigint" />
+            <column name="pharmacy_id"              type="bigint" />
+            <column name="count"                    type="integer" />
+            <column name="receipt_date"             type="timestamp" />
+        </createTable>
+        <addNotNullConstraint tableName="medicament_medical_service" columnName="count" />
+        <addNotNullConstraint tableName="medicament_medical_service" columnName="receipt_date" />
+    </changeSet>
+
+    <changeSet id="pharmacy_medicament_pk_constraint_creation" author="Pikoff">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <primaryKeyExists tableName="pharmacy_medicament" primaryKeyName="id"/>
+            </not>
+        </preConditions>
+        <addPrimaryKey constraintName="pharmacy_medicament_pk" tableName="pharmacy_medicament" columnNames="id" />
+    </changeSet>
+
+    <changeSet id="pharmacy_medicament_medicament_fk_constraint_creation" author="Pikoff">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyTableName="pharmacy_medicament" foreignKeyName="medicament_id"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseTableName="pharmacy_medicament" baseColumnNames="medicament_id"
+                                 constraintName="pharmacy_medicament_medicament_fk"
+                                 referencedTableName="medicament" referencedColumnNames="id" />
+    </changeSet>
+
+    <changeSet id="pharmacy_medicament_pharmacy_fk_constraint_creation" author="Pikoff">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyTableName="medicament_medical_service" foreignKeyName="medical_service_id"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseTableName="pharmacy_medicament" baseColumnNames="pharmacy_id"
+                                 constraintName="pharmacy_medicament_pharmacy_fk"
+                                 referencedTableName="pharmacy" referencedColumnNames="id" />
+    </changeSet>
+<!--
+======================================================< END >===========================================================
+!-->
+</databaseChangeLog>

@@ -1,0 +1,50 @@
+plugins {
+    id 'java'
+}
+
+group 'com.ulstu.pharmacy.pmmsl'
+version '1.0'
+
+compileJava.options.encoding = 'UTF-8'
+compileTestJava.options.encoding = 'UTF-8'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    //-----------------------------< Javax >----------------------------------------------------------------------------
+    // https://mvnrepository.com/artifact/javax/javaee-api
+    implementation      group: 'javax', name: 'javaee-api',                 version: this.JAVAX_VERSION
+
+    //-----------------------------< Lombok >---------------------------------------------------------------------------
+    // https://mvnrepository.com/artifact/org.projectlombok/lombok
+    annotationProcessor group: 'org.projectlombok', name: 'lombok',         version: this.LOMBOK_VERSION
+    implementation      group: 'org.projectlombok', name: 'lombok',         version: this.LOMBOK_VERSION
+
+    //-----------------------------< Hibernate >------------------------------------------------------------------------
+    // https://mvnrepository.com/artifact/org.hibernate/hibernate-core
+    implementation      group: 'org.hibernate', name: 'hibernate-core',     version: this.HIBERNATE_VERSION, ext: 'pom'
+
+    //-----------------------------< Liquibase >------------------------------------------------------------------------
+    // https://mvnrepository.com/artifact/org.liquibase/liquibase-core
+    implementation      group: 'org.liquibase', name: 'liquibase-core',     version: this.LIQUIBASE_VERSION
+    runtimeClasspath    group: 'org.liquibase', name: 'liquibase-core',     version: this.LIQUIBASE_VERSION
+    compileClasspath    group: 'org.liquibase', name: 'liquibase-core',     version: this.LIQUIBASE_VERSION
+
+    //-----------------------------< Postgres >-------------------------------------------------------------------------
+    // https://mvnrepository.com/artifact/org.postgresql/postgresql
+    implementation      group: 'org.postgresql', name: 'postgresql',        version: this.POSTGRES_VERSION
+
+    //-----------------------------< Guava >----------------------------------------------------------------------------
+    // https://mvnrepository.com/artifact/com.google.guava/guava
+    compile             group: 'com.google.guava', name: 'guava',           version: this.GUAVA_VERSION
+
+    //-----------------------------< JUnit >----------------------------------------------------------------------------
+    // https://mvnrepository.com/artifact/junit/junit
+    testCompile         group: 'junit', name: 'junit',                      version: this.JUNIT_VERSION
+
+    //-----------------------------< Mockito >--------------------------------------------------------------------------
+    // https://mvnrepository.com/artifact/org.mockito/mockito-all
+    testCompile         group: 'org.mockito', name: 'mockito-all',          version: this.MOCKITO_VERSION
+}
