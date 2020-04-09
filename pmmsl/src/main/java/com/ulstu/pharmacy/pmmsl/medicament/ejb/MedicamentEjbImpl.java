@@ -58,13 +58,19 @@ public class MedicamentEjbImpl implements MedicamentEjbRemote {
                        String contraindications,
                        String instruction,
                        BigDecimal price) throws CrudOperationException {
-        if(this.isArgsValidForCreate(name, description, contraindications, instruction, price)) {
-            /*Medicament medicament = Medicament
-                    .builder()
-                    .name(name)
-                    .
+        String validationErrors = this.validateCreateArgs(name, description, contraindications, instruction, price);
+        if(Objects.nonNull(validationErrors)) {
+            throw new CrudOperationException(validationErrors);
         } else {
-*/
+            this.medicamentDao.save(
+                    Medicament.builder()
+                            .name(name)
+                            .contraindications(contraindications)
+                            .description(description)
+                            .instruction(instruction)
+                            .price(price)
+                            .build()
+            );
         }
     }
 
@@ -88,13 +94,56 @@ public class MedicamentEjbImpl implements MedicamentEjbRemote {
 
     }
 
-    private boolean isArgsValidForCreate(String name, String description, String contraindications, String instruction, BigDecimal price) {
-        return  Objects.nonNull(name) &&
-                !this.medicamentDao.existByName(name) &&
-                Objects.nonNull(description) &&
-                Objects.nonNull(contraindications) &&
-                Objects.nonNull(instruction) &&
-                Objects.nonNull(price) &&
-                price.signum() == 1; // Число положительное.
+    /**
+     * Валидация аргументов для создания медикамента.
+     * @param name
+     * @param description
+     * @param contraindications
+     * @param instruction
+     * @param price
+     * @return
+     */
+    private String validateCreateArgs(String name, String description, String contraindications, String instruction, BigDecimal price) {
+        StringBuilder errors = new StringBuilder();
+
+        if (Objects.isNull(name)) {
+            errors.append("Name is null; ");
+        }
+        if (Objects.isNull(description)) {
+            errors.append("Description is null; ");
+        }
+        if (Objects.isNull(contraindications)) {
+            errors.append("Contraindications are null; ");
+        }
+        if (Objects.isNull(instruction)) {
+            errors.append("Instruction is null; ");
+        }
+        if (Objects.isNull(price)) {
+            errors.append("Price is null; ");
+        } else {
+            if (price.signum() == -1) {
+                errors.append("Price is negative ; ");
+            }
+        }
+
+        return errors.toString().isEmpty() ? null : errors.toString();
+    }
+
+    private String validateUpdateArgs(Long id, String name, String description, String contraindications, String instruction, BigDecimal price) {
+        StringBuilder errors = new StringBuilder();
+
+        if (Objects.isNull(id)) {
+            errors.append("Id is null; ");
+        } else {
+            if (!this.medicamentDao.existsById(id)) {
+                errors.append("Medicament with id = " + id + " not exist; ");
+            }
+        }
+        String otherArgsErrors = this.validateCreateArgs(name, description, contraindications, instruction, price);
+        if (Objects.nonNull(otherArgsErrors)) {
+            errors.append(otherArgsErrors);
+        }
+
+        return errors.toString().isEmpty() ? null : errors.toString();
     }
 }

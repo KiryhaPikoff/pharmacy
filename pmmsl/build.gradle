@@ -36,6 +36,10 @@ dependencies {
     // https://mvnrepository.com/artifact/org.postgresql/postgresql
     implementation      group: 'org.postgresql', name: 'postgresql',        version: this.POSTGRES_VERSION
 
+    //-----------------------------< Logback >--------------------------------------------------------------------------
+    // https://mvnrepository.com/artifact/ch.qos.logback/logback-classic
+    testCompile         group: 'ch.qos.logback', name: 'logback-classic',   version: this.LOGBACK_VERSION
+
     //-----------------------------< Guava >----------------------------------------------------------------------------
     // https://mvnrepository.com/artifact/com.google.guava/guava
     compile             group: 'com.google.guava', name: 'guava',           version: this.GUAVA_VERSION

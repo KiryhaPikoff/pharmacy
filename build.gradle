@@ -10,6 +10,7 @@ ext {
     POSTGRES_VERSION    = '42.2.9'
     HIBERNATE_VERSION   = '5.4.12.Final'
     GUAVA_VERSION       = '28.2-jre'
+    LOGBACK_VERSION     = '1.2.3'
 
     JUNIT_VERSION       = '4.12'
     MOCKITO_VERSION     = '2.0.2-beta'

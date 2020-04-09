@@ -76,13 +76,13 @@ public class PharmacyEjbImpl implements PharmacyEjbRemote {
                 .map(PharmacyMedicament::getMedicament)
                 .map(medicamentMapper::toViewModel);
         // вытаскиваем стрим количества этих медикаментов
-        Stream<Integer> medciamentCountStream = pharmacyMedicaments.stream()
+        Stream<Integer> medicamentsCountStream = pharmacyMedicaments.stream()
                 .map(PharmacyMedicament::getCount);
         // собираем из 2ух стримов в мапу, если там есть такой медикамент, то суммируем количество,
         // если нет - то просто добавляем.
         Streams.forEachPair(
                 medicamentsStream,
-                medciamentCountStream,
+                medicamentsCountStream,
                 (medicament, count) -> {
                     Integer newCount = result.containsKey(medicament) ? result.get(medicament) + count : count;
                     result.put(medicament, newCount);
@@ -102,8 +102,20 @@ public class PharmacyEjbImpl implements PharmacyEjbRemote {
     @Override
     @Transactional(Transactional.TxType.SUPPORTS)
     public boolean isMedicamentInStocks(Long medicamentId, Integer count) {
-        Stream<PharmacyMedicament> pharmacyMedicaments = this.pharmacyMedicamentDao.getAll().stream();
-        return this.isMedicamentInStocks(pharmacyMedicaments, medicamentId, count);
+        if (Objects.nonNull(this.validateDiscountArgs(medicamentId, count))) {
+            return false;
+        }
+        List<PharmacyMedicament> medicamentsInStock = this.getPharmacyMedicamentsByMedicamentId(
+                this.pharmacyMedicamentDao.getAll(),
+                medicamentId
+        );
+        Optional<Integer> medicamentCountInStock = medicamentsInStock.stream()
+                // выбираем их количество
+                .map(PharmacyMedicament::getCount)
+                // суммируем количества
+                .reduce(Integer::sum);
+        // если получено количество медикамента на складе и оно больше требуемого
+        return medicamentCountInStock.isPresent() && medicamentCountInStock.get() >= count;
     }
 
     /**
@@ -117,7 +129,7 @@ public class PharmacyEjbImpl implements PharmacyEjbRemote {
      *                                     3) Параметры null.
      */
     @Override
-    public void discountMedicament(Long medicamentId, Integer count) throws MedicamentDiscountException {
+    public void discountMedicament(Long medicamentId, Integer count) {
         Map<Long, Integer> discountingMedicament = new HashMap<>();
         discountingMedicament.put(medicamentId, count);
         this.discountMedicaments(discountingMedicament);
@@ -134,17 +146,19 @@ public class PharmacyEjbImpl implements PharmacyEjbRemote {
      *                                     3) Параметры null.
      */
     @Override
-    @Transactional(value = Transactional.TxType.MANDATORY, rollbackOn = MedicamentDiscountException.class)
-    public void discountMedicaments(Map<Long, Integer> medicamentsWithCounts) throws MedicamentDiscountException {
+    @Transactional(value = Transactional.TxType.MANDATORY)
+    public void discountMedicaments(Map<Long, Integer> medicamentsWithCounts) {
         ImmutableList<PharmacyMedicament> pharmacyMedicaments = ImmutableList.
                 <PharmacyMedicament>builder()
                 .addAll(this.pharmacyMedicamentDao.getAll())
                 .build();
         ConcurrentLinkedQueue<PharmacyMedicament> updatedPharmacyMedicaments = new ConcurrentLinkedQueue<>();
 
-        List<String> errors = this.validateArgsForDiscount(medicamentsWithCounts);
+        List<String> errors = this.validateDiscountArgs(medicamentsWithCounts);
 
-        if (errors.isEmpty()) {
+        if (!errors.isEmpty()) {
+            throw new MedicamentDiscountException(String.join(" | ", errors));
+        } else {
             medicamentsWithCounts.entrySet()
                     .parallelStream()
                     .forEach(discMedicament -> {
@@ -154,22 +168,20 @@ public class PharmacyEjbImpl implements PharmacyEjbRemote {
                     });
             // сохраняем обновлённое состояние медикаментов в аптеке
             updatedPharmacyMedicaments.forEach(pharmacyMedicamentDao::update);
-        } else {
-            throw new MedicamentDiscountException(String.join(" | ", errors));
         }
     }
 
     /**
      * Валидация аргументов, необходимых для списания медикамента с аптек.
      * @param medicamentsWithCounts
-     * @return
+     * @return список ошибок
      */
-    private List<String> validateArgsForDiscount(Map<Long, Integer> medicamentsWithCounts) {
+    private List<String> validateDiscountArgs(Map<Long, Integer> medicamentsWithCounts) {
         List<String> errors = new LinkedList<>();
         for (Map.Entry<Long, Integer> discMedicament : medicamentsWithCounts.entrySet()) {
             Long medicamentId = discMedicament.getKey();
             Integer count     = discMedicament.getValue();
-            String error = this.validateArgsForDiscount(medicamentId, count);
+            String error = this.validateDiscountArgs(medicamentId, count);
             if (Objects.nonNull(error)) {
                 errors.add(error);
             }
@@ -181,54 +193,41 @@ public class PharmacyEjbImpl implements PharmacyEjbRemote {
      * Валидация аргументов, необходимых для списания медикамента с аптек.
      * @param medicamentId
      * @param count
-     * @return
+     * @return строка с описанием ошибок в переданных аргументах
      */
-    private String validateArgsForDiscount(Long medicamentId, Integer count) {
+    private String validateDiscountArgs(Long medicamentId, Integer count) {
         StringBuilder errors = new StringBuilder();
 
         if (Objects.isNull(medicamentId)) {
-            errors.append("Argument medicamentId is null; ");
+            errors.append("MedicamentId is null; ");
         } else  {
             if (!this.medicamentDao.existsById(medicamentId)) {
                 errors.append("Such medicament not exist; ");
             }
         }
         if (Objects.isNull(count)) {
-            errors.append("Argument count is null; ");
+            errors.append("Count is null; ");
         } else {
             if (count < 0) {
-                errors.append("Argument count is negative; ");
+                errors.append("Count is negative; ");
             }
         }
         return errors.toString().isEmpty() ? null : errors.toString();
     }
 
     /**
-     * Провеяет хватает ли в переданном стриме медикаментов из аптек требуемого медикамента в таком количестве.
+     * Поиск медикамнтов в аптеке по Id.
      * @param currentPharmacyState текущее состояние медикаментов в аптеке
-     * @param medicamentId id проверяемого медикамента
-     * @param count необходимое количество списываемого медикамента
+     * @param medicamentId id искомого медикамента
      * @return
      */
-    private boolean isMedicamentInStocks(Stream<PharmacyMedicament> currentPharmacyState, Long medicamentId, Integer count) {
-        if (Objects.nonNull(this.validateArgsForDiscount(medicamentId, count))) {
-            return false;
-        }
-        Optional<Integer> medicamentCountInStock = this.getPharmacyMedicamentsByMedicamentId(currentPharmacyState, medicamentId)
-                // выбираем их количество
-                .map(PharmacyMedicament::getCount)
-                // суммируем количества
-                .reduce(Integer::sum);
-        // если получено количество медикамента на складе и оно больше требуемого
-        return medicamentCountInStock.isPresent() && medicamentCountInStock.get() >= count;
-    }
-
-    private Stream<PharmacyMedicament> getPharmacyMedicamentsByMedicamentId(Stream<PharmacyMedicament> currentPharmacyState, Long medicamentId) {
-        return currentPharmacyState
+    private List<PharmacyMedicament> getPharmacyMedicamentsByMedicamentId(List<PharmacyMedicament> currentPharmacyState, Long medicamentId) {
+        return currentPharmacyState.stream()
                 .filter(pharmacyMedicament -> pharmacyMedicament
                         .getMedicament()
                         .getId()
-                        .equals(medicamentId));
+                        .equals(medicamentId))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -246,10 +245,11 @@ public class PharmacyEjbImpl implements PharmacyEjbRemote {
         /* Остаток списания, число будет уменьшаться по мере списания медикаментов,
         для отслеживания количества которое ещё необходимо списать */
         AtomicInteger restCount = new AtomicInteger(count);
-        return this.getPharmacyMedicamentsByMedicamentId(
-                currentPharmacyState.stream(),
-                medicamentId)
-                // меняем количество медикамента в зависимости от restCount
+        List<PharmacyMedicament> medicamentsInStock = this.getPharmacyMedicamentsByMedicamentId(
+                currentPharmacyState,
+                medicamentId
+        );
+        return medicamentsInStock.stream()
                 // пока мы не списали столько, сколько нам требуется
                 .takeWhile(pharmacyMedicament -> restCount.get() > 0)
                 .map(pharmacyMedicament -> {
