@@ -2,6 +2,7 @@ package com.ulstu.pharmacy.pmmsl.pharmacy.ejb;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Streams;
+import com.ulstu.pharmacy.pmmsl.common.annotation.MainImplementation;
 import com.ulstu.pharmacy.pmmsl.common.exception.MedicamentDiscountException;
 import com.ulstu.pharmacy.pmmsl.medicament.dao.MedicamentDao;
 import com.ulstu.pharmacy.pmmsl.medicament.mapper.MedicamentMapper;
@@ -25,6 +26,7 @@ import java.util.stream.Stream;
 @AllArgsConstructor(onConstructor = @__({@Inject}))
 public class PharmacyEjbImpl implements PharmacyEjbRemote {
 
+    @MainImplementation
     private final PharmacyDao pharmacyDao;
 
     private final PharmacyMedicamentDao pharmacyMedicamentDao;

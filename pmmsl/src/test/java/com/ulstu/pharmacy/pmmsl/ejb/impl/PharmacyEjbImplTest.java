@@ -6,6 +6,7 @@ import com.ulstu.pharmacy.pmmsl.medicament.dao.MedicamentDaoImpl;
 import com.ulstu.pharmacy.pmmsl.medicament.entity.Medicament;
 import com.ulstu.pharmacy.pmmsl.medicament.mapper.MedicamentMapperImpl;
 import com.ulstu.pharmacy.pmmsl.medicament.view.MedicamentViewModel;
+import com.ulstu.pharmacy.pmmsl.pharmacy.dao.PharmacyDaoDecorator;
 import com.ulstu.pharmacy.pmmsl.pharmacy.dao.PharmacyDaoImpl;
 import com.ulstu.pharmacy.pmmsl.pharmacy.dao.PharmacyMedicamentDao;
 import com.ulstu.pharmacy.pmmsl.pharmacy.dao.PharmacyMedicamentDaoImpl;
@@ -23,6 +24,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -34,7 +37,7 @@ import java.util.stream.Collectors;
 public class PharmacyEjbImplTest {
 
     @Mock
-    private PharmacyDaoImpl pharmacyDao;
+    private PharmacyDaoDecorator pharmacyDao;
 
     @Mock
     private PharmacyMedicamentDaoImpl pharmacyMedicamentDao;
