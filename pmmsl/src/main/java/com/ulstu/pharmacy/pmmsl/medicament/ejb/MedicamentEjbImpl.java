@@ -28,9 +28,9 @@ public class MedicamentEjbImpl implements MedicamentEjbRemote {
      */
     @Override
     public MedicamentViewModel getById(Long id) {
-        Optional<Medicament> medicament = medicamentDao.findById(id);
-
-        return medicament.map(medicamentMapper::toViewModel).orElse(null);
+        return medicamentDao.findById(id)
+                .map(medicamentMapper::toViewModel)
+                .orElse(MedicamentViewModel.builder().build());
     }
 
     /**
