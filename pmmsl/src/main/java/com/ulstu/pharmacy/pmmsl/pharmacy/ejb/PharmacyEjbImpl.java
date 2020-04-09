@@ -252,7 +252,7 @@ public class PharmacyEjbImpl implements PharmacyEjbRemote {
         return medicamentsInStock.stream()
                 // пока мы не списали столько, сколько нам требуется
                 .takeWhile(pharmacyMedicament -> restCount.get() > 0)
-                .map(pharmacyMedicament -> {
+                .peek(pharmacyMedicament -> {
                     // Текущее количество медикамента на складе
                     int stockCount = pharmacyMedicament.getCount();
                     // Сколько можно списать?
@@ -261,7 +261,6 @@ public class PharmacyEjbImpl implements PharmacyEjbRemote {
                     pharmacyMedicament.setCount(stockCount - toDiscount);
                     // Обновляем количество, которое осталось списать
                     restCount.set(restCount.get() - toDiscount);
-                    return pharmacyMedicament;
                 })
                 .collect(Collectors.toList());
     }
