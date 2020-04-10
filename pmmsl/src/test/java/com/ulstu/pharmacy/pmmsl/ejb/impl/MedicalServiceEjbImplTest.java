@@ -155,14 +155,15 @@ public class MedicalServiceEjbImplTest {
     public void discountMedServiceWithMedicamentsInStock() throws MedicamentDiscountException {
         MedicalService discountedMedicalService = this.initMedicalServices().get(0);
 
-        Mockito.when(pharmacyEjbRemote.isMedicamentInStocks(Mockito.anyObject(), Mockito.anyInt())).thenReturn(true);
+        Mockito.when(pharmacyEjbRemote.isMedicamentInStocks(Mockito.anyObject()))
+                .thenReturn(true);
 
         medicalServiceEjbRemote.discount(discountedMedicalService.getId());
 
         Mockito.verify(pharmacyEjbRemote, Mockito.times(discountedMedicalService.getMedicamentMedicalServices().size()))
-                .isMedicamentInStocks(Mockito.anyObject(), Mockito.anyInt());
+                .isMedicamentInStocks(Mockito.anyObject());
         Mockito.verify(pharmacyEjbRemote, Mockito.times(discountedMedicalService.getMedicamentMedicalServices().size()))
-                .discountMedicament(Mockito.anyObject(), Mockito.anyInt());
+                .discountMedicaments(Mockito.anyObject());
 
         Mockito.verify(medicalServiceDao).update(Mockito.anyObject());
 
@@ -205,14 +206,15 @@ public class MedicalServiceEjbImplTest {
     public void discountMedServiceWithMedicamentsNotInStock() throws MedicamentDiscountException {
         MedicalService discountedMedicalService = this.initMedicalServices().get(0);
 
-        Mockito.when(pharmacyEjbRemote.isMedicamentInStocks(Mockito.anyObject(), Mockito.anyInt())).thenReturn(false);
+        Mockito.when(pharmacyEjbRemote.isMedicamentInStocks(Mockito.anyObject()))
+                .thenReturn(false);
 
         medicalServiceEjbRemote.discount(discountedMedicalService.getId());
 
         Mockito.verify(pharmacyEjbRemote, Mockito.times(discountedMedicalService.getMedicamentMedicalServices().size()))
-                .isMedicamentInStocks(Mockito.anyObject(), Mockito.anyInt());
+                .isMedicamentInStocks(Mockito.anyObject());
         Mockito.verify(pharmacyEjbRemote, Mockito.never())
-                .discountMedicament(Mockito.anyObject(), Mockito.anyInt());
+                .discountMedicaments(Mockito.anyObject());
     }
 
     @Test
