@@ -9,6 +9,7 @@ import com.ulstu.pharmacy.pmmsl.medicament.view.MedicamentViewModel;
 import lombok.AllArgsConstructor;
 
 import javax.inject.Inject;
+import javax.websocket.OnClose;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -50,6 +51,10 @@ public class MedicamentEjbImpl implements MedicamentEjbRemote {
      */
     @Override
     public void addOrUpdate(MedicamentBindingModel medicamentBindingModel) {
+        if(Objects.isNull(medicamentBindingModel)) {
+            throw new CrudOperationException("MedicamentBindingModel is null!");
+        }
+
         if(Objects.isNull(medicamentBindingModel.getId())) {
             String validationErrors = this.validateCreateArgs(medicamentBindingModel);
             if(Objects.nonNull(validationErrors)) {
@@ -162,7 +167,7 @@ public class MedicamentEjbImpl implements MedicamentEjbRemote {
         if (Objects.isNull(medicamentBindingModel.getId())) {
             errors.append("Id is null; ");
         } else {
-            if (!this.medicamentDao.existsById(medicamentBindingModel.getId())) {
+            if (this.medicamentDao.existsById(medicamentBindingModel.getId())) {
                 errors.append("Medicament with an id = ")
                         .append(medicamentBindingModel.getId())
                         .append(" not exist; ");
