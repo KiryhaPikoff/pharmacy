@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 @AllArgsConstructor(onConstructor = @__({@Inject}))
 public class MedicalServiceMapperImpl implements MedicalServiceMapper {
 
-    @Inject
     private final MedicamentMedicalServiceMapper medicamentMedicalServiceMapper;
 
     @Override

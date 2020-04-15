@@ -9,7 +9,6 @@ import com.ulstu.pharmacy.pmmsl.medicament.view.MedicamentViewModel;
 import lombok.AllArgsConstructor;
 
 import javax.inject.Inject;
-import javax.websocket.OnClose;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;

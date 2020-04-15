@@ -15,7 +15,7 @@ public class MedicalServiceDaoImpl extends MedicalServiceDao {
     }
 
     @Override
-    public List<MedicalService> getFromDateTo(Timestamp from, Timestamp to) {
+    public List<MedicalService> getFromDateToDate(Timestamp from, Timestamp to) {
         return this.entityManager
                 .createQuery(
                         "SELECT ms FROM MedicalService ms" +

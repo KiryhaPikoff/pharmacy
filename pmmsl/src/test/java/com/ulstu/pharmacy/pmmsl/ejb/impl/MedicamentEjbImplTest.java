@@ -4,7 +4,6 @@ import com.ulstu.pharmacy.pmmsl.common.exception.CrudOperationException;
 import com.ulstu.pharmacy.pmmsl.medicament.binding.MedicamentBindingModel;
 import com.ulstu.pharmacy.pmmsl.medicament.dao.MedicamentDaoImpl;
 import com.ulstu.pharmacy.pmmsl.medicament.ejb.MedicamentEjbImpl;
-import com.ulstu.pharmacy.pmmsl.medicament.ejb.MedicamentEjbRemote;
 import com.ulstu.pharmacy.pmmsl.medicament.entity.Medicament;
 import com.ulstu.pharmacy.pmmsl.medicament.mapper.MedicamentMapperImpl;
 import com.ulstu.pharmacy.pmmsl.medicament.view.MedicamentViewModel;

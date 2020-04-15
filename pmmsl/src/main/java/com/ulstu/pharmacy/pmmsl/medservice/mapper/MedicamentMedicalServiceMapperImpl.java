@@ -11,7 +11,6 @@ import java.util.Objects;
 @AllArgsConstructor(onConstructor = @__({@Inject}))
 public class MedicamentMedicalServiceMapperImpl implements MedicamentMedicalServiceMapper {
 
-    @Inject
     private final MedicamentMapper medicamentMapper;
 
     @Override
