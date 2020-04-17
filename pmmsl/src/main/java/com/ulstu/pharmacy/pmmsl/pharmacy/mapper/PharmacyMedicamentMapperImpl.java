@@ -3,16 +3,18 @@ package com.ulstu.pharmacy.pmmsl.pharmacy.mapper;
 import com.ulstu.pharmacy.pmmsl.medicament.mapper.MedicamentMapper;
 import com.ulstu.pharmacy.pmmsl.pharmacy.entity.PharmacyMedicament;
 import com.ulstu.pharmacy.pmmsl.pharmacy.view.PharmacyMedicamentViewModel;
-import lombok.AllArgsConstructor;
 
 import javax.inject.Inject;
 import java.util.Objects;
 
-@AllArgsConstructor(onConstructor = @__({@Inject}))
 public class PharmacyMedicamentMapperImpl implements PharmacyMedicamentMapper {
 
-    @Inject
     private final MedicamentMapper medicamentMapper;
+
+    @Inject
+    public PharmacyMedicamentMapperImpl(MedicamentMapper medicamentMapper) {
+        this.medicamentMapper = medicamentMapper;
+    }
 
     @Override
     public PharmacyMedicament toEntity(PharmacyMedicamentViewModel pharmacyMedicamentViewModel) {

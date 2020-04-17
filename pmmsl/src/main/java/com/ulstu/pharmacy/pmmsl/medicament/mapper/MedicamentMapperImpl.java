@@ -17,6 +17,7 @@ public class MedicamentMapperImpl implements MedicamentMapper {
                     .contraindications(medicamentViewModel.getContraindications())
                     .description(medicamentViewModel.getDescription())
                     .instruction(medicamentViewModel.getInstruction())
+                    .price(medicamentViewModel.getPrice())
                     .build();
             medicament.setId(medicamentViewModel.getId());
         }
@@ -32,6 +33,7 @@ public class MedicamentMapperImpl implements MedicamentMapper {
                         .contraindications(medicament.getContraindications())
                         .description(medicament.getDescription())
                         .instruction(medicament.getInstruction())
+                        .price(medicament.getPrice())
                         .build();
     }
 }

@@ -3,17 +3,19 @@ package com.ulstu.pharmacy.pmmsl.medservice.mapper;
 
 import com.ulstu.pharmacy.pmmsl.medservice.entity.MedicalService;
 import com.ulstu.pharmacy.pmmsl.medservice.view.MedicalServiceViewModel;
-import lombok.AllArgsConstructor;
 
 import javax.inject.Inject;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-@AllArgsConstructor(onConstructor = @__({@Inject}))
 public class MedicalServiceMapperImpl implements MedicalServiceMapper {
 
-    @Inject
     private final MedicamentMedicalServiceMapper medicamentMedicalServiceMapper;
+
+    @Inject
+    public MedicalServiceMapperImpl(MedicamentMedicalServiceMapper medicamentMedicalServiceMapper) {
+        this.medicamentMedicalServiceMapper = medicamentMedicalServiceMapper;
+    }
 
     @Override
     public MedicalService toEntity(MedicalServiceViewModel medicalServiceViewModel) {
@@ -27,6 +29,7 @@ public class MedicalServiceMapperImpl implements MedicalServiceMapper {
                                             .collect(Collectors.toList())
                                     : null
                     )
+                    .sumPrice(medicalServiceViewModel.getSumPrice())
                     .build();
             medicalService.setId(medicalServiceViewModel.getId());
         }

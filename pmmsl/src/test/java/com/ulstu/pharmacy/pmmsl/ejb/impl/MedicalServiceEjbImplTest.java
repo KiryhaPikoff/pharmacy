@@ -1,65 +1,68 @@
 package com.ulstu.pharmacy.pmmsl.ejb.impl;
 
-import com.google.common.collect.Streams;
 import com.ulstu.pharmacy.pmmsl.common.exception.CrudOperationException;
-import com.ulstu.pharmacy.pmmsl.common.exception.MedicamentDiscountException;
+import com.ulstu.pharmacy.pmmsl.medicament.dao.MedicamentDao;
 import com.ulstu.pharmacy.pmmsl.medicament.entity.Medicament;
 import com.ulstu.pharmacy.pmmsl.medicament.mapper.MedicamentMapperImpl;
-import com.ulstu.pharmacy.pmmsl.medicament.view.MedicamentViewModel;
+import com.ulstu.pharmacy.pmmsl.medservice.dao.MedicalServiceDao;
 import com.ulstu.pharmacy.pmmsl.medservice.dao.MedicalServiceDaoImpl;
-import com.ulstu.pharmacy.pmmsl.medservice.ejb.MedicalServiceEjbRemote;
+import com.ulstu.pharmacy.pmmsl.medservice.ejb.MedicalServiceEjbImpl;
 import com.ulstu.pharmacy.pmmsl.medservice.entity.MedicalService;
 import com.ulstu.pharmacy.pmmsl.medservice.entity.MedicamentMedicalService;
 import com.ulstu.pharmacy.pmmsl.medservice.mapper.MedicalServiceMapperImpl;
+import com.ulstu.pharmacy.pmmsl.medservice.mapper.MedicamentMedicalServiceMapper;
+import com.ulstu.pharmacy.pmmsl.medservice.mapper.MedicamentMedicalServiceMapperImpl;
 import com.ulstu.pharmacy.pmmsl.medservice.view.MedicalServiceViewModel;
+import com.ulstu.pharmacy.pmmsl.pharmacy.binding.MedicamentCountBindingModel;
 import com.ulstu.pharmacy.pmmsl.pharmacy.ejb.PharmacyEjbImpl;
+import com.ulstu.pharmacy.pmmsl.pharmacy.ejb.PharmacyEjbRemote;
 import junit.framework.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MedicalServiceEjbImplTest {
 
-    @Mock
-    private PharmacyEjbImpl pharmacyEjbRemote;
+    private final PharmacyEjbRemote pharmacyEjbRemote = Mockito.mock(PharmacyEjbImpl.class);
 
-    @Mock
-    private MedicalServiceDaoImpl medicalServiceDao;
+    private final MedicalServiceDao medicalServiceDao = Mockito.mock(MedicalServiceDaoImpl.class);
 
-    @Mock
-    private MedicalServiceMapperImpl medicalServiceMapper;
+    private final MedicamentDao medicamentDao = Mockito.mock(MedicamentDao.class);
 
-    @Mock
-    private MedicamentMapperImpl medicamentMapper;
+    private final MedicamentMapperImpl medicamentMapper = new MedicamentMapperImpl();
 
-    @InjectMocks
-    private MedicalServiceEjbRemote medicalServiceEjbRemote;
+    private final MedicamentMedicalServiceMapper medicamentMedicalServiceMapper =
+            new MedicamentMedicalServiceMapperImpl(medicamentMapper);
+
+    private final MedicalServiceMapperImpl medicalServiceMapper = new MedicalServiceMapperImpl(medicamentMedicalServiceMapper);
+
+    private final MedicalServiceEjbImpl medicalServiceEjbRemote = new MedicalServiceEjbImpl(
+            pharmacyEjbRemote,
+            medicalServiceDao,
+            medicamentDao,
+            medicalServiceMapper
+    );
 
     @Before
     public void init() {
         List<MedicalService> expectedMedicalServices = this.initMedicalServices();
+        List<Medicament> expectedMedicaments = this.initMedicaments();
 
         Mockito.when(medicalServiceDao.getAll())
                 .thenReturn(expectedMedicalServices);
 
-        Mockito.when(medicalServiceMapper.toEntity(Mockito.anyObject()))
-                .thenCallRealMethod();
-
-        Mockito.when(medicalServiceMapper.toViewModel(Mockito.anyObject()))
-                .thenCallRealMethod();
+        Mockito.when(medicamentDao.getAll())
+                .thenReturn(expectedMedicaments);
     }
 
     @Test
@@ -82,9 +85,6 @@ public class MedicalServiceEjbImplTest {
         Mockito.verify(medicalServiceDao, Mockito.times(1))
                 .getAll();
 
-        Mockito.verify(medicalServiceMapper, Mockito.times(expectedMedicalServices.size()))
-                .toViewModel(Mockito.anyObject());
-
         Assert.assertEquals(
                 expectedMedicalServices,
                 actualMedivalServices
@@ -101,19 +101,19 @@ public class MedicalServiceEjbImplTest {
         Timestamp expectedFromDate = Timestamp.valueOf("2009-06-04 18:13:56");
         Timestamp expectedToDay = Timestamp.valueOf("2020-10-11 14:12:51");
 
+        Mockito.when(medicalServiceDao.getFromDateToDate(expectedFromDate, expectedToDay))
+                .thenReturn(expectedMedicalServices);
+
         List<MedicalServiceViewModel> actualMedicalServices = medicalServiceEjbRemote.getFromDateToDate(
                 expectedFromDate,
                 expectedToDay
         );
 
         Mockito.verify(medicalServiceDao, Mockito.times(1))
-                .getFromDateTo(Mockito.anyObject(), Mockito.anyObject());
-
-        Mockito.verify(medicalServiceMapper, Mockito.times(expectedMedicalServices.size()))
-                .toViewModel(Mockito.anyObject());
+                .getFromDateToDate(Mockito.anyObject(), Mockito.anyObject());
 
         ArgumentCaptor<Timestamp> timestampArgumentCaptor = ArgumentCaptor.forClass(Timestamp.class);
-        Mockito.verify(medicalServiceDao).getFromDateTo(timestampArgumentCaptor.capture(), timestampArgumentCaptor.capture());
+        Mockito.verify(medicalServiceDao).getFromDateToDate(timestampArgumentCaptor.capture(), timestampArgumentCaptor.capture());
         List<Timestamp> timestamps = timestampArgumentCaptor.getAllValues();
 
         Assert.assertEquals(expectedFromDate, timestamps.get(0));
@@ -127,13 +127,12 @@ public class MedicalServiceEjbImplTest {
         );
     }
 
-    @Test
+    @Test(expected = CrudOperationException.class)
     /**
      * Если методу было подано хотябы одно значение null - возвращается пустой
      * список услгу.
      */
     public void getFromDateToDateIncorrectedValues() {
-        List<MedicalService> expectedMedicalServices = this.initMedicalServices();
 
         List<MedicalServiceViewModel> actualMedicalServices = medicalServiceEjbRemote.getFromDateToDate(
                 null,
@@ -141,7 +140,7 @@ public class MedicalServiceEjbImplTest {
         );
 
         Mockito.verify(medicalServiceDao, Mockito.never())
-                .getFromDateTo(Mockito.anyObject(), Mockito.anyObject());
+                .getFromDateToDate(Mockito.anyObject(), Mockito.anyObject());
 
         Assert.assertNotNull(actualMedicalServices);
         Assert.assertTrue(actualMedicalServices.isEmpty());
@@ -152,39 +151,38 @@ public class MedicalServiceEjbImplTest {
      * Списание услуги, медикаментов которой хватает на складах, и
      * переданные значения корректны.
      */
-    public void discountMedServiceWithMedicamentsInStock() throws MedicamentDiscountException {
+    public void discountMedServiceWithMedicamentsInStock() {
         MedicalService discountedMedicalService = this.initMedicalServices().get(0);
 
-        Mockito.when(pharmacyEjbRemote.isMedicamentInStocks(Mockito.anyObject(), Mockito.anyInt())).thenReturn(true);
+        Mockito.when(pharmacyEjbRemote.isMedicamentInStocks(Mockito.anyObject()))
+                .thenReturn(true);
+
+        Mockito.when(medicalServiceDao.existsById(Mockito.anyLong()))
+                .thenReturn(true);
+
+        Mockito.when(medicalServiceDao.findById(Mockito.anyLong()))
+                .thenReturn(Optional.ofNullable(discountedMedicalService));
 
         medicalServiceEjbRemote.discount(discountedMedicalService.getId());
 
-        Mockito.verify(pharmacyEjbRemote, Mockito.times(discountedMedicalService.getMedicamentMedicalServices().size()))
-                .isMedicamentInStocks(Mockito.anyObject(), Mockito.anyInt());
-        Mockito.verify(pharmacyEjbRemote, Mockito.times(discountedMedicalService.getMedicamentMedicalServices().size()))
-                .discountMedicament(Mockito.anyObject(), Mockito.anyInt());
+        Mockito.verify(pharmacyEjbRemote, Mockito.times(1))
+                .discountMedicaments(Mockito.anyObject());
 
         Mockito.verify(medicalServiceDao).update(Mockito.anyObject());
 
-        ArgumentCaptor<MedicamentViewModel> medicamentViewModelArgumentCaptor = ArgumentCaptor.forClass(MedicamentViewModel.class);
-        ArgumentCaptor<Integer> countArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
+        var medicamentCountArgumentCaptor = ArgumentCaptor.forClass(MedicamentCountBindingModel.class);
+        Mockito.verify(pharmacyEjbRemote, Mockito.times(discountedMedicalService.getMedicamentMedicalServices().size()))
+                .isMedicamentInStocks(medicamentCountArgumentCaptor.capture());
+        var actualMedicamentsWithCount = medicamentCountArgumentCaptor.getAllValues();
 
-    //    Mockito.verify(pharmacyEjbRemote).isMedicamentInStocks(medicamentViewModelArgumentCaptor.capture(), countArgumentCaptor.capture());
-
-        List<MedicamentViewModel> actualMedicamentViewModels = medicamentViewModelArgumentCaptor.getAllValues();
-        List<Integer> actualMedicamentsCount = countArgumentCaptor.getAllValues();
-
-        Map<MedicamentViewModel, Integer> actualMedicamentsWithCount = new HashMap<>();
-        Streams.forEachPair(actualMedicamentViewModels.stream(), actualMedicamentsCount.stream(), actualMedicamentsWithCount::put);
-
-        HashMap<MedicamentViewModel, Integer> expectedMedicamentsWithCount = new HashMap<>();
-        for (MedicamentMedicalService medicamentMedicalService : discountedMedicalService.getMedicamentMedicalServices()) {
-            expectedMedicamentsWithCount.put(
-                    new MedicamentMapperImpl()
-                            .toViewModel(medicamentMedicalService.getMedicament()),
-                    medicamentMedicalService.getCount()
-            );
-        }
+        var expectedMedicamentsWithCount = discountedMedicalService.getMedicamentMedicalServices()
+                .stream()
+                .map(medicamentMedicalService -> MedicamentCountBindingModel.builder()
+                        .medicamentId(medicamentMedicalService.getMedicament().getId())
+                        .count(medicamentMedicalService.getCount())
+                        .build()
+                )
+                .collect(Collectors.toList());
 
         Assert.assertEquals(
                 expectedMedicamentsWithCount,
@@ -192,51 +190,62 @@ public class MedicalServiceEjbImplTest {
         );
 
         ArgumentCaptor<MedicalService> medicalServiceArgumentCaptor = ArgumentCaptor.forClass(MedicalService.class);
+        Mockito.verify(medicalServiceDao).update(medicalServiceArgumentCaptor.capture());
         MedicalService actualMedicalService = medicalServiceArgumentCaptor.getValue();
 
         Assert.assertNotNull(actualMedicalService.getProvisionDate());
     }
 
-    @Test(expected = MedicamentDiscountException.class)
+    @Test(expected = CrudOperationException.class)
     /**
      * Списание услуги, медикаментов которой нехватает на складах, и
      * переданные значения корректны.
      */
-    public void discountMedServiceWithMedicamentsNotInStock() throws MedicamentDiscountException {
+    public void discountMedServiceWithMedicamentsNotInStock() {
         MedicalService discountedMedicalService = this.initMedicalServices().get(0);
 
-        Mockito.when(pharmacyEjbRemote.isMedicamentInStocks(Mockito.anyObject(), Mockito.anyInt())).thenReturn(false);
+        Mockito.when(pharmacyEjbRemote.isMedicamentInStocks(Mockito.anyObject()))
+                .thenReturn(false);
 
         medicalServiceEjbRemote.discount(discountedMedicalService.getId());
 
         Mockito.verify(pharmacyEjbRemote, Mockito.times(discountedMedicalService.getMedicamentMedicalServices().size()))
-                .isMedicamentInStocks(Mockito.anyObject(), Mockito.anyInt());
+                .isMedicamentInStocks(Mockito.anyObject());
         Mockito.verify(pharmacyEjbRemote, Mockito.never())
-                .discountMedicament(Mockito.anyObject(), Mockito.anyInt());
+                .discountMedicaments(Mockito.anyObject());
     }
 
     @Test
     /**
      * Создание услуги на основе списка соответствий Медикамент - Количество.
      */
-    public void createWithCorrectedValues() throws CrudOperationException {
+    public void createWithCorrectedValues() {
         MedicalService expectedCreatedMedicalService = this.initMedicalServices().get(0);
         expectedCreatedMedicalService.setId(null);
 
-        Map<MedicamentViewModel, Integer> argumentsForCreating = new HashMap<>();
+        Mockito.when(pharmacyEjbRemote.isMedicamentInStocks(Mockito.anyObject()))
+                .thenReturn(true);
+
+        /* Ставим null, так как до сохранения их нет ещё в БД. А в тестах уже проинициализированы id. */
+        expectedCreatedMedicalService.getMedicamentMedicalServices()
+                .forEach(medicamentMedicalService -> medicamentMedicalService.setId(null));
+
+        Set<MedicamentCountBindingModel> argumentsForCreating = new HashSet<>();
         for (MedicamentMedicalService medicamentMedicalService : expectedCreatedMedicalService.getMedicamentMedicalServices()) {
-            argumentsForCreating.put(
-                    new MedicamentMapperImpl()
-                            .toViewModel(medicamentMedicalService.getMedicament()),
-                    medicamentMedicalService.getCount()
+            argumentsForCreating.add(
+                    MedicamentCountBindingModel.builder()
+                            .medicamentId(medicamentMedicalService.getMedicament().getId())
+                            .count(medicamentMedicalService.getCount())
+                            .build()
             );
         }
 
-    //    medicalServiceEjbRemote.create(argumentsForCreating);
+        medicalServiceEjbRemote.create(argumentsForCreating);
 
         Mockito.verify(medicalServiceDao).save(Mockito.anyObject());
 
         ArgumentCaptor<MedicalService> medicalServiceArgumentCaptor = ArgumentCaptor.forClass(MedicalService.class);
+        Mockito.verify(medicalServiceDao).save(medicalServiceArgumentCaptor.capture());
         MedicalService actualMedicalService = medicalServiceArgumentCaptor.getValue();
 
         Assert.assertEquals(expectedCreatedMedicalService, actualMedicalService);
@@ -247,7 +256,7 @@ public class MedicalServiceEjbImplTest {
      * В случае, если методу была передана мапа с ссылкой null - то
      * метод генерирует исключение.
      */
-    public void createWithNullMap() throws CrudOperationException {
+    public void createWithNullMap() {
         medicalServiceEjbRemote.create(null);
 
         Mockito.verify(medicalServiceDao, Mockito.never()).save(Mockito.anyObject());
@@ -258,19 +267,16 @@ public class MedicalServiceEjbImplTest {
      * В случае, если методу была передана мапа, которая содержит
      * хотябы один ключ или одно значение null - должно сгенерироваться исключение.
      */
-    public void createWithNullIntoMap() throws CrudOperationException {
-        MedicalService expectedCreatedMedicalService = this.initMedicalServices().get(0);
-        expectedCreatedMedicalService.setId(null);
-
-        Map<Long, Integer> argumentsForCreating = new HashMap<>();
-        argumentsForCreating.put(null, null);
+    public void createWithNullIntoMap() {
+        Set<MedicamentCountBindingModel> argumentsForCreating = new HashSet<>();
+        argumentsForCreating.add(MedicamentCountBindingModel.builder().build());
 
         medicalServiceEjbRemote.create(argumentsForCreating);
 
         Mockito.verify(medicalServiceDao, Mockito.never()).save(Mockito.anyObject());
     }
 
-    @Before
+    @Ignore
     /**
      * МС_0:
      *      ММС_0
@@ -290,15 +296,15 @@ public class MedicalServiceEjbImplTest {
         medicalServices.add(medicalService_0);
 
         MedicalService medicalService_1 = MedicalService.builder()
-                .medicamentMedicalServices(medicamentMedicalServices.subList(2, 3))
+                .medicamentMedicalServices(medicamentMedicalServices.subList(1, 2))
                 .build();
-        medicalService_0.setId(1L);
+        medicalService_1.setId(1L);
         medicalServices.add(medicalService_1);
 
         return medicalServices;
     }
 
-    @Before
+    @Ignore
     /**
      * ММС_0 = Медикамент 0 - 5  шт.
      * ММС_1 = Медикамент 1 - 10 шт.
@@ -311,6 +317,7 @@ public class MedicalServiceEjbImplTest {
         MedicamentMedicalService medicamentMedicalService_0 = MedicamentMedicalService.builder()
                 .medicament(medicaments.get(0))
                 .count(5)
+                .price(medicaments.get(0).getPrice())
                 .build();
         medicamentMedicalService_0.setId(0L);
         medicamentMedicalServices.add(medicamentMedicalService_0);
@@ -318,6 +325,7 @@ public class MedicalServiceEjbImplTest {
         MedicamentMedicalService medicamentMedicalService_1 = MedicamentMedicalService.builder()
                 .medicament(medicaments.get(1))
                 .count(10)
+                .price(medicaments.get(1).getPrice())
                 .build();
         medicamentMedicalService_1.setId(1L);
         medicamentMedicalServices.add(medicamentMedicalService_1);
@@ -325,6 +333,7 @@ public class MedicalServiceEjbImplTest {
         MedicamentMedicalService medicamentMedicalService_2 = MedicamentMedicalService.builder()
                 .medicament(medicaments.get(2))
                 .count(10)
+                .price(medicaments.get(2).getPrice())
                 .build();
         medicamentMedicalService_2.setId(2L);
         medicamentMedicalServices.add(medicamentMedicalService_2);
@@ -332,24 +341,24 @@ public class MedicalServiceEjbImplTest {
         return medicamentMedicalServices;
     }
 
-    @Before
+    @Ignore
     public List<Medicament> initMedicaments() {
         List<Medicament> medicaments = new LinkedList<>();
 
-        Medicament medicament_0 = Medicament.builder().name("Нулевой медикамент").build();
+        Medicament medicament_0 = Medicament.builder().name("Нулевой медикамент").price(new BigDecimal(15L)).build();
         medicament_0.setId(0L);
         medicaments.add(medicament_0);
 
-        Medicament medicament_1 = Medicament.builder().name("Первый медикамент").build();
-        medicament_1.setId(0L);
+        Medicament medicament_1 = Medicament.builder().name("Первый медикамент").price(new BigDecimal(15L)).build();
+        medicament_1.setId(1L);
         medicaments.add(medicament_1);
 
-        Medicament medicament_2 = Medicament.builder().name("Второй медикамент").build();
-        medicament_2.setId(0L);
+        Medicament medicament_2 = Medicament.builder().name("Второй медикамент").price(new BigDecimal(15L)).build();
+        medicament_2.setId(2L);
         medicaments.add(medicament_2);
 
-        Medicament medicament_3 = Medicament.builder().name("Третий медикамент").build();
-        medicament_3.setId(0L);
+        Medicament medicament_3 = Medicament.builder().name("Третий медикамент").price(new BigDecimal(15L)).build();
+        medicament_3.setId(3L);
         medicaments.add(medicament_3);
 
         return medicaments;

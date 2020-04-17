@@ -1,14 +1,15 @@
 package com.ulstu.pharmacy.pmmsl.pharmacy.ejb;
 
 
-import com.ulstu.pharmacy.pmmsl.common.exception.CrudOperationException;
-import com.ulstu.pharmacy.pmmsl.common.exception.MedicamentDiscountException;
 import com.ulstu.pharmacy.pmmsl.medicament.view.MedicamentViewModel;
+import com.ulstu.pharmacy.pmmsl.pharmacy.binding.MedicamentCountBindingModel;
+import com.ulstu.pharmacy.pmmsl.pharmacy.binding.PharmacyBindingModel;
 import com.ulstu.pharmacy.pmmsl.pharmacy.view.PharmacyViewModel;
 
 import javax.ejb.Remote;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Remote
 public interface PharmacyEjbRemote {
@@ -19,11 +20,11 @@ public interface PharmacyEjbRemote {
     List<PharmacyViewModel> getAll();
 
     /**
-     * Метод создания аптеки. Если pharmacyName == null, будет дано название по умолчанию.
-     *
-     * @param pharmacyName название аптеки.
+     * Метод создания аптеки.
+     * Если pharmacyName == null, будет дано название по умолчанию.
+     * @param pharmacyBindingModel
      */
-    void create(String pharmacyName) throws CrudOperationException;
+    void create(PharmacyBindingModel pharmacyBindingModel);
 
     /**
      * Метод получение списка медикаментов со всех аптек.
@@ -34,34 +35,16 @@ public interface PharmacyEjbRemote {
     /**
      * Проверка наличия медикамента в аптеках в необходимом количестве.
      *
-     * @param medicamentId проверяемый медикамент.
-     * @param count        необходимое количество медикамента.
+     * @param medicamentCountBindingModel
      * @return true, если медикамет есть в нужном количестве в аптеках (в сумме)
      * false, в противном случае (или если параметр medicament == null).
      */
-    boolean isMedicamentInStocks(Long medicamentId, Integer count);
+    boolean isMedicamentInStocks(MedicamentCountBindingModel medicamentCountBindingModel);
+
 
     /**
-     * Метод списания медикамента с аптек.
-     *
-     * @param medicamentId Id списываемого медикамент.
-     * @param count        количество медикамента для списывания.
-     * @throws MedicamentDiscountException возникает, если
-     *                                     1) В аптеках не хватает в общей сумме колчиства списываемого медикамента.
-     *                                     2) Медикамента не существует.
-     *                                     3) Параметры null.
+     * Метод списания медикаментов с аптек.
+     * @param medicamentCountBindingModels множество медикаментов с количеством для списывания.
      */
-    void discountMedicament(Long medicamentId, Integer count) throws MedicamentDiscountException;
-
-    /**
-     * Метод списания медикамента с аптек.
-     * @param medicamentsWithCounts
-     *  Ключ - Id списываемого медикамент.
-     *  Значение - количество медикамента для списывания.
-     * @throws MedicamentDiscountException возникает, если
-     *                                     1) В аптеках не хватает в общей сумме колчиства списываемого медикамента.
-     *                                     2) Медикамента не существует.
-     *                                     3) Параметры null.
-     */
-    void discountMedicaments(Map<Long, Integer> medicamentsWithCounts) throws MedicamentDiscountException;
+    void discountMedicaments(Set<MedicamentCountBindingModel> medicamentCountBindingModels);
 }

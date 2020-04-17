@@ -3,16 +3,19 @@ package com.ulstu.pharmacy.pmmsl.medservice.mapper;
 import com.ulstu.pharmacy.pmmsl.medicament.mapper.MedicamentMapper;
 import com.ulstu.pharmacy.pmmsl.medservice.entity.MedicamentMedicalService;
 import com.ulstu.pharmacy.pmmsl.medservice.view.MedicamentMedicalServiceViewModel;
-import lombok.AllArgsConstructor;
 
 import javax.inject.Inject;
 import java.util.Objects;
 
-@AllArgsConstructor(onConstructor = @__({@Inject}))
 public class MedicamentMedicalServiceMapperImpl implements MedicamentMedicalServiceMapper {
 
-    @Inject
+
     private final MedicamentMapper medicamentMapper;
+
+    @Inject
+    public MedicamentMedicalServiceMapperImpl(MedicamentMapper medicamentMapper) {
+        this.medicamentMapper = medicamentMapper;
+    }
 
     @Override
     public MedicamentMedicalService toEntity(MedicamentMedicalServiceViewModel medicamentMedicalServiceViewModel) {
@@ -34,7 +37,7 @@ public class MedicamentMedicalServiceMapperImpl implements MedicamentMedicalServ
 
     @Override
     public MedicamentMedicalServiceViewModel toViewModel(MedicamentMedicalService medicamentMedicalService) {
-        return Objects.nonNull(medicamentMedicalService) ? null :
+        return Objects.isNull(medicamentMedicalService) ? null :
                 MedicamentMedicalServiceViewModel.builder()
                         .id(medicamentMedicalService.getId())
                         .medicament(

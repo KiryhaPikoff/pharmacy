@@ -6,6 +6,8 @@ import com.ulstu.pharmacy.pmmsl.medicament.dao.MedicamentDaoImpl;
 import com.ulstu.pharmacy.pmmsl.medicament.entity.Medicament;
 import com.ulstu.pharmacy.pmmsl.medicament.mapper.MedicamentMapperImpl;
 import com.ulstu.pharmacy.pmmsl.medicament.view.MedicamentViewModel;
+import com.ulstu.pharmacy.pmmsl.pharmacy.binding.MedicamentCountBindingModel;
+import com.ulstu.pharmacy.pmmsl.pharmacy.binding.PharmacyBindingModel;
 import com.ulstu.pharmacy.pmmsl.pharmacy.dao.PharmacyDaoImpl;
 import com.ulstu.pharmacy.pmmsl.pharmacy.dao.PharmacyMedicamentDao;
 import com.ulstu.pharmacy.pmmsl.pharmacy.dao.PharmacyMedicamentDaoImpl;
@@ -24,10 +26,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -118,10 +117,12 @@ public class PharmacyEjbImplTest {
      * Здесь CrudOperationException по логике создания не выкидывается,
      * он нужен для обёртки ошибок базы данных.
      */
-    public void createWithSpecificString() throws CrudOperationException {
+    public void createWithSpecificString() {
         String pharmacyName = "pharm";
 
-        pharmacyEjbRemote.create(pharmacyName);
+        pharmacyEjbRemote.create(
+                PharmacyBindingModel.builder().name(pharmacyName).build()
+        );
 
         Mockito.verify(pharmacyDao, Mockito.times(1))
                 .save(Mockito.anyObject());
@@ -141,10 +142,10 @@ public class PharmacyEjbImplTest {
      * Здесь CrudOperationException по логике создания не выкидывается,
      * он нужен для обёртки ошибок базы данных.
      */
-    public void createWithNullString() throws CrudOperationException {
+    public void createWithNullString() {
         String defaultPharmName = "default";
 
-        pharmacyEjbRemote.create(null);
+        pharmacyEjbRemote.create(PharmacyBindingModel.builder().name(null).build());
 
         Mockito.verify(pharmacyDao, Mockito.times(1))
                 .save(Mockito.anyObject());
@@ -154,6 +155,21 @@ public class PharmacyEjbImplTest {
         Pharmacy savedPharmacy = pharmacyArgumentCaptor.getValue();
 
         Assert.assertEquals(defaultPharmName, savedPharmacy.getName());
+    }
+
+    @Test(expected = CrudOperationException.class)
+    /**
+     * Проверка на то, что метод create(String name) где name == null
+     * вызовет 1 раз метод save у pharmacyDao и у аптеки будет
+     * name - значение по умолчанию.
+     * Здесь CrudOperationException по логике создания не выкидывается,
+     * он нужен для обёртки ошибок базы данных.
+     */
+    public void createWithNullArgument() {
+        pharmacyEjbRemote.create(null);
+
+        Mockito.verify(pharmacyDao, Mockito.never())
+                .save(Mockito.anyObject());
     }
 
     @Test
@@ -181,14 +197,21 @@ public class PharmacyEjbImplTest {
         Mockito.when(medicamentDao.existsById(Mockito.anyLong()))
                 .thenReturn(true);
 
-        Assert.assertTrue(pharmacyEjbRemote.isMedicamentInStocks(0L, 5));
-        Assert.assertTrue(pharmacyEjbRemote.isMedicamentInStocks(1L, 8));
-        Assert.assertFalse(pharmacyEjbRemote.isMedicamentInStocks(0L, 10));
-        Assert.assertFalse(pharmacyEjbRemote.isMedicamentInStocks(2L, 1));
+        Assert.assertTrue(pharmacyEjbRemote.isMedicamentInStocks(
+                MedicamentCountBindingModel.builder().medicamentId(0L).count(5).build()));
+        Assert.assertTrue(pharmacyEjbRemote.isMedicamentInStocks(
+                MedicamentCountBindingModel.builder().medicamentId(1L).count(8).build()));
+        Assert.assertFalse(pharmacyEjbRemote.isMedicamentInStocks(
+                MedicamentCountBindingModel.builder().medicamentId(0L).count(10).build()));
+        Assert.assertFalse(pharmacyEjbRemote.isMedicamentInStocks(
+                MedicamentCountBindingModel.builder().medicamentId(2L).count(1).build()));
 
-        Assert.assertTrue(pharmacyEjbRemote.isMedicamentInStocks(0L, 0));
-        Assert.assertFalse(pharmacyEjbRemote.isMedicamentInStocks(0L, -15));
-        Assert.assertFalse(pharmacyEjbRemote.isMedicamentInStocks(null, 0));
+        Assert.assertTrue(pharmacyEjbRemote.isMedicamentInStocks(
+                MedicamentCountBindingModel.builder().medicamentId(0L).count(0).build()));
+        Assert.assertFalse(pharmacyEjbRemote.isMedicamentInStocks(
+                MedicamentCountBindingModel.builder().medicamentId(0L).count(-15).build()));
+        Assert.assertFalse(pharmacyEjbRemote.isMedicamentInStocks(
+                MedicamentCountBindingModel.builder().medicamentId(null).count(0).build()));
     }
 
     @Test
@@ -196,36 +219,56 @@ public class PharmacyEjbImplTest {
      * Проверка на корректное списание медикаментов с аптеки.
      * (Представленны корректные случаи, которые точно должны отработать)
      */
-    public void discountMedicamentThatIsInStock() throws MedicamentDiscountException {
+    public void discountMedicamentThatIsInStock() {
         List<Pharmacy> pharmacys = this.initPharmacys();
         List<Medicament> medicaments = this.initMedicaments();
-        List<PharmacyMedicament> pharmacyMedicaments = this.initPharmacyMedicaments();
 
         Mockito.when(medicamentDao.existsById(Mockito.anyLong()))
                 .thenReturn(true);
 
-        pharmacyEjbRemote.discountMedicament(0L, 5);
-        pharmacyMedicaments.get(0).setCount(0);
-        pharmacyEjbRemote.discountMedicament(1L, 1);
-        pharmacyMedicaments.get(1).setCount(1);
-        pharmacyEjbRemote.discountMedicament(3L, 8);
-        pharmacyMedicaments.get(2).setCount(0);
-        pharmacyMedicaments.get(4).setCount(1);
+        Set<MedicamentCountBindingModel> discountSet = new HashSet<>();
         // При списывании нуля медикаментов, ничего не произойдёт. Но это корректный ввод и исключение не возникнет.
-        pharmacyEjbRemote.discountMedicament(3L, 0);
+        discountSet.add(MedicamentCountBindingModel.builder().medicamentId(0L).count(0).build());
+        discountSet.add(MedicamentCountBindingModel.builder().medicamentId(1L).count(1).build());
+        discountSet.add(MedicamentCountBindingModel.builder().medicamentId(3L).count(8).build());
+
+        this.pharmacyEjbRemote.discountMedicaments(discountSet);
 
         ArgumentCaptor<PharmacyMedicament> pharmacyMedicamentArgumentCaptor = ArgumentCaptor.forClass(PharmacyMedicament.class);
-        Mockito.verify(pharmacyMedicamentDao, Mockito.times(4)).update(pharmacyMedicamentArgumentCaptor.capture());
+        Mockito.verify(pharmacyMedicamentDao, Mockito.times(3)).update(pharmacyMedicamentArgumentCaptor.capture());
 
         List<PharmacyMedicament> savedPharmacyMedicaments = pharmacyMedicamentArgumentCaptor.getAllValues();
 
         List<PharmacyMedicament> expectedForSavingPharmacyMedicaments = new LinkedList<>();
-        expectedForSavingPharmacyMedicaments.add(PharmacyMedicament.builder().pharmacy(pharmacys.get(0)).medicament(medicaments.get(0)).count(0).build());
-        expectedForSavingPharmacyMedicaments.add(PharmacyMedicament.builder().pharmacy(pharmacys.get(0)).medicament(medicaments.get(1)).count(1).build());
-        expectedForSavingPharmacyMedicaments.add(PharmacyMedicament.builder().pharmacy(pharmacys.get(0)).medicament(medicaments.get(3)).count(0).build());
-        expectedForSavingPharmacyMedicaments.add(PharmacyMedicament.builder().pharmacy(pharmacys.get(2)).medicament(medicaments.get(3)).count(1).build());
+        expectedForSavingPharmacyMedicaments.add(
+                PharmacyMedicament.builder().pharmacy(pharmacys.get(0)).medicament(medicaments.get(1)).count(1).build()
+        );
+        expectedForSavingPharmacyMedicaments.add(
+                PharmacyMedicament.builder().pharmacy(pharmacys.get(0)).medicament(medicaments.get(3)).count(0).build()
+        );
+        expectedForSavingPharmacyMedicaments.add(
+                PharmacyMedicament.builder().pharmacy(pharmacys.get(2)).medicament(medicaments.get(3)).count(1).build()
+        );
 
-        Assert.assertEquals(expectedForSavingPharmacyMedicaments, savedPharmacyMedicaments);
+        List<MedicamentCountBindingModel> actual = savedPharmacyMedicaments.stream()
+                .map(pharmacyMedicament -> MedicamentCountBindingModel.builder()
+                        .medicamentId(pharmacyMedicament.getMedicament().getId())
+                        .count(pharmacyMedicament.getCount())
+                        .build())
+                .collect(Collectors.toList());
+
+        List<MedicamentCountBindingModel> expected = expectedForSavingPharmacyMedicaments.stream()
+                .map(pharmacyMedicament -> MedicamentCountBindingModel.builder()
+                        .medicamentId(pharmacyMedicament.getMedicament().getId())
+                        .count(pharmacyMedicament.getCount())
+                        .build())
+                .collect(Collectors.toList());
+
+        for (MedicamentCountBindingModel actualModel : actual) {
+            expected.remove(actualModel);
+        }
+
+        Assert.assertEquals(0, expected.size());
     }
 
     @Test(expected = MedicamentDiscountException.class)
@@ -234,14 +277,16 @@ public class PharmacyEjbImplTest {
      * Исключительная ситуация, в которой агрументы корректны,
      * но не хватает количества медикаментов в аптеках для списания.
      */
-    public void discountMedicamentThatNotInStock() throws MedicamentDiscountException {
-        List<Medicament> medicaments = this.initMedicaments();
-        List<PharmacyMedicament> pharmacyMedicaments = this.initPharmacyMedicaments();
+    public void discountMedicamentThatNotInStock() {
 
         Mockito.when(medicamentDao.existsById(1L))
                 .thenReturn(false);
 
-        pharmacyEjbRemote.discountMedicament(1L, 15);
+        pharmacyEjbRemote.discountMedicaments(
+                Set.of(
+                        MedicamentCountBindingModel.builder().medicamentId(1L).count(15).build()
+                )
+        );
 
         Mockito.verify(pharmacyMedicamentDao, Mockito.never()).update(Mockito.anyObject());
     }
@@ -251,14 +296,18 @@ public class PharmacyEjbImplTest {
      * Проверка на корректное списание медикаментов с аптеки.
      * Исключительная ситуация, когда количество отрицательное.
      */
-    public void discountMedicamentThatCountNotCorrected() throws MedicamentDiscountException {
+    public void discountMedicamentThatCountNotCorrected() {
         List<PharmacyMedicament> pharmacyMedicaments = this.initPharmacyMedicaments();
 
         PharmacyMedicamentDao pharmacyMedicamentDao = Mockito.mock(PharmacyMedicamentDaoImpl.class);
         Mockito.when(pharmacyMedicamentDao.getAll())
                 .thenReturn(pharmacyMedicaments);
 
-        pharmacyEjbRemote.discountMedicament(1L, -15);
+        pharmacyEjbRemote.discountMedicaments(
+                Set.of(
+                        MedicamentCountBindingModel.builder().medicamentId(1L).count(-15).build()
+                )
+        );
 
         Mockito.verify(pharmacyMedicamentDao, Mockito.never()).update(Mockito.anyObject());
     }
@@ -268,8 +317,12 @@ public class PharmacyEjbImplTest {
      * Проверка на корректное списание медикаментов с аптеки.
      * Исключительная ситуация, когда переданный медикамент null.
      */
-    public void discountMedicamentThatNull() throws MedicamentDiscountException {
-        pharmacyEjbRemote.discountMedicament(null, 14);
+    public void discountMedicamentThatNull() {
+        pharmacyEjbRemote.discountMedicaments(
+                Set.of(
+                        MedicamentCountBindingModel.builder().medicamentId(null).count(15).build()
+                )
+        );
 
         Mockito.verify(pharmacyMedicamentDao, Mockito.never()).update(Mockito.anyObject());
     }

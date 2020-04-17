@@ -1,8 +1,9 @@
 package com.ulstu.pharmacy.pmmsl.ejb.impl;
 
 import com.ulstu.pharmacy.pmmsl.common.exception.CrudOperationException;
+import com.ulstu.pharmacy.pmmsl.medicament.binding.MedicamentBindingModel;
 import com.ulstu.pharmacy.pmmsl.medicament.dao.MedicamentDaoImpl;
-import com.ulstu.pharmacy.pmmsl.medicament.ejb.MedicamentEjbRemote;
+import com.ulstu.pharmacy.pmmsl.medicament.ejb.MedicamentEjbImpl;
 import com.ulstu.pharmacy.pmmsl.medicament.entity.Medicament;
 import com.ulstu.pharmacy.pmmsl.medicament.mapper.MedicamentMapperImpl;
 import com.ulstu.pharmacy.pmmsl.medicament.view.MedicamentViewModel;
@@ -33,7 +34,7 @@ public class MedicamentEjbImplTest {
     private MedicamentMapperImpl medicamentMapper;
 
     @InjectMocks
-    private MedicamentEjbRemote medicamentEjbRemote;
+    private MedicamentEjbImpl medicamentEjbRemote;
 
     @Before
     public void init() {
@@ -57,24 +58,54 @@ public class MedicamentEjbImplTest {
     }
 
     @Test
-    public void getById() {
+    /**
+     * Получение медикамета по id для которого есть запись в БД.
+     */
+    public void getByIdMedicamntExist() {
         Long idExist = 15L;
-        Long idNonExist = 0L;
 
-        MedicamentViewModel expectedCorrectedMedicament = medicamentMapper.toViewModel(this.initMedicaments().get(2));
+        MedicamentViewModel expectedMedicament = medicamentMapper.toViewModel(this.initMedicaments().get(2));
 
+        Optional<Medicament> returnValue = Optional.of(medicamentMapper.toEntity(expectedMedicament));
         Mockito.when(medicamentDao.findById(idExist))
-                .thenReturn(Optional.ofNullable(medicamentMapper.toEntity(expectedCorrectedMedicament)));
+                .thenReturn(returnValue);
+
+        Assert.assertEquals(expectedMedicament, medicamentEjbRemote.getById(idExist));
+
+        Mockito.verify(medicamentDao, Mockito.times(1))
+                .findById(15L);
+    }
+
+    @Test
+    /**
+     * Попытка получить медикамент по id, а медикамента с таким id нет в БД
+     * Будет возвращен null-object.
+     */
+    public void getByIdMedicamntNotExist() {
+        Long idNonExist = 0L;
 
         Mockito.when(medicamentDao.findById(idNonExist))
                 .thenReturn(Optional.empty());
 
-        Assert.assertEquals(expectedCorrectedMedicament, medicamentEjbRemote.getById(idExist));
-        Assert.assertNull(medicamentEjbRemote.getById(idNonExist));
-        Assert.assertNull(medicamentEjbRemote.getById(null));
+        Assert.assertNotNull(medicamentEjbRemote.getById(idNonExist));
 
-        Mockito.verify(medicamentEjbRemote, Mockito.times(2))
-                .getById(Mockito.anyLong());
+        Mockito.verify(medicamentDao, Mockito.times(1))
+                .findById(Mockito.anyLong());
+    }
+
+    @Test
+    /**
+     * Попытка получить медикамент по id = null
+     * Будет возвращен null-object.
+     */
+    public void getByINulld() {
+        Mockito.when(medicamentDao.findById(null))
+                .thenReturn(Optional.empty());
+
+        Assert.assertNotNull(medicamentEjbRemote.getById(null));
+
+        Mockito.verify(medicamentDao, Mockito.times(1))
+                .findById(null);
     }
 
     @Test
@@ -103,9 +134,10 @@ public class MedicamentEjbImplTest {
      * Добавление корректной записи о медикаменте. В случае, если
      * медикамента с таким названием нет в базе.
      */
-    public void createCorrectedValuesThatNotInStock() throws CrudOperationException {
+    public void createCorrectedValuesThatNotInStock() {
 
-        Mockito.when(medicamentDao.existByName(Mockito.anyString())).thenReturn(false);
+        Mockito.when(medicamentDao.existByName(Mockito.anyString()))
+                .thenReturn(false);
 
         Medicament expectedMedicament = Medicament.builder()
                 .name("Медикамент T")
@@ -115,12 +147,14 @@ public class MedicamentEjbImplTest {
                 .instruction("Инструкция T")
                 .build();
 
-        medicamentEjbRemote.create(
-                expectedMedicament.getName(),
-                expectedMedicament.getDescription(),
-                expectedMedicament.getContraindications(),
-                expectedMedicament.getInstruction(),
-                expectedMedicament.getPrice()
+        medicamentEjbRemote.addOrUpdate(
+                MedicamentBindingModel.builder()
+                .name(expectedMedicament.getName())
+                .description(expectedMedicament.getDescription())
+                .contraindications(expectedMedicament.getContraindications())
+                .instruction(expectedMedicament.getInstruction())
+                .price(expectedMedicament.getPrice())
+                .build()
         );
 
         Mockito.verify(medicamentDao, Mockito.times(1))
@@ -141,9 +175,10 @@ public class MedicamentEjbImplTest {
      * Добавление корректной записи о медикаменте. В случае, если
      * медикамент с таким названием есть в базе.
      */
-    public void createCorrectedValuesThatInStock() throws CrudOperationException {
+    public void createMedicametnThatNameExist() {
 
-        Mockito.when(medicamentDao.existByName(Mockito.anyString())).thenReturn(true);
+        Mockito.when(medicamentDao.existByName(Mockito.anyString()))
+                .thenReturn(true);
 
         Medicament expectedMedicament = Medicament.builder()
                 .name("Медикамент T")
@@ -153,12 +188,14 @@ public class MedicamentEjbImplTest {
                 .instruction("Инструкция T")
                 .build();
 
-        medicamentEjbRemote.create(
-                expectedMedicament.getName(),
-                expectedMedicament.getDescription(),
-                expectedMedicament.getContraindications(),
-                expectedMedicament.getInstruction(),
-                expectedMedicament.getPrice()
+        medicamentEjbRemote.addOrUpdate(
+                MedicamentBindingModel.builder()
+                        .name(expectedMedicament.getName())
+                        .description(expectedMedicament.getDescription())
+                        .contraindications(expectedMedicament.getContraindications())
+                        .instruction(expectedMedicament.getInstruction())
+                        .price(expectedMedicament.getPrice())
+                        .build()
         );
 
         Mockito.verify(medicamentDao, Mockito.times(1))
@@ -171,18 +208,13 @@ public class MedicamentEjbImplTest {
     @Test(expected = CrudOperationException.class)
     /**
      * Добавление некорректной записи о медикаменте.
-     * Предполагается, что метод save вызовется,
-     * но выкенет исключение, которой обернётся в CrudOperationException
-     * и передастся дальше.
+     * Предполагается, что метод save не вызовется, а
+     * выкенет исключение CrudOperationException.
      */
-    public void createIncorrectedValuesOthersArgsNull() throws CrudOperationException {
+    public void createIncorrectedValuesOthersArgsNull() {
 
         Mockito.when(medicamentDao.existByName(Mockito.anyString()))
                 .thenReturn(false);
-
-        Mockito.doThrow(new Exception())
-                .when(medicamentDao)
-                .save(Mockito.anyObject());
 
         Medicament expectedMedicament = Medicament.builder()
                 .name("Name")
@@ -192,25 +224,21 @@ public class MedicamentEjbImplTest {
                 .instruction(null)
                 .build();
 
-        medicamentEjbRemote.create(
-                expectedMedicament.getName(),
-                expectedMedicament.getDescription(),
-                expectedMedicament.getContraindications(),
-                expectedMedicament.getInstruction(),
-                expectedMedicament.getPrice()
+        medicamentEjbRemote.addOrUpdate(
+                MedicamentBindingModel.builder()
+                        .name(expectedMedicament.getName())
+                        .description(expectedMedicament.getDescription())
+                        .contraindications(expectedMedicament.getContraindications())
+                        .instruction(expectedMedicament.getInstruction())
+                        .price(expectedMedicament.getPrice())
+                        .build()
         );
 
         Mockito.verify(medicamentDao, Mockito.times(1))
                 .existByName("Name");
 
-        Mockito.verify(medicamentDao, Mockito.times(1))
+        Mockito.verify(medicamentDao, Mockito.never())
                 .save(Mockito.anyObject());
-
-        ArgumentCaptor<Medicament> medicamentArgumentCaptor = ArgumentCaptor.forClass(Medicament.class);
-        Mockito.verify(medicamentDao).save(medicamentArgumentCaptor.capture());
-        Medicament actualMedicament = medicamentArgumentCaptor.getValue();
-
-        Assert.assertEquals(expectedMedicament, actualMedicament);
     }
 
     @Test(expected = CrudOperationException.class)
@@ -219,11 +247,10 @@ public class MedicamentEjbImplTest {
      * Предполагается, что вызовется метод проверки на существование
      * в базе медикамента с именем null и возникнет исключение.
      */
-    public void createIncorrectedValuesNameNull() throws CrudOperationException {
+    public void createIncorrectedValuesNameNull() {
 
-        Mockito.doThrow(new Exception())
-                .when(medicamentDao)
-                .save(Mockito.anyObject());
+        Mockito.when(medicamentDao.existByName(Mockito.anyString()))
+                .thenReturn(false);
 
         Medicament expectedMedicament = Medicament.builder()
                 .name(null)
@@ -233,25 +260,28 @@ public class MedicamentEjbImplTest {
                 .instruction(null)
                 .build();
 
-        medicamentEjbRemote.create(
-                expectedMedicament.getName(),
-                expectedMedicament.getDescription(),
-                expectedMedicament.getContraindications(),
-                expectedMedicament.getInstruction(),
-                expectedMedicament.getPrice()
+        medicamentEjbRemote.addOrUpdate(
+                MedicamentBindingModel.builder()
+                        .name(expectedMedicament.getName())
+                        .description(expectedMedicament.getDescription())
+                        .contraindications(expectedMedicament.getContraindications())
+                        .instruction(expectedMedicament.getInstruction())
+                        .price(expectedMedicament.getPrice())
+                        .build()
         );
-
-        Mockito.verify(medicamentDao, Mockito.times(1))
-                .existByName(null);
 
         Mockito.verify(medicamentDao, Mockito.never())
                 .save(Mockito.anyObject());
     }
 
     @Test
-    public void updateCorrectedValuesThatNotInStock() throws CrudOperationException {
+    /**
+     * Обновление медикамента, данные корректные. Медикамента с новым именем нет в БД.
+     */
+    public void updateCorrectedValuesThatNotInStock() {
 
-        Mockito.when(medicamentDao.existByName("Медикамент T")).thenReturn(false);
+        Mockito.when(medicamentDao.existByName("Медикамент T"))
+                .thenReturn(false);
 
         MedicamentViewModel expectedMedicament = MedicamentViewModel.builder()
                 .id(100L)
@@ -262,7 +292,16 @@ public class MedicamentEjbImplTest {
                 .instruction("Инструкция T")
                 .build();
 
-        medicamentEjbRemote.update(expectedMedicament);
+        medicamentEjbRemote.addOrUpdate(
+                MedicamentBindingModel.builder()
+                        .id(expectedMedicament.getId())
+                        .name(expectedMedicament.getName())
+                        .description(expectedMedicament.getDescription())
+                        .contraindications(expectedMedicament.getContraindications())
+                        .instruction(expectedMedicament.getInstruction())
+                        .price(expectedMedicament.getPrice())
+                        .build()
+        );
 
         Mockito.verify(medicamentDao, Mockito.times(1))
                 .existByName("Медикамент T");
@@ -280,10 +319,14 @@ public class MedicamentEjbImplTest {
         );
     }
 
-    @Test
-    public void updateCorrectedValuesThatInStock() throws CrudOperationException {
+    @Test(expected = CrudOperationException.class)
+    /**
+     * Обновление медикамента, данные корректные. Медикамент с новым именем есть в БД.
+     */
+    public void updateCorrectedValuesThatInStock() {
 
-        Mockito.when(medicamentDao.existByName("Медикамент T")).thenReturn(true);
+        Mockito.when(medicamentDao.existByName("Медикамент T"))
+                .thenReturn(true);
 
         MedicamentViewModel expectedMedicament = MedicamentViewModel.builder()
                 .id(100L)
@@ -294,7 +337,16 @@ public class MedicamentEjbImplTest {
                 .instruction("Инструкция T")
                 .build();
 
-        medicamentEjbRemote.update(expectedMedicament);
+        medicamentEjbRemote.addOrUpdate(
+                MedicamentBindingModel.builder()
+                        .id(expectedMedicament.getId())
+                        .name(expectedMedicament.getName())
+                        .description(expectedMedicament.getDescription())
+                        .contraindications(expectedMedicament.getContraindications())
+                        .instruction(expectedMedicament.getInstruction())
+                        .price(expectedMedicament.getPrice())
+                        .build()
+        );
 
         Mockito.verify(medicamentDao, Mockito.times(1))
                 .existByName("Медикамент T");
@@ -304,60 +356,51 @@ public class MedicamentEjbImplTest {
     }
 
     @Test(expected = CrudOperationException.class)
-    public void updateIncorrectedValuesWithNotNullNameOthresNull() throws CrudOperationException {
+    /**
+     * Обновление медикамента с null полями, кроме name.
+     */
+    public void updateIncorrectedValuesWithNotNullNameOthresNull() {
 
-        Mockito.doThrow(new Exception())
-                .when(medicamentDao)
-                .update(Mockito.anyObject());
-
-        MedicamentViewModel expectedMedicament = MedicamentViewModel.builder()
-                .id(null)
-                .name("Name")
-                .price(null)
-                .contraindications(null)
-                .description(null)
-                .instruction(null)
-                .build();
-
-        medicamentEjbRemote.update(expectedMedicament);
-
-        Mockito.verify(medicamentDao, Mockito.times(1))
-                .existByName(null);
-
+        medicamentEjbRemote.addOrUpdate(
+                MedicamentBindingModel.builder()
+                        .id(100L)
+                        .name("Name")
+                        .description(null)
+                        .contraindications(null)
+                        .instruction(null)
+                        .price(null)
+                        .build()
+        );
 
         Mockito.verify(medicamentDao, Mockito.times(1))
-                .update(Mockito.anyObject());
-
-        ArgumentCaptor<Medicament> medicamentArgumentCaptor = ArgumentCaptor.forClass(Medicament.class);
-        Mockito.verify(medicamentDao).save(medicamentArgumentCaptor.capture());
-        Medicament actualMedicament = medicamentArgumentCaptor.getValue();
-
-        Assert.assertEquals(expectedMedicament, actualMedicament);
-    }
-
-    @Test(expected = CrudOperationException.class)
-    public void updateIncorrectedValuesWithValues() throws CrudOperationException {
-        MedicamentViewModel expectedMedicament = MedicamentViewModel.builder()
-                .id(null)
-                .name(null)
-                .price(null)
-                .contraindications(null)
-                .description(null)
-                .instruction(null)
-                .build();
-
-        medicamentEjbRemote.update(expectedMedicament);
-
-        Mockito.verify(medicamentDao, Mockito.times(1))
-                .existByName(null);
+                .existByName("Name");
 
         Mockito.verify(medicamentDao, Mockito.never())
                 .update(Mockito.anyObject());
     }
 
     @Test(expected = CrudOperationException.class)
-    public void updateNullValue() throws CrudOperationException {
-        medicamentEjbRemote.update(null);
+    public void updateIncorrectedValuesWithValues() {
+
+        medicamentEjbRemote.addOrUpdate(
+                MedicamentBindingModel.builder()
+                        .id(100L)
+                        .name(null)
+                        .description(null)
+                        .contraindications(null)
+                        .instruction(null)
+                        .price(null)
+                        .build()
+        );
+
+        Mockito.verify(medicamentDao, Mockito.never())
+                .update(Mockito.anyObject());
+    }
+
+    @Test(expected = CrudOperationException.class)
+    public void updateOrCreateNullValue() {
+
+        medicamentEjbRemote.addOrUpdate(null);
 
         Mockito.verify(medicamentDao, Mockito.never())
                 .update(Mockito.anyObject());
@@ -365,11 +408,14 @@ public class MedicamentEjbImplTest {
 
     @Test
     /**
-     * Проверка на то, что ID передастся в метод deleteById
-     * и не возникнет никаких исключений.
+     * Проверка на корректное удаление медикамента с id, запись для которого
+     * существует в БД.
      */
-    public void deleteExitingMedicament() throws CrudOperationException {
+    public void deleteExitingMedicament() {
         Long idExistMedicament = 15L;
+
+        Mockito.when(medicamentDao.existsById(idExistMedicament))
+                .thenReturn(true);
 
         medicamentEjbRemote.delete(idExistMedicament);
 
@@ -388,11 +434,13 @@ public class MedicamentEjbImplTest {
 
     @Test(expected = CrudOperationException.class)
     /**
-     * Проверка на то, что ID передастся в метод deleteById
-     * и возникнет исключение CrudOperationException.
+     * Попытка удалить несуществующий медикамент.
      */
-    public void deleteNotExitingMedicament() throws CrudOperationException {
+    public void deleteNotExitingMedicament() {
         Long idNotExistMedicament = 100L;
+
+        Mockito.when(medicamentDao.existsById(idNotExistMedicament))
+                .thenReturn(false);
 
         medicamentEjbRemote.delete(idNotExistMedicament);
 
