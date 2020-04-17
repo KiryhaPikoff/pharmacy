@@ -21,7 +21,7 @@ public class MedicamentMedicalServiceMapperImpl implements MedicamentMedicalServ
     public MedicamentMedicalService toEntity(MedicamentMedicalServiceViewModel medicamentMedicalServiceViewModel) {
         MedicamentMedicalService medicamentMedicalService = null;
         if (Objects.nonNull(medicamentMedicalServiceViewModel)) {
-            medicamentMedicalService = MedicamentMedicalService.builder()
+            medicamentMedicalService = new MedicamentMedicalService.Builder()
                     .medicament(
                             medicamentMapper.toEntity(
                                     medicamentMedicalServiceViewModel.getMedicament()

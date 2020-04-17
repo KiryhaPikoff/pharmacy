@@ -21,7 +21,7 @@ public class MedicalServiceMapperImpl implements MedicalServiceMapper {
     public MedicalService toEntity(MedicalServiceViewModel medicalServiceViewModel) {
         MedicalService medicalService = null;
         if (Objects.nonNull(medicalServiceViewModel)) {
-            medicalService = MedicalService.builder()
+            medicalService = new MedicalService.Builder()
                     .medicamentMedicalServices(
                             Objects.nonNull(medicalServiceViewModel.getMedicamentMedicalServices()) ?
                                     medicalServiceViewModel.getMedicamentMedicalServices().stream()
@@ -29,7 +29,7 @@ public class MedicalServiceMapperImpl implements MedicalServiceMapper {
                                             .collect(Collectors.toList())
                                     : null
                     )
-                    .sumPrice(medicalServiceViewModel.getSumPrice())
+                   //TODO .sumPrice(medicalServiceViewModel.getSumPrice())
                     .build();
             medicalService.setId(medicalServiceViewModel.getId());
         }

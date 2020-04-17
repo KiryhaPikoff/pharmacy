@@ -289,13 +289,13 @@ public class MedicalServiceEjbImplTest {
         List<MedicalService> medicalServices = new LinkedList<>();
         List<MedicamentMedicalService> medicamentMedicalServices = this.initMedicamentMedicalServices();
 
-        MedicalService medicalService_0 = MedicalService.builder()
+        MedicalService medicalService_0 = new MedicalService.Builder()
                 .medicamentMedicalServices(medicamentMedicalServices.subList(0, 2))
                 .build();
         medicalService_0.setId(0L);
         medicalServices.add(medicalService_0);
 
-        MedicalService medicalService_1 = MedicalService.builder()
+        MedicalService medicalService_1 = new MedicalService.Builder()
                 .medicamentMedicalServices(medicamentMedicalServices.subList(1, 2))
                 .build();
         medicalService_1.setId(1L);
@@ -314,7 +314,7 @@ public class MedicalServiceEjbImplTest {
         List<MedicamentMedicalService> medicamentMedicalServices = new LinkedList<>();
         List<Medicament> medicaments = this.initMedicaments();
 
-        MedicamentMedicalService medicamentMedicalService_0 = MedicamentMedicalService.builder()
+        MedicamentMedicalService medicamentMedicalService_0 = new MedicamentMedicalService.Builder()
                 .medicament(medicaments.get(0))
                 .count(5)
                 .price(medicaments.get(0).getPrice())
@@ -322,7 +322,7 @@ public class MedicalServiceEjbImplTest {
         medicamentMedicalService_0.setId(0L);
         medicamentMedicalServices.add(medicamentMedicalService_0);
 
-        MedicamentMedicalService medicamentMedicalService_1 = MedicamentMedicalService.builder()
+        MedicamentMedicalService medicamentMedicalService_1 = new MedicamentMedicalService.Builder()
                 .medicament(medicaments.get(1))
                 .count(10)
                 .price(medicaments.get(1).getPrice())
@@ -330,7 +330,7 @@ public class MedicalServiceEjbImplTest {
         medicamentMedicalService_1.setId(1L);
         medicamentMedicalServices.add(medicamentMedicalService_1);
 
-        MedicamentMedicalService medicamentMedicalService_2 = MedicamentMedicalService.builder()
+        MedicamentMedicalService medicamentMedicalService_2 = new MedicamentMedicalService.Builder()
                 .medicament(medicaments.get(2))
                 .count(10)
                 .price(medicaments.get(2).getPrice())
@@ -345,19 +345,31 @@ public class MedicalServiceEjbImplTest {
     public List<Medicament> initMedicaments() {
         List<Medicament> medicaments = new LinkedList<>();
 
-        Medicament medicament_0 = Medicament.builder().name("Нулевой медикамент").price(new BigDecimal(15L)).build();
+        Medicament medicament_0 = new Medicament.Builder()
+                .name("Нулевой медикамент")
+                .price(new BigDecimal(15L))
+                .build();
         medicament_0.setId(0L);
         medicaments.add(medicament_0);
 
-        Medicament medicament_1 = Medicament.builder().name("Первый медикамент").price(new BigDecimal(15L)).build();
+        Medicament medicament_1 = new Medicament.Builder()
+                .name("Первый медикамент")
+                .price(new BigDecimal(15L))
+                .build();
         medicament_1.setId(1L);
         medicaments.add(medicament_1);
 
-        Medicament medicament_2 = Medicament.builder().name("Второй медикамент").price(new BigDecimal(15L)).build();
+        Medicament medicament_2 = new Medicament.Builder()
+                .name("Второй медикамент")
+                .price(new BigDecimal(15L))
+                .build();
         medicament_2.setId(2L);
         medicaments.add(medicament_2);
 
-        Medicament medicament_3 = Medicament.builder().name("Третий медикамент").price(new BigDecimal(15L)).build();
+        Medicament medicament_3 = new Medicament.Builder()
+                .name("Третий медикамент")
+                .price(new BigDecimal(15L))
+                .build();
         medicament_3.setId(3L);
         medicaments.add(medicament_3);
 

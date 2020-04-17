@@ -10,11 +10,12 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
-@Builder
 @Getter
 @Setter
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = false)
+@NoArgsConstructor
+@AllArgsConstructor
 /** Медикамент. */
 public class Medicament extends AbstractEntity<Long> {
 
@@ -41,5 +42,47 @@ public class Medicament extends AbstractEntity<Long> {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "medicament_seq")
     public Long getId() {
         return super.getId();
+    }
+
+    public static class Builder {
+        private Medicament newMedicament;
+
+        public Builder() {
+            newMedicament = new Medicament();
+        }
+
+        public Builder id(Long id) {
+            newMedicament.setId(id);
+            return this;
+        }
+
+        public Builder name(String name) {
+            newMedicament.setName(name);
+            return this;
+        }
+
+        public Builder description(String description) {
+            newMedicament.setDescription(description);
+            return this;
+        }
+
+        public Builder contraindications(String contraindications) {
+            newMedicament.setContraindications(contraindications);
+            return this;
+        }
+
+        public Builder instruction(String instruction) {
+            newMedicament.setInstruction(instruction);
+            return this;
+        }
+
+        public Builder price(BigDecimal price) {
+            newMedicament.setPrice(price);
+            return this;
+        }
+
+        public Medicament build() {
+            return newMedicament;
+        }
     }
 }

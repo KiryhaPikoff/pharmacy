@@ -94,7 +94,7 @@ public class MedicamentEjbImpl implements MedicamentEjbRemote {
      */
     private void add(MedicamentBindingModel medicamentBindingModel) {
         this.medicamentDao.save(
-                Medicament.builder()
+                new Medicament.Builder()
                         .name(medicamentBindingModel.getName())
                         .description(medicamentBindingModel.getDescription())
                         .instruction(medicamentBindingModel.getInstruction())
@@ -109,7 +109,7 @@ public class MedicamentEjbImpl implements MedicamentEjbRemote {
      * @param medicamentBindingModel
      */
     private void update(MedicamentBindingModel medicamentBindingModel) {
-        Medicament updateMedicament = Medicament.builder()
+        Medicament updateMedicament = new Medicament.Builder()
                 .name(medicamentBindingModel.getName())
                 .description(medicamentBindingModel.getDescription())
                 .instruction(medicamentBindingModel.getInstruction())

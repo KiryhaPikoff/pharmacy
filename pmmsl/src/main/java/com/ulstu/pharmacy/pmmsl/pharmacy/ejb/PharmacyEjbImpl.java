@@ -64,7 +64,7 @@ public class PharmacyEjbImpl implements PharmacyEjbRemote {
         } else {
             String name = pharmacyBindingModel.getName();
             pharmacyDao.save(
-                    Pharmacy.builder()
+                    new Pharmacy.Builder()
                             .name(Objects.nonNull(name) ? name : "default" ) //TODO вынести дефолтное имя
                             .build()
             );

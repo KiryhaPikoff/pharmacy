@@ -241,13 +241,13 @@ public class PharmacyEjbImplTest {
 
         List<PharmacyMedicament> expectedForSavingPharmacyMedicaments = new LinkedList<>();
         expectedForSavingPharmacyMedicaments.add(
-                PharmacyMedicament.builder().pharmacy(pharmacys.get(0)).medicament(medicaments.get(1)).count(1).build()
+                new PharmacyMedicament.Builder().pharmacy(pharmacys.get(0)).medicament(medicaments.get(1)).count(1).build()
         );
         expectedForSavingPharmacyMedicaments.add(
-                PharmacyMedicament.builder().pharmacy(pharmacys.get(0)).medicament(medicaments.get(3)).count(0).build()
+                new PharmacyMedicament.Builder().pharmacy(pharmacys.get(0)).medicament(medicaments.get(3)).count(0).build()
         );
         expectedForSavingPharmacyMedicaments.add(
-                PharmacyMedicament.builder().pharmacy(pharmacys.get(2)).medicament(medicaments.get(3)).count(1).build()
+                new PharmacyMedicament.Builder().pharmacy(pharmacys.get(2)).medicament(medicaments.get(3)).count(1).build()
         );
 
         List<MedicamentCountBindingModel> actual = savedPharmacyMedicaments.stream()
@@ -352,11 +352,11 @@ public class PharmacyEjbImplTest {
         List<Medicament> medicaments = this.initMedicaments();
         List<PharmacyMedicament> pharmacyMedicaments = new LinkedList<>();
 
-        pharmacyMedicaments.add(PharmacyMedicament.builder().pharmacy(pharmacys.get(0)).medicament(medicaments.get(0)).count(5).build());
-        pharmacyMedicaments.add(PharmacyMedicament.builder().pharmacy(pharmacys.get(0)).medicament(medicaments.get(1)).count(2).build());
-        pharmacyMedicaments.add(PharmacyMedicament.builder().pharmacy(pharmacys.get(0)).medicament(medicaments.get(3)).count(7).build());
-        pharmacyMedicaments.add(PharmacyMedicament.builder().pharmacy(pharmacys.get(2)).medicament(medicaments.get(1)).count(10).build());
-        pharmacyMedicaments.add(PharmacyMedicament.builder().pharmacy(pharmacys.get(2)).medicament(medicaments.get(3)).count(2).build());
+        pharmacyMedicaments.add(new PharmacyMedicament.Builder().pharmacy(pharmacys.get(0)).medicament(medicaments.get(0)).count(5).build());
+        pharmacyMedicaments.add(new PharmacyMedicament.Builder().pharmacy(pharmacys.get(0)).medicament(medicaments.get(1)).count(2).build());
+        pharmacyMedicaments.add(new PharmacyMedicament.Builder().pharmacy(pharmacys.get(0)).medicament(medicaments.get(3)).count(7).build());
+        pharmacyMedicaments.add(new PharmacyMedicament.Builder().pharmacy(pharmacys.get(2)).medicament(medicaments.get(1)).count(10).build());
+        pharmacyMedicaments.add(new PharmacyMedicament.Builder().pharmacy(pharmacys.get(2)).medicament(medicaments.get(3)).count(2).build());
 
         return pharmacyMedicaments;
     }
@@ -364,9 +364,9 @@ public class PharmacyEjbImplTest {
     @Ignore
     public List<Pharmacy> initPharmacys() {
         List<Pharmacy> pharmacys = new LinkedList<>();
-        pharmacys.add(Pharmacy.builder().name("Нулевая апткека").build());
-        pharmacys.add(Pharmacy.builder().name("Первая апткека").build());
-        pharmacys.add(Pharmacy.builder().name("Вторая апткека").build());
+        pharmacys.add(new Pharmacy.Builder().name("Нулевая апткека").build());
+        pharmacys.add(new Pharmacy.Builder().name("Первая апткека").build());
+        pharmacys.add(new Pharmacy.Builder().name("Вторая апткека").build());
         return pharmacys;
     }
 
@@ -374,19 +374,19 @@ public class PharmacyEjbImplTest {
     public List<Medicament> initMedicaments() {
         List<Medicament> medicaments = new LinkedList<>();
 
-        Medicament medicament_0 = Medicament.builder().name("Нулевой медикамент").build();
+        Medicament medicament_0 = new Medicament.Builder().name("Нулевой медикамент").build();
         medicament_0.setId(0L);
         medicaments.add(medicament_0);
 
-        Medicament medicament_1 = Medicament.builder().name("Первый медикамент").build();
+        Medicament medicament_1 = new Medicament.Builder().name("Первый медикамент").build();
         medicament_1.setId(1L);
         medicaments.add(medicament_1);
 
-        Medicament medicament_2 = Medicament.builder().name("Второй медикамент").build();
+        Medicament medicament_2 = new Medicament.Builder().name("Второй медикамент").build();
         medicament_2.setId(2L);
         medicaments.add(medicament_2);
 
-        Medicament medicament_3 = Medicament.builder().name("Третий медикамент").build();
+        Medicament medicament_3 = new Medicament.Builder().name("Третий медикамент").build();
         medicament_3.setId(3L);
         medicaments.add(medicament_3);
 
