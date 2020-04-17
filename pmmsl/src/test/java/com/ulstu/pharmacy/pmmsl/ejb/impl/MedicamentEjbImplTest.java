@@ -134,7 +134,7 @@ public class MedicamentEjbImplTest {
      * Добавление корректной записи о медикаменте. В случае, если
      * медикамента с таким названием нет в базе.
      */
-    public void createCorrectedValuesThatNotInStock() throws CrudOperationException {
+    public void createCorrectedValuesThatNotInStock() {
 
         Mockito.when(medicamentDao.existByName(Mockito.anyString()))
                 .thenReturn(false);
@@ -175,7 +175,7 @@ public class MedicamentEjbImplTest {
      * Добавление корректной записи о медикаменте. В случае, если
      * медикамент с таким названием есть в базе.
      */
-    public void createMedicametnThatNameExist() throws CrudOperationException {
+    public void createMedicametnThatNameExist() {
 
         Mockito.when(medicamentDao.existByName(Mockito.anyString()))
                 .thenReturn(true);
@@ -211,7 +211,7 @@ public class MedicamentEjbImplTest {
      * Предполагается, что метод save не вызовется, а
      * выкенет исключение CrudOperationException.
      */
-    public void createIncorrectedValuesOthersArgsNull() throws CrudOperationException {
+    public void createIncorrectedValuesOthersArgsNull() {
 
         Mockito.when(medicamentDao.existByName(Mockito.anyString()))
                 .thenReturn(false);
@@ -247,7 +247,7 @@ public class MedicamentEjbImplTest {
      * Предполагается, что вызовется метод проверки на существование
      * в базе медикамента с именем null и возникнет исключение.
      */
-    public void createIncorrectedValuesNameNull() throws CrudOperationException {
+    public void createIncorrectedValuesNameNull() {
 
         Mockito.when(medicamentDao.existByName(Mockito.anyString()))
                 .thenReturn(false);
@@ -278,7 +278,7 @@ public class MedicamentEjbImplTest {
     /**
      * Обновление медикамента, данные корректные. Медикамента с новым именем нет в БД.
      */
-    public void updateCorrectedValuesThatNotInStock() throws CrudOperationException {
+    public void updateCorrectedValuesThatNotInStock() {
 
         Mockito.when(medicamentDao.existByName("Медикамент T"))
                 .thenReturn(false);
@@ -323,7 +323,7 @@ public class MedicamentEjbImplTest {
     /**
      * Обновление медикамента, данные корректные. Медикамент с новым именем есть в БД.
      */
-    public void updateCorrectedValuesThatInStock() throws CrudOperationException {
+    public void updateCorrectedValuesThatInStock() {
 
         Mockito.when(medicamentDao.existByName("Медикамент T"))
                 .thenReturn(true);
@@ -359,7 +359,7 @@ public class MedicamentEjbImplTest {
     /**
      * Обновление медикамента с null полями, кроме name.
      */
-    public void updateIncorrectedValuesWithNotNullNameOthresNull() throws CrudOperationException {
+    public void updateIncorrectedValuesWithNotNullNameOthresNull() {
 
         medicamentEjbRemote.addOrUpdate(
                 MedicamentBindingModel.builder()
@@ -380,7 +380,7 @@ public class MedicamentEjbImplTest {
     }
 
     @Test(expected = CrudOperationException.class)
-    public void updateIncorrectedValuesWithValues() throws CrudOperationException {
+    public void updateIncorrectedValuesWithValues() {
 
         medicamentEjbRemote.addOrUpdate(
                 MedicamentBindingModel.builder()
@@ -398,7 +398,7 @@ public class MedicamentEjbImplTest {
     }
 
     @Test(expected = CrudOperationException.class)
-    public void updateOrCreateNullValue() throws CrudOperationException {
+    public void updateOrCreateNullValue() {
 
         medicamentEjbRemote.addOrUpdate(null);
 
@@ -411,7 +411,7 @@ public class MedicamentEjbImplTest {
      * Проверка на корректное удаление медикамента с id, запись для которого
      * существует в БД.
      */
-    public void deleteExitingMedicament() throws CrudOperationException {
+    public void deleteExitingMedicament() {
         Long idExistMedicament = 15L;
 
         Mockito.when(medicamentDao.existsById(idExistMedicament))
@@ -436,7 +436,7 @@ public class MedicamentEjbImplTest {
     /**
      * Попытка удалить несуществующий медикамент.
      */
-    public void deleteNotExitingMedicament() throws CrudOperationException {
+    public void deleteNotExitingMedicament() {
         Long idNotExistMedicament = 100L;
 
         Mockito.when(medicamentDao.existsById(idNotExistMedicament))

@@ -54,7 +54,10 @@ public class MedicalServiceEjbImpl implements MedicalServiceEjbRemote {
         StringBuilder errors = new StringBuilder();
         errors.append(Objects.isNull(fromDate) ? "DateFrom is null; "           : "");
         errors.append(Objects.isNull(toDate)   ? "DateTo is null; "             : "");
-        errors.append(fromDate.after(toDate)   ? "DateFrom is after DateTo; "   : "");
+        if(Objects.nonNull(fromDate) && Objects.nonNull(toDate)) {
+            errors.append(fromDate.after(toDate) ? "DateFrom is after DateTo; " : "");
+        }
+
         if(!errors.toString().isBlank()) {
             throw new CrudOperationException(errors.toString());
         }
@@ -84,6 +87,18 @@ public class MedicalServiceEjbImpl implements MedicalServiceEjbRemote {
         }
 
         MedicalService discountedMedicalService = this.medicalServiceDao.findById(id).get();
+
+        discountedMedicalService.getMedicamentMedicalServices()
+                .forEach(medicamentMedicalService -> {
+                        MedicamentCountBindingModel model = MedicamentCountBindingModel.builder()
+                                .medicamentId(medicamentMedicalService.getMedicament().getId())
+                                .count(medicamentMedicalService.getCount())
+                                .build();
+                        errors.append(
+                                !this.pharmacyEjbRemote.isMedicamentInStocks(model) ?
+                                        model + " is not in stock; " : ""
+                        );
+        });
 
         pharmacyEjbRemote.discountMedicaments(
                 discountedMedicalService.getMedicamentMedicalServices()
@@ -116,13 +131,22 @@ public class MedicalServiceEjbImpl implements MedicalServiceEjbRemote {
         if (Objects.isNull(medicamentCountBindingModels)) {
             errors.append("Set of MedicamentCountBindingModel is null; ");
         } else {
-            medicamentCountBindingModels.stream()
-                    .filter(medicamentCountBindingModel ->
-                            !this.pharmacyEjbRemote.isMedicamentInStocks(medicamentCountBindingModel)
-                    )
-                    .forEach(medicamentCountBindingModel -> {
-                        errors.append(medicamentCountBindingModel).append(" is not in stock; ");
-                    });
+            medicamentCountBindingModels.forEach(medicamentCountBindingModel -> {
+                errors.append(
+                    !this.pharmacyEjbRemote.isMedicamentInStocks(medicamentCountBindingModel) ?
+                            medicamentCountBindingModel + " is not in stock; " : ""
+                );
+                errors.append(
+                    Objects.isNull(medicamentCountBindingModel.getMedicamentId()) ? "MedicamentId is null; " : ""
+                );
+                errors.append(
+                    Objects.isNull(medicamentCountBindingModel.getCount()) ? "Count is null; " : ""
+                );
+            });
+        }
+
+        if (!errors.toString().isBlank()) {
+            throw new CrudOperationException(errors.toString());
         }
 
         /* Инициализация новой услуги. */

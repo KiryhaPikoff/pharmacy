@@ -41,14 +41,16 @@ public class MedicalService extends AbstractEntity<Long> {
      */
     public BigDecimal getSumPrice() {
         if (Objects.isNull(sumPrice)) {
-            sumPrice = medicamentMedicalServices.stream()
+            sumPrice = Objects.nonNull(medicamentMedicalServices) && !medicamentMedicalServices.isEmpty() ?
+                    medicamentMedicalServices.stream()
                     .map(medicamentMedicalService ->
                             new BigDecimal(
                                     medicamentMedicalService.getPrice().intValue() *
                                             medicamentMedicalService.getCount()
                             )
                     )
-                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+                    .reduce(BigDecimal.ZERO, BigDecimal::add)
+            : null;
         }
         return sumPrice;
     }
