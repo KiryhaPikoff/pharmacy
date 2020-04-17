@@ -11,7 +11,7 @@ public class PharmacyMapperImpl implements PharmacyMapper {
     public Pharmacy toEntity(PharmacyViewModel pharmacyViewModel) {
         Pharmacy pharmacy = null;
         if (Objects.nonNull(pharmacyViewModel)) {
-            pharmacy = Pharmacy.builder()
+            pharmacy = new Pharmacy.Builder()
                     .name(pharmacyViewModel.getName())
                     .build();
             pharmacy.setId(pharmacyViewModel.getId());

@@ -1,6 +1,7 @@
 package com.ulstu.pharmacy.pmmsl.medservice.entity;
 
 import com.ulstu.pharmacy.pmmsl.common.entity.AbstractEntity;
+import com.ulstu.pharmacy.pmmsl.medicament.entity.Medicament;
 import lombok.*;
 
 import javax.persistence.*;
@@ -10,10 +11,11 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Builder
 @Getter
 @Setter
 @ToString(callSuper = true)
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 /** Медицинская услуга. */
 public class MedicalService extends AbstractEntity<Long> {
@@ -53,5 +55,32 @@ public class MedicalService extends AbstractEntity<Long> {
             : null;
         }
         return sumPrice;
+    }
+
+    public static class Builder {
+        private MedicalService newMedicalService;
+
+        public Builder() {
+            newMedicalService = new MedicalService();
+        }
+
+        public Builder id(Long id) {
+            newMedicalService.setId(id);
+            return this;
+        }
+
+        public Builder provisionDate(Timestamp provisionDate) {
+            newMedicalService.setProvisionDate(provisionDate);
+            return this;
+        }
+
+        public Builder medicamentMedicalServices(List<MedicamentMedicalService> medicamentMedicalServices) {
+            newMedicalService.setMedicamentMedicalServices(medicamentMedicalServices);
+            return this;
+        }
+
+        public MedicalService build() {
+            return newMedicalService;
+        }
     }
 }

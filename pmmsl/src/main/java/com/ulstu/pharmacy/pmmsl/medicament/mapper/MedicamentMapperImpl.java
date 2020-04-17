@@ -12,7 +12,7 @@ public class MedicamentMapperImpl implements MedicamentMapper {
     public Medicament toEntity(MedicamentViewModel medicamentViewModel) {
         Medicament medicament = null;
         if (Objects.nonNull(medicamentViewModel)) {
-            medicament = Medicament.builder()
+            medicament = new Medicament.Builder()
                     .name(medicamentViewModel.getName())
                     .contraindications(medicamentViewModel.getContraindications())
                     .description(medicamentViewModel.getDescription())

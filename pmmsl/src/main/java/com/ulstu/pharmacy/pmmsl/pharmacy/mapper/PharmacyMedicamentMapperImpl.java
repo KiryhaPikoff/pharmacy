@@ -20,7 +20,7 @@ public class PharmacyMedicamentMapperImpl implements PharmacyMedicamentMapper {
     public PharmacyMedicament toEntity(PharmacyMedicamentViewModel pharmacyMedicamentViewModel) {
         PharmacyMedicament pharmacyMedicament = null;
         if (Objects.nonNull(pharmacyMedicamentViewModel)) {
-            pharmacyMedicament = PharmacyMedicament.builder()
+            pharmacyMedicament = new PharmacyMedicament.Builder()
                     .medicament(
                             medicamentMapper.toEntity(
                                     pharmacyMedicamentViewModel.getMedicament()

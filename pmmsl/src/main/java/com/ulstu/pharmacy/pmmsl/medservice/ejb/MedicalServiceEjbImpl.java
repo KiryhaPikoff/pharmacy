@@ -150,7 +150,7 @@ public class MedicalServiceEjbImpl implements MedicalServiceEjbRemote {
         }
 
         /* Инициализация новой услуги. */
-        MedicalService newMedicalService = MedicalService.builder()
+        MedicalService newMedicalService = new MedicalService.Builder()
                 .medicamentMedicalServices(
                         this.formForNewMedicalService(medicamentCountBindingModels)
                 )
@@ -175,7 +175,7 @@ public class MedicalServiceEjbImpl implements MedicalServiceEjbRemote {
 
         /* Формирование списка медикаментов привязанных к услуге. */
         return modelsSet.stream()
-                .map(medicamentCountBindingModel -> MedicamentMedicalService.builder()
+                .map(medicamentCountBindingModel -> new MedicamentMedicalService.Builder()
                         .medicament(medicamentMap.get(medicamentCountBindingModel.getMedicamentId()))
                         .count(medicamentCountBindingModel.getCount())
                         .price(

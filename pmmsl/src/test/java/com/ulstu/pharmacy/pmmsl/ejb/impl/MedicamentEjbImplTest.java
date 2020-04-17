@@ -139,7 +139,7 @@ public class MedicamentEjbImplTest {
         Mockito.when(medicamentDao.existByName(Mockito.anyString()))
                 .thenReturn(false);
 
-        Medicament expectedMedicament = Medicament.builder()
+        Medicament expectedMedicament = new Medicament.Builder()
                 .name("Медикамент T")
                 .price(new BigDecimal(10))
                 .contraindications("Противопоказания T")
@@ -180,7 +180,7 @@ public class MedicamentEjbImplTest {
         Mockito.when(medicamentDao.existByName(Mockito.anyString()))
                 .thenReturn(true);
 
-        Medicament expectedMedicament = Medicament.builder()
+        Medicament expectedMedicament = new Medicament.Builder()
                 .name("Медикамент T")
                 .price(new BigDecimal(10))
                 .contraindications("Противопоказания T")
@@ -216,7 +216,7 @@ public class MedicamentEjbImplTest {
         Mockito.when(medicamentDao.existByName(Mockito.anyString()))
                 .thenReturn(false);
 
-        Medicament expectedMedicament = Medicament.builder()
+        Medicament expectedMedicament = new Medicament.Builder()
                 .name("Name")
                 .price(null)
                 .contraindications(null)
@@ -252,7 +252,7 @@ public class MedicamentEjbImplTest {
         Mockito.when(medicamentDao.existByName(Mockito.anyString()))
                 .thenReturn(false);
 
-        Medicament expectedMedicament = Medicament.builder()
+        Medicament expectedMedicament = new Medicament.Builder()
                 .name(null)
                 .price(null)
                 .contraindications(null)
@@ -461,7 +461,7 @@ public class MedicamentEjbImplTest {
     public List<Medicament> initMedicaments() {
         List<Medicament> medicaments = new LinkedList<>();
         medicaments.add(
-                Medicament.builder()
+                new Medicament.Builder()
                         .name("Медикамент 0")
                         .price(new BigDecimal(100))
                         .contraindications("Противопоказания 0")
@@ -470,7 +470,7 @@ public class MedicamentEjbImplTest {
                         .build()
         );
         medicaments.add(
-                Medicament.builder()
+                new Medicament.Builder()
                         .name("Медикамент 1")
                         .price(new BigDecimal(50))
                         .contraindications("Противопоказания 1")
@@ -479,7 +479,7 @@ public class MedicamentEjbImplTest {
                         .build()
         );
         medicaments.add(
-                Medicament.builder()
+                new Medicament.Builder()
                         .name("Медикамент 2")
                         .price(new BigDecimal(30))
                         .contraindications("Противопоказания 2")
@@ -488,7 +488,7 @@ public class MedicamentEjbImplTest {
                         .build()
         );
         medicaments.add(
-                Medicament.builder()
+                new Medicament.Builder()
                         .name("Медикамент 3")
                         .price(new BigDecimal(70))
                         .contraindications("Противопоказания 3")
