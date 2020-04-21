@@ -100,18 +100,6 @@ public class MedicalServiceEjbImpl implements MedicalServiceEjbLocal {
 
         MedicalService discountedMedicalService = this.medicalServiceDao.findById(id).get();
 
-        discountedMedicalService.getMedicamentMedicalServices()
-                .forEach(medicamentMedicalService -> {
-                        MedicamentCountBindingModel model = MedicamentCountBindingModel.builder()
-                                .medicamentId(medicamentMedicalService.getMedicament().getId())
-                                .count(medicamentMedicalService.getCount())
-                                .build();
-                        errors.append(
-                                !this.pharmacyEjbLocal.isMedicamentInStocks(model) ?
-                                        model + " is not in stock; " : ""
-                        );
-        });
-
         pharmacyEjbLocal.discountMedicaments(
                 discountedMedicalService.getMedicamentMedicalServices()
                         .stream()

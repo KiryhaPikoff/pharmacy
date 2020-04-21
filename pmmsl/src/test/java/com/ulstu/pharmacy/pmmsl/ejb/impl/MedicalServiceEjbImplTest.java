@@ -170,10 +170,9 @@ public class MedicalServiceEjbImplTest {
 
         Mockito.verify(medicalServiceDao).update(Mockito.anyObject());
 
-        var medicamentCountArgumentCaptor = ArgumentCaptor.forClass(MedicamentCountBindingModel.class);
-        Mockito.verify(pharmacyEjbLocal, Mockito.times(discountedMedicalService.getMedicamentMedicalServices().size()))
-                .isMedicamentInStocks(medicamentCountArgumentCaptor.capture());
-        var actualMedicamentsWithCount = medicamentCountArgumentCaptor.getAllValues();
+        var medicamentCountArgumentCaptor = ArgumentCaptor.forClass(Set.class);
+        Mockito.verify(pharmacyEjbLocal).discountMedicaments(medicamentCountArgumentCaptor.capture());
+        var actualMedicamentsWithCount = medicamentCountArgumentCaptor.getValue();
 
         var expectedMedicamentsWithCount = discountedMedicalService.getMedicamentMedicalServices()
                 .stream()
@@ -182,7 +181,7 @@ public class MedicalServiceEjbImplTest {
                         .count(medicamentMedicalService.getCount())
                         .build()
                 )
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
 
         Assert.assertEquals(
                 expectedMedicamentsWithCount,
