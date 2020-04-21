@@ -26,7 +26,7 @@ public class LiquibaseMigrationBean {
 
     private static final String CHANGE_LOG_FILE_NAME = "db/changelog/master-changelog.xml";
 
-    @Resource(lookup = "java:/jdbc/pmmsl")
+    @Resource(lookup = "java:/jdbc/pharmacy")
     private DataSource dataSource;
 
     @PostConstruct

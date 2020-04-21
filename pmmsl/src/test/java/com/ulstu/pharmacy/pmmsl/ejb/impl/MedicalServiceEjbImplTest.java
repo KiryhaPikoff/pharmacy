@@ -15,7 +15,7 @@ import com.ulstu.pharmacy.pmmsl.medservice.mapper.MedicamentMedicalServiceMapper
 import com.ulstu.pharmacy.pmmsl.medservice.view.MedicalServiceViewModel;
 import com.ulstu.pharmacy.pmmsl.pharmacy.binding.MedicamentCountBindingModel;
 import com.ulstu.pharmacy.pmmsl.pharmacy.ejb.PharmacyEjbImpl;
-import com.ulstu.pharmacy.pmmsl.pharmacy.ejb.PharmacyEjbRemote;
+import com.ulstu.pharmacy.pmmsl.pharmacy.ejb.PharmacyEjbLocal;
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 @RunWith(MockitoJUnitRunner.class)
 public class MedicalServiceEjbImplTest {
 
-    private final PharmacyEjbRemote pharmacyEjbRemote = Mockito.mock(PharmacyEjbImpl.class);
+    private final PharmacyEjbLocal pharmacyEjbLocal = Mockito.mock(PharmacyEjbImpl.class);
 
     private final MedicalServiceDao medicalServiceDao = Mockito.mock(MedicalServiceDaoImpl.class);
 
@@ -47,7 +47,7 @@ public class MedicalServiceEjbImplTest {
     private final MedicalServiceMapperImpl medicalServiceMapper = new MedicalServiceMapperImpl(medicamentMedicalServiceMapper);
 
     private final MedicalServiceEjbImpl medicalServiceEjbRemote = new MedicalServiceEjbImpl(
-            pharmacyEjbRemote,
+            pharmacyEjbLocal,
             medicalServiceDao,
             medicamentDao,
             medicalServiceMapper
@@ -154,7 +154,7 @@ public class MedicalServiceEjbImplTest {
     public void discountMedServiceWithMedicamentsInStock() {
         MedicalService discountedMedicalService = this.initMedicalServices().get(0);
 
-        Mockito.when(pharmacyEjbRemote.isMedicamentInStocks(Mockito.anyObject()))
+        Mockito.when(pharmacyEjbLocal.isMedicamentInStocks(Mockito.anyObject()))
                 .thenReturn(true);
 
         Mockito.when(medicalServiceDao.existsById(Mockito.anyLong()))
@@ -165,13 +165,13 @@ public class MedicalServiceEjbImplTest {
 
         medicalServiceEjbRemote.discount(discountedMedicalService.getId());
 
-        Mockito.verify(pharmacyEjbRemote, Mockito.times(1))
+        Mockito.verify(pharmacyEjbLocal, Mockito.times(1))
                 .discountMedicaments(Mockito.anyObject());
 
         Mockito.verify(medicalServiceDao).update(Mockito.anyObject());
 
         var medicamentCountArgumentCaptor = ArgumentCaptor.forClass(MedicamentCountBindingModel.class);
-        Mockito.verify(pharmacyEjbRemote, Mockito.times(discountedMedicalService.getMedicamentMedicalServices().size()))
+        Mockito.verify(pharmacyEjbLocal, Mockito.times(discountedMedicalService.getMedicamentMedicalServices().size()))
                 .isMedicamentInStocks(medicamentCountArgumentCaptor.capture());
         var actualMedicamentsWithCount = medicamentCountArgumentCaptor.getAllValues();
 
@@ -204,14 +204,14 @@ public class MedicalServiceEjbImplTest {
     public void discountMedServiceWithMedicamentsNotInStock() {
         MedicalService discountedMedicalService = this.initMedicalServices().get(0);
 
-        Mockito.when(pharmacyEjbRemote.isMedicamentInStocks(Mockito.anyObject()))
+        Mockito.when(pharmacyEjbLocal.isMedicamentInStocks(Mockito.anyObject()))
                 .thenReturn(false);
 
         medicalServiceEjbRemote.discount(discountedMedicalService.getId());
 
-        Mockito.verify(pharmacyEjbRemote, Mockito.times(discountedMedicalService.getMedicamentMedicalServices().size()))
+        Mockito.verify(pharmacyEjbLocal, Mockito.times(discountedMedicalService.getMedicamentMedicalServices().size()))
                 .isMedicamentInStocks(Mockito.anyObject());
-        Mockito.verify(pharmacyEjbRemote, Mockito.never())
+        Mockito.verify(pharmacyEjbLocal, Mockito.never())
                 .discountMedicaments(Mockito.anyObject());
     }
 
@@ -223,7 +223,7 @@ public class MedicalServiceEjbImplTest {
         MedicalService expectedCreatedMedicalService = this.initMedicalServices().get(0);
         expectedCreatedMedicalService.setId(null);
 
-        Mockito.when(pharmacyEjbRemote.isMedicamentInStocks(Mockito.anyObject()))
+        Mockito.when(pharmacyEjbLocal.isMedicamentInStocks(Mockito.anyObject()))
                 .thenReturn(true);
 
         /* Ставим null, так как до сохранения их нет ещё в БД. А в тестах уже проинициализированы id. */

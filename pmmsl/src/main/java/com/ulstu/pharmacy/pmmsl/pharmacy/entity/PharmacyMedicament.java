@@ -32,7 +32,6 @@ public class PharmacyMedicament extends AbstractEntity<Long> {
     @EqualsAndHashCode.Exclude
     private Integer count;
 
-    @Temporal(TemporalType.TIMESTAMP)
     private Timestamp receiptDate;
 
     @Override

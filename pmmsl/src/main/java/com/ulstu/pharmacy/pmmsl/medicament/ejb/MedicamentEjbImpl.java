@@ -6,19 +6,26 @@ import com.ulstu.pharmacy.pmmsl.medicament.dao.MedicamentDao;
 import com.ulstu.pharmacy.pmmsl.medicament.entity.Medicament;
 import com.ulstu.pharmacy.pmmsl.medicament.mapper.MedicamentMapper;
 import com.ulstu.pharmacy.pmmsl.medicament.view.MedicamentViewModel;
-import lombok.AllArgsConstructor;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-@AllArgsConstructor(onConstructor = @__({@Inject}))
-public class MedicamentEjbImpl implements MedicamentEjbRemote {
+@Stateless
+public class MedicamentEjbImpl implements MedicamentEjbLocal {
 
     private final MedicamentDao medicamentDao;
 
     private final MedicamentMapper medicamentMapper;
+
+    @Inject
+    public MedicamentEjbImpl(MedicamentDao medicamentDao,
+                             MedicamentMapper medicamentMapper) {
+        this.medicamentDao = medicamentDao;
+        this.medicamentMapper = medicamentMapper;
+    }
 
     /**
      * Метод получения медикамента по его id.

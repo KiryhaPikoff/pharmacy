@@ -4,11 +4,11 @@ package com.ulstu.pharmacy.pmmsl.medicament.ejb;
 import com.ulstu.pharmacy.pmmsl.medicament.binding.MedicamentBindingModel;
 import com.ulstu.pharmacy.pmmsl.medicament.view.MedicamentViewModel;
 
-import javax.ejb.Remote;
+import javax.ejb.Local;
 import java.util.List;
 
-@Remote
-public interface MedicamentEjbRemote {
+@Local
+public interface MedicamentEjbLocal {
 
     /**
      * Метод получения медикамента по его id.

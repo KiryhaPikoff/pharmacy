@@ -6,13 +6,13 @@ import com.ulstu.pharmacy.pmmsl.pharmacy.binding.MedicamentCountBindingModel;
 import com.ulstu.pharmacy.pmmsl.pharmacy.binding.PharmacyBindingModel;
 import com.ulstu.pharmacy.pmmsl.pharmacy.view.PharmacyViewModel;
 
-import javax.ejb.Remote;
+import javax.ejb.Local;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-@Remote
-public interface PharmacyEjbRemote {
+@Local
+public interface PharmacyEjbLocal {
 
     /**
      * Получение списка всех аптек.

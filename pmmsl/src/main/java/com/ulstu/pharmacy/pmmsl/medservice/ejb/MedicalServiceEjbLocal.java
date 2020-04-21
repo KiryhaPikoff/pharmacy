@@ -4,13 +4,13 @@ package com.ulstu.pharmacy.pmmsl.medservice.ejb;
 import com.ulstu.pharmacy.pmmsl.medservice.view.MedicalServiceViewModel;
 import com.ulstu.pharmacy.pmmsl.pharmacy.binding.MedicamentCountBindingModel;
 
-import javax.ejb.Remote;
+import javax.ejb.Local;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Set;
 
-@Remote
-public interface MedicalServiceEjbRemote {
+@Local
+public interface MedicalServiceEjbLocal {
 
     /**
      * Метод получения всех услуг.

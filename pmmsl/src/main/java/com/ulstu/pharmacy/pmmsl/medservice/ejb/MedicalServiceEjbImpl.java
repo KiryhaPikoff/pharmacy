@@ -1,7 +1,6 @@
 package com.ulstu.pharmacy.pmmsl.medservice.ejb;
 
 import com.ulstu.pharmacy.pmmsl.common.exception.CrudOperationException;
-import com.ulstu.pharmacy.pmmsl.common.exception.MedicamentDiscountException;
 import com.ulstu.pharmacy.pmmsl.medicament.dao.MedicamentDao;
 import com.ulstu.pharmacy.pmmsl.medicament.entity.Medicament;
 import com.ulstu.pharmacy.pmmsl.medservice.dao.MedicalServiceDao;
@@ -10,24 +9,35 @@ import com.ulstu.pharmacy.pmmsl.medservice.entity.MedicamentMedicalService;
 import com.ulstu.pharmacy.pmmsl.medservice.mapper.MedicalServiceMapper;
 import com.ulstu.pharmacy.pmmsl.medservice.view.MedicalServiceViewModel;
 import com.ulstu.pharmacy.pmmsl.pharmacy.binding.MedicamentCountBindingModel;
-import com.ulstu.pharmacy.pmmsl.pharmacy.ejb.PharmacyEjbRemote;
-import lombok.AllArgsConstructor;
+import com.ulstu.pharmacy.pmmsl.pharmacy.ejb.PharmacyEjbLocal;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@AllArgsConstructor(onConstructor = @__({@Inject}))
-public class MedicalServiceEjbImpl implements MedicalServiceEjbRemote {
+@Stateless
+public class MedicalServiceEjbImpl implements MedicalServiceEjbLocal {
 
-    private final PharmacyEjbRemote pharmacyEjbRemote;
+    private final PharmacyEjbLocal pharmacyEjbLocal;
 
     private final MedicalServiceDao medicalServiceDao;
 
     private final MedicamentDao medicamentDao;
 
     private final MedicalServiceMapper medicalServiceMapper;
+
+    @Inject
+    public MedicalServiceEjbImpl(PharmacyEjbLocal pharmacyEjbLocal,
+                                 MedicalServiceDao medicalServiceDao,
+                                 MedicamentDao medicamentDao,
+                                 MedicalServiceMapper medicalServiceMapper) {
+        this.pharmacyEjbLocal = pharmacyEjbLocal;
+        this.medicalServiceDao = medicalServiceDao;
+        this.medicamentDao = medicamentDao;
+        this.medicalServiceMapper = medicalServiceMapper;
+    }
 
     /**
      * Метод получения всех услуг.
@@ -72,8 +82,6 @@ public class MedicalServiceEjbImpl implements MedicalServiceEjbRemote {
      * объявленные в этой услуге.
      *
      * @param id id списываемой услуги.
-     * @throws MedicamentDiscountException возникает, если
-     *                                     в аптеках не хватает медикаментов, указанных в услуге, в нужном количестве.
      */
     @Override
     public void discount(Long id) {
@@ -95,12 +103,12 @@ public class MedicalServiceEjbImpl implements MedicalServiceEjbRemote {
                                 .count(medicamentMedicalService.getCount())
                                 .build();
                         errors.append(
-                                !this.pharmacyEjbRemote.isMedicamentInStocks(model) ?
+                                !this.pharmacyEjbLocal.isMedicamentInStocks(model) ?
                                         model + " is not in stock; " : ""
                         );
         });
 
-        pharmacyEjbRemote.discountMedicaments(
+        pharmacyEjbLocal.discountMedicaments(
                 discountedMedicalService.getMedicamentMedicalServices()
                         .stream()
                         .map(medicamentMedicalService -> MedicamentCountBindingModel.builder()
@@ -133,7 +141,7 @@ public class MedicalServiceEjbImpl implements MedicalServiceEjbRemote {
         } else {
             medicamentCountBindingModels.forEach(medicamentCountBindingModel -> {
                 errors.append(
-                    !this.pharmacyEjbRemote.isMedicamentInStocks(medicamentCountBindingModel) ?
+                    !this.pharmacyEjbLocal.isMedicamentInStocks(medicamentCountBindingModel) ?
                             medicamentCountBindingModel + " is not in stock; " : ""
                 );
                 errors.append(

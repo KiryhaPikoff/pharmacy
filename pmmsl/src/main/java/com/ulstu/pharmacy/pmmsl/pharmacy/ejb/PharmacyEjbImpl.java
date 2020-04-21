@@ -15,8 +15,9 @@ import com.ulstu.pharmacy.pmmsl.pharmacy.entity.Pharmacy;
 import com.ulstu.pharmacy.pmmsl.pharmacy.entity.PharmacyMedicament;
 import com.ulstu.pharmacy.pmmsl.pharmacy.mapper.PharmacyMapper;
 import com.ulstu.pharmacy.pmmsl.pharmacy.view.PharmacyViewModel;
-import lombok.AllArgsConstructor;
 
+import javax.ejb.Stateless;
+import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.*;
@@ -25,8 +26,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@AllArgsConstructor(onConstructor = @__({@Inject}))
-public class PharmacyEjbImpl implements PharmacyEjbRemote {
+@Default
+@Stateless
+public class PharmacyEjbImpl implements PharmacyEjbLocal {
 
     private final PharmacyDao pharmacyDao;
 
@@ -37,6 +39,19 @@ public class PharmacyEjbImpl implements PharmacyEjbRemote {
     private final PharmacyMapper pharmacyMapper;
 
     private final MedicamentMapper medicamentMapper;
+
+    @Inject
+    public PharmacyEjbImpl(PharmacyDao pharmacyDao,
+                           PharmacyMedicamentDao pharmacyMedicamentDao,
+                           MedicamentDao medicamentDao,
+                           PharmacyMapper pharmacyMapper,
+                           MedicamentMapper medicamentMapper) {
+        this.pharmacyDao = pharmacyDao;
+        this.pharmacyMedicamentDao = pharmacyMedicamentDao;
+        this.medicamentDao = medicamentDao;
+        this.pharmacyMapper = pharmacyMapper;
+        this.medicamentMapper = medicamentMapper;
+    }
 
     /**
      * Получение списка всех аптек.
@@ -54,7 +69,6 @@ public class PharmacyEjbImpl implements PharmacyEjbRemote {
      * Если pharmacyName == null, будет дано название по умолчанию.
      *
      * @param pharmacyBindingModel
-     * @throws CrudOperationException если переданный аргумент null.
      */
     @Override
     @Transactional(Transactional.TxType.SUPPORTS)

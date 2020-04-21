@@ -1,7 +1,6 @@
 package com.ulstu.pharmacy.pmmsl.medservice.entity;
 
 import com.ulstu.pharmacy.pmmsl.common.entity.AbstractEntity;
-import com.ulstu.pharmacy.pmmsl.medicament.entity.Medicament;
 import lombok.*;
 
 import javax.persistence.*;
@@ -20,7 +19,6 @@ import java.util.Objects;
 /** Медицинская услуга. */
 public class MedicalService extends AbstractEntity<Long> {
 
-    @Temporal(TemporalType.TIMESTAMP)
     private Timestamp provisionDate;
 
     @OneToMany

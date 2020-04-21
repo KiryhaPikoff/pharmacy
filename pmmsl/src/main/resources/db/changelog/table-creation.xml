@@ -151,8 +151,8 @@
             <column name="count"                    type="integer" />
             <column name="receipt_date"             type="timestamp" />
         </createTable>
-        <addNotNullConstraint tableName="medicament_medical_service" columnName="count" />
-        <addNotNullConstraint tableName="medicament_medical_service" columnName="receipt_date" />
+        <addNotNullConstraint tableName="pharmacy_medicament" columnName="count" />
+        <addNotNullConstraint tableName="pharmacy_medicament" columnName="receipt_date" />
     </changeSet>
 
     <changeSet id="pharmacy_medicament_pk_constraint_creation" author="Pikoff">
