@@ -147,7 +147,7 @@ public class MedicamentEjbImplTest {
                 .instruction("Инструкция T")
                 .build();
 
-        medicamentEjbRemote.addOrUpdate(
+        medicamentEjbRemote.createOrUpdate(
                 MedicamentBindingModel.builder()
                 .name(expectedMedicament.getName())
                 .description(expectedMedicament.getDescription())
@@ -188,7 +188,7 @@ public class MedicamentEjbImplTest {
                 .instruction("Инструкция T")
                 .build();
 
-        medicamentEjbRemote.addOrUpdate(
+        medicamentEjbRemote.createOrUpdate(
                 MedicamentBindingModel.builder()
                         .name(expectedMedicament.getName())
                         .description(expectedMedicament.getDescription())
@@ -224,7 +224,7 @@ public class MedicamentEjbImplTest {
                 .instruction(null)
                 .build();
 
-        medicamentEjbRemote.addOrUpdate(
+        medicamentEjbRemote.createOrUpdate(
                 MedicamentBindingModel.builder()
                         .name(expectedMedicament.getName())
                         .description(expectedMedicament.getDescription())
@@ -260,7 +260,7 @@ public class MedicamentEjbImplTest {
                 .instruction(null)
                 .build();
 
-        medicamentEjbRemote.addOrUpdate(
+        medicamentEjbRemote.createOrUpdate(
                 MedicamentBindingModel.builder()
                         .name(expectedMedicament.getName())
                         .description(expectedMedicament.getDescription())
@@ -292,7 +292,7 @@ public class MedicamentEjbImplTest {
                 .instruction("Инструкция T")
                 .build();
 
-        medicamentEjbRemote.addOrUpdate(
+        medicamentEjbRemote.createOrUpdate(
                 MedicamentBindingModel.builder()
                         .id(expectedMedicament.getId())
                         .name(expectedMedicament.getName())
@@ -337,7 +337,7 @@ public class MedicamentEjbImplTest {
                 .instruction("Инструкция T")
                 .build();
 
-        medicamentEjbRemote.addOrUpdate(
+        medicamentEjbRemote.createOrUpdate(
                 MedicamentBindingModel.builder()
                         .id(expectedMedicament.getId())
                         .name(expectedMedicament.getName())
@@ -361,7 +361,7 @@ public class MedicamentEjbImplTest {
      */
     public void updateIncorrectedValuesWithNotNullNameOthresNull() {
 
-        medicamentEjbRemote.addOrUpdate(
+        medicamentEjbRemote.createOrUpdate(
                 MedicamentBindingModel.builder()
                         .id(100L)
                         .name("Name")
@@ -382,7 +382,7 @@ public class MedicamentEjbImplTest {
     @Test(expected = CrudOperationException.class)
     public void updateIncorrectedValuesWithValues() {
 
-        medicamentEjbRemote.addOrUpdate(
+        medicamentEjbRemote.createOrUpdate(
                 MedicamentBindingModel.builder()
                         .id(100L)
                         .name(null)
@@ -400,7 +400,7 @@ public class MedicamentEjbImplTest {
     @Test(expected = CrudOperationException.class)
     public void updateOrCreateNullValue() {
 
-        medicamentEjbRemote.addOrUpdate(null);
+        medicamentEjbRemote.createOrUpdate(null);
 
         Mockito.verify(medicamentDao, Mockito.never())
                 .update(Mockito.anyObject());

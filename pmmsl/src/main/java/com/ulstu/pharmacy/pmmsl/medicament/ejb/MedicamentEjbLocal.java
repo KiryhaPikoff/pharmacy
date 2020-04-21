@@ -25,7 +25,7 @@ public interface MedicamentEjbLocal {
      * обновления (id отличен от null) медикамента.
      * @param medicamentBindingModel
      */
-    void addOrUpdate(MedicamentBindingModel medicamentBindingModel);
+    void createOrUpdate(MedicamentBindingModel medicamentBindingModel);
 
     /**
      * Метод удаления медикамента по его id.

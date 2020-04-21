@@ -13,6 +13,7 @@ import com.ulstu.pharmacy.pmmsl.pharmacy.ejb.PharmacyEjbLocal;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -45,6 +46,7 @@ public class MedicalServiceEjbImpl implements MedicalServiceEjbLocal {
      * @return список всех услуг.
      */
     @Override
+    @Transactional(Transactional.TxType.SUPPORTS)
     public List<MedicalServiceViewModel> getAll() {
         return medicalServiceDao.getAll().stream()
                 .map(medicalServiceMapper::toViewModel)
@@ -59,6 +61,7 @@ public class MedicalServiceEjbImpl implements MedicalServiceEjbLocal {
      * @return список услуг за указанный период.
      */
     @Override
+    @Transactional(Transactional.TxType.SUPPORTS)
     public List<MedicalServiceViewModel> getFromDateToDate(Timestamp fromDate, Timestamp toDate) {
 
         StringBuilder errors = new StringBuilder();
@@ -84,6 +87,7 @@ public class MedicalServiceEjbImpl implements MedicalServiceEjbLocal {
      * @param id id списываемой услуги.
      */
     @Override
+    @Transactional(Transactional.TxType.MANDATORY)
     public void discount(Long id) {
 
         StringBuilder errors = new StringBuilder();
@@ -132,6 +136,7 @@ public class MedicalServiceEjbImpl implements MedicalServiceEjbLocal {
      * @param medicamentCountBindingModels множество медикаментов с количеством для формирования услуги.
      */
     @Override
+    @Transactional(Transactional.TxType.SUPPORTS)
     public void create(Set<MedicamentCountBindingModel> medicamentCountBindingModels) {
 
         StringBuilder errors = new StringBuilder();

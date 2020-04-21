@@ -9,6 +9,7 @@ import com.ulstu.pharmacy.pmmsl.medicament.view.MedicamentViewModel;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -33,6 +34,7 @@ public class MedicamentEjbImpl implements MedicamentEjbLocal {
      * @param id
      */
     @Override
+    @Transactional(Transactional.TxType.SUPPORTS)
     public MedicamentViewModel getById(Long id) {
         return medicamentDao.findById(id)
                 .map(medicamentMapper::toViewModel)
@@ -43,6 +45,7 @@ public class MedicamentEjbImpl implements MedicamentEjbLocal {
      * Метод получения списка всех медикаментов.
      */
     @Override
+    @Transactional(Transactional.TxType.SUPPORTS)
     public List<MedicamentViewModel> getAll() {
         return medicamentDao.getAll().stream()
                 .map(medicamentMapper::toViewModel)
@@ -56,7 +59,8 @@ public class MedicamentEjbImpl implements MedicamentEjbLocal {
      * @param medicamentBindingModel
      */
     @Override
-    public void addOrUpdate(MedicamentBindingModel medicamentBindingModel) {
+    @Transactional(Transactional.TxType.SUPPORTS)
+    public void createOrUpdate(MedicamentBindingModel medicamentBindingModel) {
         if(Objects.isNull(medicamentBindingModel)) {
             throw new CrudOperationException("MedicamentBindingModel is null!");
         }
@@ -82,6 +86,7 @@ public class MedicamentEjbImpl implements MedicamentEjbLocal {
      * @param id
      */
     @Override
+    @Transactional(Transactional.TxType.SUPPORTS)
     public void delete(Long id) {
 
         if(Objects.isNull(id)) {
