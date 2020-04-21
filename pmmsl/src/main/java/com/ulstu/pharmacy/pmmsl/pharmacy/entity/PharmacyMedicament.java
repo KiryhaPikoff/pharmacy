@@ -19,19 +19,21 @@ import java.util.List;
 /** Свзяь аптеки и медикамента. */
 public class PharmacyMedicament extends AbstractEntity<Long> {
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     private Medicament medicament;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     private Pharmacy pharmacy;
 
-    @OneToMany
+    @OneToMany(mappedBy = "medicalService")
     @EqualsAndHashCode.Exclude
     private List<MedicamentMedicalService> medicamentMedicalServices;
 
+    @Column(nullable = false)
     @EqualsAndHashCode.Exclude
     private Integer count;
 
+    @Column(nullable = false)
     private Timestamp receiptDate;
 
     @Override

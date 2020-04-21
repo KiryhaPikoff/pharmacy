@@ -16,9 +16,10 @@ import java.util.List;
 /** Аптека. */
 public class Pharmacy extends AbstractEntity<Long> {
 
+    @Column(nullable = false)
     private String name;
 
-    @OneToMany
+    @OneToMany(mappedBy = "pharmacy")
     private List<PharmacyMedicament> pharmacyMedicaments;
 
     @Override

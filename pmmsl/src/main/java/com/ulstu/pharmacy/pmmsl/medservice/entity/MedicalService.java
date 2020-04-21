@@ -19,9 +19,12 @@ import java.util.Objects;
 /** Медицинская услуга. */
 public class MedicalService extends AbstractEntity<Long> {
 
+    @Column(nullable = true)
     private Timestamp provisionDate;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER,
+            mappedBy = "medicalService")
     private List<MedicamentMedicalService> medicamentMedicalServices;
 
     @Transient

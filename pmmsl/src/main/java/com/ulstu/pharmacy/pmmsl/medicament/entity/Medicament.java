@@ -19,21 +19,26 @@ import java.util.List;
 /** Медикамент. */
 public class Medicament extends AbstractEntity<Long> {
 
+    @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
     private String description;
 
+    @Column(nullable = false)
     private String contraindications;
 
+    @Column(nullable = false)
     private String instruction;
 
+    @Column(nullable = false, scale = 2)
     private BigDecimal price;
 
-    @OneToMany
+    @OneToMany(mappedBy = "pharmacy")
     @EqualsAndHashCode.Exclude
     private List<PharmacyMedicament> pharmacyMedicaments;
 
-    @OneToMany
+    @OneToMany(mappedBy = "medicalService")
     @EqualsAndHashCode.Exclude
     private List<MedicamentMedicalService> medicamentMedicalServices;
 

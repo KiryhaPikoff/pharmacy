@@ -17,14 +17,16 @@ import java.math.BigDecimal;
 /** Связь медикамента и медицинской услуги. */
 public class MedicamentMedicalService extends AbstractEntity<Long> {
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     private Medicament medicament;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     private MedicalService medicalService;
 
+    @Column(nullable = false)
     private Integer count;
 
+    @Column(nullable = false, scale = 2)
     private BigDecimal price;
 
     @Override
