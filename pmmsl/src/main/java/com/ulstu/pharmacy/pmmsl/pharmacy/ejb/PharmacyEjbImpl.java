@@ -152,22 +152,54 @@ public class PharmacyEjbImpl implements PharmacyEjbLocal {
     @Transactional(value = Transactional.TxType.MANDATORY)
     public void discountMedicaments(Set<MedicamentCountBindingModel> medicamentsCountSet) {
 
-        ImmutableList<PharmacyMedicament> pharmacyMedicaments = ImmutableList.
-                <PharmacyMedicament>builder()
-                .addAll(this.pharmacyMedicamentDao.getAll())
-                .build();
-
         List<String> errors = this.validateDiscountArgs(medicamentsCountSet);
 
         if (!errors.isEmpty()) {
             throw new MedicamentDiscountException(String.join(" | ", errors));
         } else {
-            List<PharmacyMedicament> updatedPharmacyMedicaments = this.formDiscounted(
-                pharmacyMedicaments,
-                medicamentsCountSet
-            );
-            // сохраняем обновлённое состояние медикаментов в аптеке
-            updatedPharmacyMedicaments.forEach(pharmacyMedicamentDao::update);
+            this.applyDiscount(medicamentsCountSet);
+        }
+    }
+
+    /**
+     * Здесь сожержится логика списания и она применяется к переданному множеству медикаментов.
+     * @param medicamentsCountSet множество медикаментов с количеством для списания.
+     */
+    private void applyDiscount(Set<MedicamentCountBindingModel> medicamentsCountSet) {
+        List<PharmacyMedicament> pharmacyMedicaments = this.pharmacyMedicamentDao.getAll();
+        for (MedicamentCountBindingModel medicamentCount : medicamentsCountSet) {
+            List<PharmacyMedicament> medicamentsWithThatId = pharmacyMedicaments.stream()
+                    .filter(pharmacyMedicament ->
+                            pharmacyMedicament.getMedicament().getId()
+                                    .equals(medicamentCount.getMedicamentId())
+                    ).collect(Collectors.toList());
+            /* Сколько осталось списать. */
+            int restToDiscount = medicamentCount.getCount();
+            for (PharmacyMedicament pharmacyMedicament : medicamentsWithThatId) {
+                // Текущее количество медикамента на складе
+                int stockCount = pharmacyMedicament.getCount();
+                // Сколько можно списать?
+                int toDiscount = Math.min(stockCount, restToDiscount);
+                if(toDiscount > 0) {
+                    // Списываем
+                    pharmacyMedicament.setCount(stockCount - toDiscount);
+                    // Обновляем количество, которое осталось списать
+                    restToDiscount -= toDiscount;
+                    this.pharmacyMedicamentDao.update(pharmacyMedicament);
+                    // создание движения...
+                }
+                /* Если списали уже достаточно, то выходим из цикла. */
+                if(restToDiscount == 0) {
+                    break;
+                }
+            }
+            if(restToDiscount != 0) {
+                throw new MedicamentDiscountException(
+                        "There is not enough medicament with an id " + medicamentCount.getMedicamentId() +
+                                ". Required " + medicamentCount.getCount() +
+                                ", but there is only " + (medicamentCount.getCount() - restToDiscount)
+                );
+            }
         }
     }
 
@@ -226,68 +258,6 @@ public class PharmacyEjbImpl implements PharmacyEjbLocal {
                         .getMedicament()
                         .getId()
                         .equals(medicamentId))
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * Формирует список медикоментов в аптеках, которые подверглись изменению при спысывании
-     * с них переданного множества медикаментов.
-     * @param currentPharmacyState текущее состояние медикаментов в аптеках.
-     * @param medicamentsCountSet множество списываемых медикаметов.
-     * @return
-     */
-    private List<PharmacyMedicament> formDiscounted(ImmutableList<PharmacyMedicament> currentPharmacyState,
-                                                    Set<MedicamentCountBindingModel> medicamentsCountSet) {
-        /* Медикаменты в апеках, которые поменяли своё количество при списывании. */
-        ConcurrentLinkedQueue<PharmacyMedicament> updatedPharmacyMedicaments = new ConcurrentLinkedQueue<>();
-        medicamentsCountSet
-                .parallelStream()
-                .forEach(discMedicament -> {
-                    /* Логика списания применяется для каждого списываемого медикамета,
-                     * при этом формируя список медикаметов, которые изменили своё количество в аптеке. */
-                    updatedPharmacyMedicaments.addAll(
-                            this.applyDiscount(
-                                    currentPharmacyState,
-                                    MedicamentCountBindingModel
-                                            .builder()
-                                            .medicamentId(discMedicament.getMedicamentId())
-                                            .count(discMedicament.getCount())
-                                            .build()
-                            )
-                    );
-                });
-        return new LinkedList<>(updatedPharmacyMedicaments);
-    }
-
-    /**
-     * Списывает переданную модель медикамента с количеством с "копии" текущего состояния
-     * медикаментов атпе.
-     * @param currentPharmacyState текущее состояние медикаментов в аптеках.
-     * @param medicamentCount
-     * @return список изменённых медикаментов в аптеках.
-     */
-    private List<PharmacyMedicament> applyDiscount(ImmutableList<PharmacyMedicament> currentPharmacyState,
-                                                   MedicamentCountBindingModel medicamentCount) {
-        /* Остаток списания, число будет уменьшаться по мере списания медикаментов,
-        для отслеживания количества которое ещё необходимо списать */
-        AtomicInteger restCount = new AtomicInteger(medicamentCount.getCount());
-        List<PharmacyMedicament> medicamentsInStock = this.getByMedicamentId(
-                currentPharmacyState,
-                medicamentCount.getMedicamentId()
-        );
-        return medicamentsInStock.stream()
-                // пока мы не списали столько, сколько нам требуется
-                .takeWhile(pharmacyMedicament -> restCount.get() > 0)
-                .peek(pharmacyMedicament -> {
-                    // Текущее количество медикамента на складе
-                    int stockCount = pharmacyMedicament.getCount();
-                    // Сколько можно списать?
-                    int toDiscount = Math.min(stockCount, restCount.get());
-                    // Списываем
-                    pharmacyMedicament.setCount(stockCount - toDiscount);
-                    // Обновляем количество, которое осталось списать
-                    restCount.set(restCount.get() - toDiscount);
-                })
                 .collect(Collectors.toList());
     }
 }
