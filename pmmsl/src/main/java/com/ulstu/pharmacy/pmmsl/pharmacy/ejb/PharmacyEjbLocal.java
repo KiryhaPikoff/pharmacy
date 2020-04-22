@@ -46,5 +46,5 @@ public interface PharmacyEjbLocal {
      * Метод списания медикаментов с аптек.
      * @param medicamentCountBindingModels множество медикаментов с количеством для списывания.
      */
-    void discountMedicaments(Set<MedicamentCountBindingModel> medicamentCountBindingModels);
+    void writeOffMedicaments(Set<MedicamentCountBindingModel> medicamentCountBindingModels);
 }

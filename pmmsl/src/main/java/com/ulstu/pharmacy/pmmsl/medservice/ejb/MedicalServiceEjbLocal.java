@@ -34,7 +34,7 @@ public interface MedicalServiceEjbLocal {
      *
      * @param id id списываемой услуги.
      */
-    void discount(Long id);
+    void writeOff(Long id);
 
     /**
      * Метод создания услуги. Услуга формируется на основе списка медикамнтов, где каждому из них

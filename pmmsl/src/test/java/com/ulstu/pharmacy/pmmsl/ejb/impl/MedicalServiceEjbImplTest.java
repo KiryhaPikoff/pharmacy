@@ -1,6 +1,7 @@
 package com.ulstu.pharmacy.pmmsl.ejb.impl;
 
 import com.ulstu.pharmacy.pmmsl.common.exception.CrudOperationException;
+import com.ulstu.pharmacy.pmmsl.common.exception.MedicamentWriteOffException;
 import com.ulstu.pharmacy.pmmsl.medicament.binding.MedicamentCountBindingModel;
 import com.ulstu.pharmacy.pmmsl.medicament.dao.MedicamentDaoImpl;
 import com.ulstu.pharmacy.pmmsl.medicament.entity.Medicament;
@@ -145,8 +146,11 @@ public class MedicalServiceEjbImplTest {
      * Списание услуги, медикаментов которой хватает на складах, и
      * переданные значения корректны.
      */
-    public void discountMedServiceWithMedicamentsInStock() {
-        MedicalService discountedMedicalService = this.initMedicalServices().get(0);
+    public void writeOffMedServiceWithMedicamentsInStock() {
+        MedicalService writeOffedMedicalService = this.initMedicalServices().get(0);
+
+        Mockito.when(medicalServiceDao.isAlreadyDiscounted(Mockito.anyObject()))
+                .thenReturn(false);
 
         Mockito.when(pharmacyEjb.isMedicamentInStocks(Mockito.anyObject()))
                 .thenReturn(true);
@@ -155,20 +159,20 @@ public class MedicalServiceEjbImplTest {
                 .thenReturn(true);
 
         Mockito.when(medicalServiceDao.findById(Mockito.anyLong()))
-                .thenReturn(Optional.ofNullable(discountedMedicalService));
+                .thenReturn(Optional.ofNullable(writeOffedMedicalService));
 
-        medicalServiceEjb.discount(discountedMedicalService.getId());
+        medicalServiceEjb.writeOff(writeOffedMedicalService.getId());
 
         Mockito.verify(pharmacyEjb, Mockito.times(1))
-                .discountMedicaments(Mockito.anyObject());
+                .writeOffMedicaments(Mockito.anyObject());
 
         Mockito.verify(medicalServiceDao).update(Mockito.anyObject());
 
         var medicamentCountArgumentCaptor = ArgumentCaptor.forClass(Set.class);
-        Mockito.verify(pharmacyEjb).discountMedicaments(medicamentCountArgumentCaptor.capture());
+        Mockito.verify(pharmacyEjb).writeOffMedicaments(medicamentCountArgumentCaptor.capture());
         var actualMedicamentsWithCount = medicamentCountArgumentCaptor.getValue();
 
-        var expectedMedicamentsWithCount = discountedMedicalService.getMedicamentMedicalServices()
+        var expectedMedicamentsWithCount = writeOffedMedicalService.getMedicamentMedicalServices()
                 .stream()
                 .map(medicamentMedicalService -> MedicamentCountBindingModel.builder()
                         .medicamentId(medicamentMedicalService.getMedicament().getId())
@@ -191,23 +195,47 @@ public class MedicalServiceEjbImplTest {
         Assert.assertNotNull(actualMedicalService.getProvisionDate());
     }
 
-    @Test(expected = CrudOperationException.class)
+    @Test(expected = MedicamentWriteOffException.class)
     /**
      * Списание услуги, медикаментов которой нехватает на складах, и
      * переданные значения корректны.
      */
-    public void discountMedServiceWithMedicamentsNotInStock() {
-        MedicalService discountedMedicalService = this.initMedicalServices().get(0);
+    public void writeOffMedServiceWithMedicamentsNotInStock() {
+        MedicalService writeOffedMedicalService = this.initMedicalServices().get(0);
+
+        Mockito.when(medicalServiceDao.isAlreadyDiscounted(Mockito.anyObject()))
+                .thenReturn(false);
 
         Mockito.when(pharmacyEjb.isMedicamentInStocks(Mockito.anyObject()))
                 .thenReturn(false);
 
-        medicalServiceEjb.discount(discountedMedicalService.getId());
+        medicalServiceEjb.writeOff(writeOffedMedicalService.getId());
 
-        Mockito.verify(pharmacyEjb, Mockito.times(discountedMedicalService.getMedicamentMedicalServices().size()))
+        Mockito.verify(pharmacyEjb, Mockito.times(writeOffedMedicalService.getMedicamentMedicalServices().size()))
                 .isMedicamentInStocks(Mockito.anyObject());
         Mockito.verify(pharmacyEjb, Mockito.never())
-                .discountMedicaments(Mockito.anyObject());
+                .writeOffMedicaments(Mockito.anyObject());
+    }
+
+    @Test(expected = MedicamentWriteOffException.class)
+    /**
+     * Списание услуги, которая уже была списана.
+     */
+    public void writeOffMedServiceThatAlreadyWriteOff() {
+        MedicalService writeOffedMedicalService = this.initMedicalServices().get(0);
+
+        Mockito.when(pharmacyEjb.isMedicamentInStocks(Mockito.anyObject()))
+                .thenReturn(true);
+
+        Mockito.when(medicalServiceDao.isAlreadyDiscounted(Mockito.anyObject()))
+                .thenReturn(true);
+
+        medicalServiceEjb.writeOff(writeOffedMedicalService.getId());
+
+        Mockito.verify(pharmacyEjb, Mockito.times(writeOffedMedicalService.getMedicamentMedicalServices().size()))
+                .isMedicamentInStocks(Mockito.anyObject());
+        Mockito.verify(pharmacyEjb, Mockito.never())
+                .writeOffMedicaments(Mockito.anyObject());
     }
 
     @Test

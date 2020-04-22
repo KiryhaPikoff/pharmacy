@@ -1,6 +1,7 @@
 package com.ulstu.pharmacy.pmmsl.medservice.ejb;
 
 import com.ulstu.pharmacy.pmmsl.common.exception.CrudOperationException;
+import com.ulstu.pharmacy.pmmsl.common.exception.MedicamentWriteOffException;
 import com.ulstu.pharmacy.pmmsl.medicament.binding.MedicamentCountBindingModel;
 import com.ulstu.pharmacy.pmmsl.medicament.dao.MedicamentDao;
 import com.ulstu.pharmacy.pmmsl.medicament.entity.Medicament;
@@ -88,19 +89,20 @@ public class MedicalServiceEjbImpl implements MedicalServiceEjbLocal {
      */
     @Override
     @Transactional(Transactional.TxType.MANDATORY)
-    public void discount(Long id) {
+    public void writeOff(Long id) {
 
         StringBuilder errors = new StringBuilder();
         errors.append(Objects.isNull(id) ? "An id is null; "
-                : !medicalServiceDao.existsById(id) ? "MedicalService with an id = " + id + " not exist; " : "");
+                : !medicalServiceDao.existsById(id) ? "MedicalService with an id = " + id + " not exist; "
+                : medicalServiceDao.isAlreadyDiscounted(id) ? "MedicalService with an id = " + id + " already writeOff." : "");
 
         if(!errors.toString().isBlank()) {
-            throw new CrudOperationException(errors.toString());
+            throw new MedicamentWriteOffException(errors.toString());
         }
 
         MedicalService discountedMedicalService = this.medicalServiceDao.findById(id).get();
 
-        pharmacyEjbLocal.discountMedicaments(
+        pharmacyEjbLocal.writeOffMedicaments(
                 discountedMedicalService.getMedicamentMedicalServices()
                         .stream()
                         .map(medicamentMedicalService -> MedicamentCountBindingModel.builder()
