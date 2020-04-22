@@ -1,16 +1,15 @@
 package com.ulstu.pharmacy.pmmsl.ejb.impl;
 
 import com.ulstu.pharmacy.pmmsl.common.exception.CrudOperationException;
+import com.ulstu.pharmacy.pmmsl.medicament.binding.MedicamentCountBindingModel;
 import com.ulstu.pharmacy.pmmsl.medicament.dao.MedicamentDaoImpl;
 import com.ulstu.pharmacy.pmmsl.medicament.entity.Medicament;
-import com.ulstu.pharmacy.pmmsl.medicament.mapper.MedicamentMapperImpl;
 import com.ulstu.pharmacy.pmmsl.medservice.dao.MedicalServiceDaoImpl;
 import com.ulstu.pharmacy.pmmsl.medservice.ejb.MedicalServiceEjbImpl;
 import com.ulstu.pharmacy.pmmsl.medservice.entity.MedicalService;
 import com.ulstu.pharmacy.pmmsl.medservice.entity.MedicamentMedicalService;
 import com.ulstu.pharmacy.pmmsl.medservice.mapper.MedicalServiceMapperImpl;
 import com.ulstu.pharmacy.pmmsl.medservice.view.MedicalServiceViewModel;
-import com.ulstu.pharmacy.pmmsl.medicament.binding.MedicamentCountBindingModel;
 import com.ulstu.pharmacy.pmmsl.pharmacy.ejb.PharmacyEjbImpl;
 import junit.framework.Assert;
 import org.junit.Before;
@@ -23,7 +22,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.*;

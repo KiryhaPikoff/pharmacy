@@ -5,7 +5,6 @@ import com.ulstu.pharmacy.pmmsl.pharmacy.entity.Pharmacy;
 import com.ulstu.pharmacy.pmmsl.pharmacy.entity.PharmacyMedicament;
 import com.ulstu.pharmacy.pmmsl.pharmacy.view.PharmacyViewModel;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;

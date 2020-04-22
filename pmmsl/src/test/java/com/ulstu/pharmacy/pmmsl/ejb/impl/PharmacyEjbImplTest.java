@@ -2,11 +2,11 @@ package com.ulstu.pharmacy.pmmsl.ejb.impl;
 
 import com.ulstu.pharmacy.pmmsl.common.exception.CrudOperationException;
 import com.ulstu.pharmacy.pmmsl.common.exception.MedicamentDiscountException;
+import com.ulstu.pharmacy.pmmsl.medicament.binding.MedicamentCountBindingModel;
 import com.ulstu.pharmacy.pmmsl.medicament.dao.MedicamentDaoImpl;
 import com.ulstu.pharmacy.pmmsl.medicament.entity.Medicament;
 import com.ulstu.pharmacy.pmmsl.medicament.mapper.MedicamentMapperImpl;
 import com.ulstu.pharmacy.pmmsl.medicament.view.MedicamentViewModel;
-import com.ulstu.pharmacy.pmmsl.medicament.binding.MedicamentCountBindingModel;
 import com.ulstu.pharmacy.pmmsl.pharmacy.binding.PharmacyBindingModel;
 import com.ulstu.pharmacy.pmmsl.pharmacy.dao.PharmacyDaoImpl;
 import com.ulstu.pharmacy.pmmsl.pharmacy.dao.PharmacyMedicamentDao;

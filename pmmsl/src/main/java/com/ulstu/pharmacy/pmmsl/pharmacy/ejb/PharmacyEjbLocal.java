@@ -1,8 +1,8 @@
 package com.ulstu.pharmacy.pmmsl.pharmacy.ejb;
 
 
-import com.ulstu.pharmacy.pmmsl.medicament.view.MedicamentViewModel;
 import com.ulstu.pharmacy.pmmsl.medicament.binding.MedicamentCountBindingModel;
+import com.ulstu.pharmacy.pmmsl.medicament.view.MedicamentViewModel;
 import com.ulstu.pharmacy.pmmsl.pharmacy.binding.PharmacyBindingModel;
 import com.ulstu.pharmacy.pmmsl.pharmacy.view.PharmacyViewModel;
 

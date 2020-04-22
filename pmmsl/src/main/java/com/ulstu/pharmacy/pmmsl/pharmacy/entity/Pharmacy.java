@@ -1,11 +1,9 @@
 package com.ulstu.pharmacy.pmmsl.pharmacy.entity;
 
 import com.ulstu.pharmacy.pmmsl.common.entity.AbstractEntity;
-import com.ulstu.pharmacy.pmmsl.medservice.entity.MedicamentMedicalService;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Set;
 
 @Entity
