@@ -1,6 +1,5 @@
 package com.ulstu.pharmacy.pmmsl.pharmacy.ejb;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Streams;
 import com.ulstu.pharmacy.pmmsl.common.exception.CrudOperationException;
 import com.ulstu.pharmacy.pmmsl.common.exception.MedicamentDiscountException;
@@ -21,8 +20,6 @@ import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.*;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 

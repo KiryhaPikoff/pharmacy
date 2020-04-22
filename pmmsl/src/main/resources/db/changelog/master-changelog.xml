@@ -5,5 +5,6 @@
 
     <include file="table-creation.xml"              relativeToChangelogFile="true"/>
     <include file="sequence-creation.xml"           relativeToChangelogFile="true"/>
+    <include file="220420-supply-creation.xml"      relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

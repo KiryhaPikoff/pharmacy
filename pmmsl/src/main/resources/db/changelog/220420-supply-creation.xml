@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+<!--
+======================================================< START >=========================================================
+!-->
+<!--
+======================================================< Supply sequence >===============================================
+!-->
+    <changeSet author="Pikoff" id="supply_sequence_creation">
+        <createSequence
+                sequenceName="supply_seq"
+                startValue="1"
+                incrementBy="1"
+                minValue="0"
+        />
+    </changeSet>
+<!--
+======================================================< SupplyMedicament sequence >=====================================
+!-->
+    <changeSet author="Pikoff" id="supply_medicament_sequence_creation">
+        <createSequence
+                sequenceName="supply_medicament_seq"
+                startValue="1"
+                incrementBy="1"
+                minValue="0"
+        />
+    </changeSet>
+<!--
+======================================================< Supply >========================================================
+!-->
+    <changeSet id="supply_table_creation" author="Pikoff">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="supply"/>
+            </not>
+        </preConditions>
+        <createTable tableName="supply">
+            <column name="id"                       type="bigint" />
+            <column name="pharmacy_id"              type="bigint" />
+            <column name="date"                     type="timestamp" />
+        </createTable>
+        <addNotNullConstraint tableName="supply" columnName="date" />
+    </changeSet>
+
+    <changeSet id="supply_pk_constraint_creation" author="Pikoff">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <primaryKeyExists tableName="supply" primaryKeyName="id"/>
+            </not>
+        </preConditions>
+        <addPrimaryKey constraintName="supply_pk" tableName="supply" columnNames="id" />
+    </changeSet>
+
+    <changeSet id="supply_pharmacy_fk_constraint_creation" author="Pikoff">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyTableName="supply" foreignKeyName="pharmacy_id"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseTableName="supply" baseColumnNames="pharmacy_id"
+                                 constraintName="supply_pharmacy_fk"
+                                 referencedTableName="pharmacy" referencedColumnNames="id" />
+    </changeSet>
+<!--
+======================================================< SupplyMedicament >==============================================
+!-->
+    <changeSet id="supply_medicament_table_creation" author="Pikoff">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="supply_medicament"/>
+            </not>
+        </preConditions>
+        <createTable tableName="supply_medicament">
+            <column name="id"                       type="bigint" />
+            <column name="supply_id"                type="bigint" />
+            <column name="medicament_id"            type="bigint" />
+            <column name="count"                    type="integer" />
+        </createTable>
+        <addNotNullConstraint tableName="supply_medicament" columnName="count" />
+    </changeSet>
+
+    <changeSet id="supply_medicament_pk_constraint_creation" author="Pikoff">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <primaryKeyExists tableName="supply_medicament" primaryKeyName="id"/>
+            </not>
+        </preConditions>
+        <addPrimaryKey constraintName="supply_medicament_pk" tableName="supply_medicament" columnNames="id" />
+    </changeSet>
+
+    <changeSet id="supply_medicament_supply_fk_constraint_creation" author="Pikoff">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyTableName="supply_medicament" foreignKeyName="supply_id"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseTableName="supply_medicament" baseColumnNames="supply_id"
+                                 constraintName="supply_medicament_supply_fk"
+                                 referencedTableName="supply" referencedColumnNames="id" />
+    </changeSet>
+
+    <changeSet id="supply_medicament_medicament_fk_constraint_creation" author="Pikoff">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyTableName="supply_medicament" foreignKeyName="medicament_id"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseTableName="supply_medicament" baseColumnNames="medicament_id"
+                                 constraintName="supply_medicament_medicament_fk"
+                                 referencedTableName="medicament" referencedColumnNames="id" />
+    </changeSet>
+<!--
+======================================================< END >===========================================================
+!-->
+</databaseChangeLog>

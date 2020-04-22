@@ -2,12 +2,10 @@ package com.ulstu.pharmacy.pmmsl.pharmacy.entity;
 
 import com.ulstu.pharmacy.pmmsl.common.entity.AbstractEntity;
 import com.ulstu.pharmacy.pmmsl.medicament.entity.Medicament;
-import com.ulstu.pharmacy.pmmsl.medservice.entity.MedicamentMedicalService;
 import lombok.*;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.List;
 
 @Entity
 @Getter
@@ -24,10 +22,6 @@ public class PharmacyMedicament extends AbstractEntity<Long> {
 
     @ManyToOne(optional = false)
     private Pharmacy pharmacy;
-
-    @OneToMany(mappedBy = "medicalService")
-    @EqualsAndHashCode.Exclude
-    private List<MedicamentMedicalService> medicamentMedicalServices;
 
     @Column(nullable = false)
     @EqualsAndHashCode.Exclude
@@ -62,11 +56,6 @@ public class PharmacyMedicament extends AbstractEntity<Long> {
 
         public Builder pharmacy(Pharmacy pharmacy) {
             newPharmacyMedicament.setPharmacy(pharmacy);
-            return this;
-        }
-
-        public Builder medicamentMedicalServices(List<MedicamentMedicalService> medicamentMedicalServices) {
-            newPharmacyMedicament.setMedicamentMedicalServices(medicamentMedicalServices);
             return this;
         }
 
