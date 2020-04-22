@@ -34,12 +34,14 @@ public class Medicament extends AbstractEntity<Long> {
     @Column(nullable = false, scale = 2)
     private BigDecimal price;
 
-    @OneToMany(mappedBy = "pharmacy")
+    @ToString.Exclude
     @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "pharmacy")
     private List<PharmacyMedicament> pharmacyMedicaments;
 
-    @OneToMany(mappedBy = "medicalService")
+    @ToString.Exclude
     @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "medicalService")
     private List<MedicamentMedicalService> medicamentMedicalServices;
 
     @Override

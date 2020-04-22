@@ -19,9 +19,11 @@ import java.util.List;
 /** Свзяь аптеки и медикамента. */
 public class PharmacyMedicament extends AbstractEntity<Long> {
 
+    @ToString.Exclude
     @ManyToOne(optional = false)
     private Medicament medicament;
 
+    @ToString.Exclude
     @ManyToOne(optional = false)
     private Pharmacy pharmacy;
 
