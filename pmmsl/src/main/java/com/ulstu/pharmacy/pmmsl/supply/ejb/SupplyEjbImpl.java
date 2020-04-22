@@ -19,18 +19,14 @@ public class SupplyEjbImpl implements SupplyEjbLocal {
 
     private final SupplyDao supplyDao;
 
-    private final SupplyMedicamentDao supplyMedicamentDao;
-
     private final SupplyMapper supplyMapper;
 
     @Inject
     public SupplyEjbImpl(PharmacyEjbLocal pharmacyEjbLocal,
                          SupplyDao supplyDao,
-                         SupplyMedicamentDao supplyMedicamentDao,
                          SupplyMapper supplyMapper) {
         this.pharmacyEjbLocal = pharmacyEjbLocal;
         this.supplyDao = supplyDao;
-        this.supplyMedicamentDao = supplyMedicamentDao;
         this.supplyMapper = supplyMapper;
     }
 

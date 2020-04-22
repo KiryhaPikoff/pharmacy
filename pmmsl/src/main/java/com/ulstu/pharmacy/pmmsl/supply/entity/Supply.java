@@ -23,7 +23,9 @@ public class Supply extends AbstractEntity<Long> {
     @ManyToOne(optional = false)
     private Pharmacy pharmacy;
 
-    @OneToMany(mappedBy = "supply")
+    @OneToMany(mappedBy = "supply",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER)
     private Set<SupplyMedicament> supplyMedicaments;
 
     @Override

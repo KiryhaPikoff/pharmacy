@@ -141,6 +141,17 @@ public class PharmacyEjbImpl implements PharmacyEjbLocal {
     }
 
     /**
+     * Метод пополнения медикаментов аптеки по её id.
+     *
+     * @param pharmacyId                   id аптеки, медикаменты которой хотим пополнить.
+     * @param medicamentCountBindingModels множество медикаментов с количеством для пополнения.
+     */
+    @Override
+    public void addMedicaments(Long pharmacyId, Set<MedicamentCountBindingModel> medicamentCountBindingModels) {
+
+    }
+
+    /**
      * Метод списания медикаментов с аптек.
      *
      * @param medicamentsCountSet
