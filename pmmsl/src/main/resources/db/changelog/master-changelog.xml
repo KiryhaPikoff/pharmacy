@@ -3,8 +3,9 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <include file="table-creation.xml"              relativeToChangelogFile="true"/>
-    <include file="sequence-creation.xml"           relativeToChangelogFile="true"/>
-    <include file="220420-supply-creation.xml"      relativeToChangelogFile="true"/>
+    <include file="table-creation.xml"                          relativeToChangelogFile="true"/>
+    <include file="sequence-creation.xml"                       relativeToChangelogFile="true"/>
+    <include file="220420-supply-creation.xml"                  relativeToChangelogFile="true"/>
+    <include file="230420-remake-pharmacy-medicament.xml"       relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

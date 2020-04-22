@@ -1,15 +1,13 @@
 package com.ulstu.pharmacy.pmmsl.medicament.view;
 
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 
 @Getter
 @Setter
 @Builder
+@ToString
 @EqualsAndHashCode
 public class MedicamentViewModel {
 

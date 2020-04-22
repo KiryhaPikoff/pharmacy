@@ -1,6 +1,6 @@
 package com.ulstu.pharmacy.pmmsl.supply.binding;
 
-import com.ulstu.pharmacy.pmmsl.pharmacy.binding.MedicamentCountBindingModel;
+import com.ulstu.pharmacy.pmmsl.medicament.binding.MedicamentCountBindingModel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

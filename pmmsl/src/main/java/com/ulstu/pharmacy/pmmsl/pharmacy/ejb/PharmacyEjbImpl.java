@@ -2,11 +2,11 @@ package com.ulstu.pharmacy.pmmsl.pharmacy.ejb;
 
 import com.google.common.collect.Streams;
 import com.ulstu.pharmacy.pmmsl.common.exception.CrudOperationException;
-import com.ulstu.pharmacy.pmmsl.common.exception.MedicamentDiscountException;
+import com.ulstu.pharmacy.pmmsl.common.exception.MedicamentWriteOffException;
+import com.ulstu.pharmacy.pmmsl.medicament.binding.MedicamentCountBindingModel;
 import com.ulstu.pharmacy.pmmsl.medicament.dao.MedicamentDao;
 import com.ulstu.pharmacy.pmmsl.medicament.mapper.MedicamentMapper;
 import com.ulstu.pharmacy.pmmsl.medicament.view.MedicamentViewModel;
-import com.ulstu.pharmacy.pmmsl.pharmacy.binding.MedicamentCountBindingModel;
 import com.ulstu.pharmacy.pmmsl.pharmacy.binding.PharmacyBindingModel;
 import com.ulstu.pharmacy.pmmsl.pharmacy.dao.PharmacyDao;
 import com.ulstu.pharmacy.pmmsl.pharmacy.dao.PharmacyMedicamentDao;
@@ -75,7 +75,7 @@ public class PharmacyEjbImpl implements PharmacyEjbLocal {
         } else {
             String name = pharmacyBindingModel.getName();
             pharmacyDao.save(
-                    new Pharmacy.Builder()
+                    Pharmacy.builder()
                             .name(Objects.nonNull(name) ? name : "default" ) //TODO вынести дефолтное имя
                             .build()
             );
@@ -158,12 +158,12 @@ public class PharmacyEjbImpl implements PharmacyEjbLocal {
      */
     @Override
     @Transactional(value = Transactional.TxType.MANDATORY)
-    public void discountMedicaments(Set<MedicamentCountBindingModel> medicamentsCountSet) {
+    public void writeOffMedicaments(Set<MedicamentCountBindingModel> medicamentsCountSet) {
 
         List<String> errors = this.validateDiscountArgs(medicamentsCountSet);
 
         if (!errors.isEmpty()) {
-            throw new MedicamentDiscountException(String.join(" | ", errors));
+            throw new MedicamentWriteOffException(String.join(" | ", errors));
         } else {
             this.applyDiscount(medicamentsCountSet);
         }
@@ -202,7 +202,7 @@ public class PharmacyEjbImpl implements PharmacyEjbLocal {
                 }
             }
             if(restToDiscount != 0) {
-                throw new MedicamentDiscountException(
+                throw new MedicamentWriteOffException(
                         "There is not enough medicament with an id " + medicamentCount.getMedicamentId() +
                                 ". Required " + medicamentCount.getCount() +
                                 ", but there is only " + (medicamentCount.getCount() - restToDiscount)

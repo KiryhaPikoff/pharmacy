@@ -5,7 +5,6 @@ import com.ulstu.pharmacy.pmmsl.medicament.entity.Medicament;
 import lombok.*;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
 
 @Entity
 @Getter
@@ -17,9 +16,11 @@ import java.sql.Timestamp;
 /** Свзяь аптеки и медикамента. */
 public class PharmacyMedicament extends AbstractEntity<Long> {
 
+    @ToString.Exclude
     @ManyToOne(optional = false)
     private Medicament medicament;
 
+    @ToString.Exclude
     @ManyToOne(optional = false)
     private Pharmacy pharmacy;
 
@@ -27,14 +28,15 @@ public class PharmacyMedicament extends AbstractEntity<Long> {
     @EqualsAndHashCode.Exclude
     private Integer count;
 
-    @Column(nullable = false)
-    private Timestamp receiptDate;
-
     @Override
     @SequenceGenerator(name = "pharmacy_medicament_seq", sequenceName = "pharmacy_medicament_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pharmacy_medicament_seq")
     public Long getId() {
         return super.getId();
+    }
+
+    public static PharmacyMedicament.Builder builder() {
+        return new PharmacyMedicament.Builder();
     }
 
     public static class Builder {
@@ -61,11 +63,6 @@ public class PharmacyMedicament extends AbstractEntity<Long> {
 
         public Builder count(Integer count) {
             newPharmacyMedicament.setCount(count);
-            return this;
-        }
-
-        public Builder receiptDate(Timestamp receiptDate) {
-            newPharmacyMedicament.setReceiptDate(receiptDate);
             return this;
         }
 

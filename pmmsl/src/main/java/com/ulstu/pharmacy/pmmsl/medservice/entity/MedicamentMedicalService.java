@@ -17,16 +17,19 @@ import java.math.BigDecimal;
 /** Связь медикамента и медицинской услуги. */
 public class MedicamentMedicalService extends AbstractEntity<Long> {
 
+    @ToString.Exclude
     @ManyToOne(optional = false)
     private Medicament medicament;
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @ManyToOne(optional = false)
     private MedicalService medicalService;
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private Integer count;
 
-    @Column(nullable = false, scale = 2)
+    @Column(nullable = false, scale = 2, updatable = false)
     private BigDecimal price;
 
     @Override
@@ -34,6 +37,10 @@ public class MedicamentMedicalService extends AbstractEntity<Long> {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "medicament_medical_service_seq")
     public Long getId() {
         return super.getId();
+    }
+
+    public static MedicamentMedicalService.Builder builder() {
+        return new MedicamentMedicalService.Builder();
     }
 
     public static class Builder {

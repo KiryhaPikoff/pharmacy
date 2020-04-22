@@ -15,4 +15,6 @@ public abstract class MedicalServiceDao extends AbstractDao<MedicalService, Long
     public abstract List<MedicalService> getAll();
 
     public abstract List<MedicalService> getFromDateToDate(Timestamp from, Timestamp to);
+
+    public abstract boolean isAlreadyDiscounted(Long medicalServiceId);
 }

@@ -6,11 +6,6 @@ import com.ulstu.pharmacy.pmmsl.supply.view.SupplyViewModel;
 public class SupplyMapperImpl implements SupplyMapper {
 
     @Override
-    public Supply toEntity(SupplyViewModel supplyViewModel) {
-        return null;
-    }
-
-    @Override
     public SupplyViewModel toViewModel(Supply supply) {
         return null;
     }

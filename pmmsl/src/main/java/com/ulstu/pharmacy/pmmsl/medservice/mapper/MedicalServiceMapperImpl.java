@@ -1,55 +1,41 @@
 package com.ulstu.pharmacy.pmmsl.medservice.mapper;
 
 
+import com.ulstu.pharmacy.pmmsl.medicament.view.MedicamentCountViewModel;
 import com.ulstu.pharmacy.pmmsl.medservice.entity.MedicalService;
+import com.ulstu.pharmacy.pmmsl.medservice.entity.MedicamentMedicalService;
 import com.ulstu.pharmacy.pmmsl.medservice.view.MedicalServiceViewModel;
 
-import javax.inject.Inject;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class MedicalServiceMapperImpl implements MedicalServiceMapper {
-
-    private final MedicamentMedicalServiceMapper medicamentMedicalServiceMapper;
-
-    @Inject
-    public MedicalServiceMapperImpl(MedicamentMedicalServiceMapper medicamentMedicalServiceMapper) {
-        this.medicamentMedicalServiceMapper = medicamentMedicalServiceMapper;
-    }
-
-    @Override
-    public MedicalService toEntity(MedicalServiceViewModel medicalServiceViewModel) {
-        MedicalService medicalService = null;
-        if (Objects.nonNull(medicalServiceViewModel)) {
-            medicalService = new MedicalService.Builder()
-                    .medicamentMedicalServices(
-                            Objects.nonNull(medicalServiceViewModel.getMedicamentMedicalServices()) ?
-                                    medicalServiceViewModel.getMedicamentMedicalServices().stream()
-                                            .map(medicamentMedicalServiceMapper::toEntity)
-                                            .collect(Collectors.toList())
-                                    : null
-                    )
-                   //TODO .sumPrice(medicalServiceViewModel.getSumPrice())
-                    .build();
-            medicalService.setId(medicalServiceViewModel.getId());
-        }
-        return medicalService;
-    }
 
     @Override
     public MedicalServiceViewModel toViewModel(MedicalService medicalService) {
         return Objects.isNull(medicalService) ? null :
                 MedicalServiceViewModel.builder()
                         .id(medicalService.getId())
-                        .medicamentMedicalServices(
-                                Objects.nonNull(medicalService.getMedicamentMedicalServices()) ?
-                                        medicalService.getMedicamentMedicalServices().stream()
-                                                .map(medicamentMedicalServiceMapper::toViewModel)
-                                                .collect(Collectors.toList())
-                                        : null
+                        .medicamentsWithCount(
+                                this.getMedicamentCountViewModels(
+                                        medicalService.getMedicamentMedicalServices()
+                                )
                         )
                         .sumPrice(medicalService.getSumPrice())
                         .provisionDate(medicalService.getProvisionDate())
                         .build();
+    }
+
+    private Set<MedicamentCountViewModel> getMedicamentCountViewModels(Set<MedicamentMedicalService> medicamentMedicalServices) {
+        return Objects.isNull(medicamentMedicalServices) ? null
+                : medicamentMedicalServices.stream()
+                .map(medicamentMedicalService ->
+                        MedicamentCountViewModel.builder()
+                                .medicamentId(medicamentMedicalService.getMedicament().getId())
+                                .name(medicamentMedicalService.getMedicament().getName())
+                                .count(medicamentMedicalService.getCount())
+                                .build()
+                ).collect(Collectors.toSet());
     }
 }

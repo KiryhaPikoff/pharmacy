@@ -1,8 +1,8 @@
 package com.ulstu.pharmacy.pmmsl.medservice.ejb;
 
 
+import com.ulstu.pharmacy.pmmsl.medicament.binding.MedicamentCountBindingModel;
 import com.ulstu.pharmacy.pmmsl.medservice.view.MedicalServiceViewModel;
-import com.ulstu.pharmacy.pmmsl.pharmacy.binding.MedicamentCountBindingModel;
 
 import javax.ejb.Local;
 import java.sql.Timestamp;
@@ -34,7 +34,7 @@ public interface MedicalServiceEjbLocal {
      *
      * @param id id списываемой услуги.
      */
-    void discount(Long id);
+    void writeOff(Long id);
 
     /**
      * Метод создания услуги. Услуга формируется на основе списка медикамнтов, где каждому из них

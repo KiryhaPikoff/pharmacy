@@ -1,4 +1,4 @@
-package com.ulstu.pharmacy.pmmsl.pharmacy.binding;
+package com.ulstu.pharmacy.pmmsl.medicament.binding;
 
 import lombok.*;
 

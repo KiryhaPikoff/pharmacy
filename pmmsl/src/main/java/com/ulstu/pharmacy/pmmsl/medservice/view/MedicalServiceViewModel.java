@@ -1,17 +1,16 @@
 package com.ulstu.pharmacy.pmmsl.medservice.view;
 
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import com.ulstu.pharmacy.pmmsl.medicament.view.MedicamentCountViewModel;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
 @Builder
+@ToString
 @EqualsAndHashCode
 public class MedicalServiceViewModel {
 
@@ -22,5 +21,5 @@ public class MedicalServiceViewModel {
 
     private BigDecimal sumPrice;
 
-    private List<MedicamentMedicalServiceViewModel> medicamentMedicalServices;
+    private Set<MedicamentCountViewModel> medicamentsWithCount;
 }

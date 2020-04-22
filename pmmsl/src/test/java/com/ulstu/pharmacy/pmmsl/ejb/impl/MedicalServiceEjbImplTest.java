@@ -1,27 +1,25 @@
 package com.ulstu.pharmacy.pmmsl.ejb.impl;
 
 import com.ulstu.pharmacy.pmmsl.common.exception.CrudOperationException;
-import com.ulstu.pharmacy.pmmsl.medicament.dao.MedicamentDao;
+import com.ulstu.pharmacy.pmmsl.common.exception.MedicamentWriteOffException;
+import com.ulstu.pharmacy.pmmsl.medicament.binding.MedicamentCountBindingModel;
+import com.ulstu.pharmacy.pmmsl.medicament.dao.MedicamentDaoImpl;
 import com.ulstu.pharmacy.pmmsl.medicament.entity.Medicament;
-import com.ulstu.pharmacy.pmmsl.medicament.mapper.MedicamentMapperImpl;
-import com.ulstu.pharmacy.pmmsl.medservice.dao.MedicalServiceDao;
 import com.ulstu.pharmacy.pmmsl.medservice.dao.MedicalServiceDaoImpl;
 import com.ulstu.pharmacy.pmmsl.medservice.ejb.MedicalServiceEjbImpl;
 import com.ulstu.pharmacy.pmmsl.medservice.entity.MedicalService;
 import com.ulstu.pharmacy.pmmsl.medservice.entity.MedicamentMedicalService;
 import com.ulstu.pharmacy.pmmsl.medservice.mapper.MedicalServiceMapperImpl;
-import com.ulstu.pharmacy.pmmsl.medservice.mapper.MedicamentMedicalServiceMapper;
-import com.ulstu.pharmacy.pmmsl.medservice.mapper.MedicamentMedicalServiceMapperImpl;
 import com.ulstu.pharmacy.pmmsl.medservice.view.MedicalServiceViewModel;
-import com.ulstu.pharmacy.pmmsl.pharmacy.binding.MedicamentCountBindingModel;
 import com.ulstu.pharmacy.pmmsl.pharmacy.ejb.PharmacyEjbImpl;
-import com.ulstu.pharmacy.pmmsl.pharmacy.ejb.PharmacyEjbLocal;
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -33,30 +31,28 @@ import java.util.stream.Collectors;
 @RunWith(MockitoJUnitRunner.class)
 public class MedicalServiceEjbImplTest {
 
-    private final PharmacyEjbLocal pharmacyEjbLocal = Mockito.mock(PharmacyEjbImpl.class);
+    @Mock
+    private PharmacyEjbImpl pharmacyEjb;
 
-    private final MedicalServiceDao medicalServiceDao = Mockito.mock(MedicalServiceDaoImpl.class);
+    @Mock
+    private MedicalServiceDaoImpl medicalServiceDao;
 
-    private final MedicamentDao medicamentDao = Mockito.mock(MedicamentDao.class);
+    @Mock
+    private MedicamentDaoImpl medicamentDao;
 
-    private final MedicamentMapperImpl medicamentMapper = new MedicamentMapperImpl();
+    @Mock
+    private MedicalServiceMapperImpl medicalServiceMapper;
 
-    private final MedicamentMedicalServiceMapper medicamentMedicalServiceMapper =
-            new MedicamentMedicalServiceMapperImpl(medicamentMapper);
-
-    private final MedicalServiceMapperImpl medicalServiceMapper = new MedicalServiceMapperImpl(medicamentMedicalServiceMapper);
-
-    private final MedicalServiceEjbImpl medicalServiceEjbRemote = new MedicalServiceEjbImpl(
-            pharmacyEjbLocal,
-            medicalServiceDao,
-            medicamentDao,
-            medicalServiceMapper
-    );
+    @InjectMocks
+    private MedicalServiceEjbImpl medicalServiceEjb;
 
     @Before
     public void init() {
         List<MedicalService> expectedMedicalServices = this.initMedicalServices();
         List<Medicament> expectedMedicaments = this.initMedicaments();
+
+        Mockito.when(medicalServiceMapper.toViewModel(Mockito.anyObject()))
+                .thenCallRealMethod();
 
         Mockito.when(medicalServiceDao.getAll())
                 .thenReturn(expectedMedicalServices);
@@ -75,12 +71,11 @@ public class MedicalServiceEjbImplTest {
      * Проверка получения списка всех услуг.
      */
     public void getAll() {
-        List<MedicalService> expectedMedicalServices = this.initMedicalServices();
-
-        List<MedicalService> actualMedivalServices = medicalServiceEjbRemote.getAll()
-                .stream()
-                .map(medicalServiceMapper::toEntity)
+        List<MedicalServiceViewModel> expectedMedicalServices = this.initMedicalServices().stream()
+                .map(medicalServiceMapper::toViewModel)
                 .collect(Collectors.toList());
+
+        List<MedicalServiceViewModel> actualMedivalServices = medicalServiceEjb.getAll();
 
         Mockito.verify(medicalServiceDao, Mockito.times(1))
                 .getAll();
@@ -104,7 +99,7 @@ public class MedicalServiceEjbImplTest {
         Mockito.when(medicalServiceDao.getFromDateToDate(expectedFromDate, expectedToDay))
                 .thenReturn(expectedMedicalServices);
 
-        List<MedicalServiceViewModel> actualMedicalServices = medicalServiceEjbRemote.getFromDateToDate(
+        List<MedicalServiceViewModel> actualMedicalServices = medicalServiceEjb.getFromDateToDate(
                 expectedFromDate,
                 expectedToDay
         );
@@ -134,7 +129,7 @@ public class MedicalServiceEjbImplTest {
      */
     public void getFromDateToDateIncorrectedValues() {
 
-        List<MedicalServiceViewModel> actualMedicalServices = medicalServiceEjbRemote.getFromDateToDate(
+        List<MedicalServiceViewModel> actualMedicalServices = medicalServiceEjb.getFromDateToDate(
                 null,
                 null
         );
@@ -151,30 +146,33 @@ public class MedicalServiceEjbImplTest {
      * Списание услуги, медикаментов которой хватает на складах, и
      * переданные значения корректны.
      */
-    public void discountMedServiceWithMedicamentsInStock() {
-        MedicalService discountedMedicalService = this.initMedicalServices().get(0);
+    public void writeOffMedServiceWithMedicamentsInStock() {
+        MedicalService writeOffedMedicalService = this.initMedicalServices().get(0);
 
-        Mockito.when(pharmacyEjbLocal.isMedicamentInStocks(Mockito.anyObject()))
+        Mockito.when(medicalServiceDao.isAlreadyDiscounted(Mockito.anyObject()))
+                .thenReturn(false);
+
+        Mockito.when(pharmacyEjb.isMedicamentInStocks(Mockito.anyObject()))
                 .thenReturn(true);
 
         Mockito.when(medicalServiceDao.existsById(Mockito.anyLong()))
                 .thenReturn(true);
 
         Mockito.when(medicalServiceDao.findById(Mockito.anyLong()))
-                .thenReturn(Optional.ofNullable(discountedMedicalService));
+                .thenReturn(Optional.ofNullable(writeOffedMedicalService));
 
-        medicalServiceEjbRemote.discount(discountedMedicalService.getId());
+        medicalServiceEjb.writeOff(writeOffedMedicalService.getId());
 
-        Mockito.verify(pharmacyEjbLocal, Mockito.times(1))
-                .discountMedicaments(Mockito.anyObject());
+        Mockito.verify(pharmacyEjb, Mockito.times(1))
+                .writeOffMedicaments(Mockito.anyObject());
 
         Mockito.verify(medicalServiceDao).update(Mockito.anyObject());
 
         var medicamentCountArgumentCaptor = ArgumentCaptor.forClass(Set.class);
-        Mockito.verify(pharmacyEjbLocal).discountMedicaments(medicamentCountArgumentCaptor.capture());
+        Mockito.verify(pharmacyEjb).writeOffMedicaments(medicamentCountArgumentCaptor.capture());
         var actualMedicamentsWithCount = medicamentCountArgumentCaptor.getValue();
 
-        var expectedMedicamentsWithCount = discountedMedicalService.getMedicamentMedicalServices()
+        var expectedMedicamentsWithCount = writeOffedMedicalService.getMedicamentMedicalServices()
                 .stream()
                 .map(medicamentMedicalService -> MedicamentCountBindingModel.builder()
                         .medicamentId(medicamentMedicalService.getMedicament().getId())
@@ -192,26 +190,64 @@ public class MedicalServiceEjbImplTest {
         Mockito.verify(medicalServiceDao).update(medicalServiceArgumentCaptor.capture());
         MedicalService actualMedicalService = medicalServiceArgumentCaptor.getValue();
 
+        //TODO доделать
+
         Assert.assertNotNull(actualMedicalService.getProvisionDate());
     }
 
-    @Test(expected = CrudOperationException.class)
+    @Test(expected = MedicamentWriteOffException.class)
     /**
      * Списание услуги, медикаментов которой нехватает на складах, и
      * переданные значения корректны.
      */
-    public void discountMedServiceWithMedicamentsNotInStock() {
-        MedicalService discountedMedicalService = this.initMedicalServices().get(0);
+    public void writeOffMedServiceWithMedicamentsNotInStock() {
+        MedicalService writeOffedMedicalService = this.initMedicalServices().get(0);
 
-        Mockito.when(pharmacyEjbLocal.isMedicamentInStocks(Mockito.anyObject()))
+        Mockito.when(medicalServiceDao.existsById(Mockito.anyObject()))
+                .thenReturn(true);
+
+        Mockito.when(medicalServiceDao.isAlreadyDiscounted(Mockito.anyObject()))
                 .thenReturn(false);
 
-        medicalServiceEjbRemote.discount(discountedMedicalService.getId());
+        Mockito.when(medicalServiceDao.findById(Mockito.anyObject()))
+                .thenReturn(Optional.ofNullable(writeOffedMedicalService));
 
-        Mockito.verify(pharmacyEjbLocal, Mockito.times(discountedMedicalService.getMedicamentMedicalServices().size()))
+        Mockito.doThrow(new MedicamentWriteOffException(""))
+                .when(pharmacyEjb)
+                .writeOffMedicaments(Mockito.anySet());
+
+
+        Mockito.when(pharmacyEjb.isMedicamentInStocks(Mockito.anyObject()))
+                .thenReturn(false);
+
+        medicalServiceEjb.writeOff(writeOffedMedicalService.getId());
+
+        Mockito.verify(pharmacyEjb)
+                .writeOffMedicaments(Mockito.anyObject());
+    }
+
+    @Test(expected = MedicamentWriteOffException.class)
+    /**
+     * Списание услуги, которая уже была списана.
+     */
+    public void writeOffMedServiceThatAlreadyWriteOff() {
+        MedicalService writeOffedMedicalService = this.initMedicalServices().get(0);
+
+        Mockito.when(medicalServiceDao.existsById(Mockito.anyObject()))
+                .thenReturn(true);
+
+        Mockito.when(pharmacyEjb.isMedicamentInStocks(Mockito.anyObject()))
+                .thenReturn(true);
+
+        Mockito.when(medicalServiceDao.isAlreadyDiscounted(Mockito.anyObject()))
+                .thenReturn(true);
+
+        medicalServiceEjb.writeOff(writeOffedMedicalService.getId());
+
+        Mockito.verify(pharmacyEjb, Mockito.times(writeOffedMedicalService.getMedicamentMedicalServices().size()))
                 .isMedicamentInStocks(Mockito.anyObject());
-        Mockito.verify(pharmacyEjbLocal, Mockito.never())
-                .discountMedicaments(Mockito.anyObject());
+        Mockito.verify(pharmacyEjb, Mockito.never())
+                .writeOffMedicaments(Mockito.anyObject());
     }
 
     @Test
@@ -222,7 +258,7 @@ public class MedicalServiceEjbImplTest {
         MedicalService expectedCreatedMedicalService = this.initMedicalServices().get(0);
         expectedCreatedMedicalService.setId(null);
 
-        Mockito.when(pharmacyEjbLocal.isMedicamentInStocks(Mockito.anyObject()))
+        Mockito.when(pharmacyEjb.isMedicamentInStocks(Mockito.anyObject()))
                 .thenReturn(true);
 
         /* Ставим null, так как до сохранения их нет ещё в БД. А в тестах уже проинициализированы id. */
@@ -239,7 +275,7 @@ public class MedicalServiceEjbImplTest {
             );
         }
 
-        medicalServiceEjbRemote.create(argumentsForCreating);
+        medicalServiceEjb.create(argumentsForCreating);
 
         Mockito.verify(medicalServiceDao).save(Mockito.anyObject());
 
@@ -256,7 +292,7 @@ public class MedicalServiceEjbImplTest {
      * метод генерирует исключение.
      */
     public void createWithNullMap() {
-        medicalServiceEjbRemote.create(null);
+        medicalServiceEjb.create(null);
 
         Mockito.verify(medicalServiceDao, Mockito.never()).save(Mockito.anyObject());
     }
@@ -270,7 +306,7 @@ public class MedicalServiceEjbImplTest {
         Set<MedicamentCountBindingModel> argumentsForCreating = new HashSet<>();
         argumentsForCreating.add(MedicamentCountBindingModel.builder().build());
 
-        medicalServiceEjbRemote.create(argumentsForCreating);
+        medicalServiceEjb.create(argumentsForCreating);
 
         Mockito.verify(medicalServiceDao, Mockito.never()).save(Mockito.anyObject());
     }
@@ -288,16 +324,16 @@ public class MedicalServiceEjbImplTest {
         List<MedicalService> medicalServices = new LinkedList<>();
         List<MedicamentMedicalService> medicamentMedicalServices = this.initMedicamentMedicalServices();
 
-        MedicalService medicalService_0 = new MedicalService.Builder()
-                .medicamentMedicalServices(medicamentMedicalServices.subList(0, 2))
+        MedicalService medicalService_0 = MedicalService.builder()
+                .id(0L)
+                .medicamentMedicalServices(new HashSet<>(medicamentMedicalServices.subList(0, 2)))
                 .build();
-        medicalService_0.setId(0L);
         medicalServices.add(medicalService_0);
 
-        MedicalService medicalService_1 = new MedicalService.Builder()
-                .medicamentMedicalServices(medicamentMedicalServices.subList(1, 2))
+        MedicalService medicalService_1 = MedicalService.builder()
+                .id(1L)
+                .medicamentMedicalServices(new HashSet<>(medicamentMedicalServices.subList(1, 2)))
                 .build();
-        medicalService_1.setId(1L);
         medicalServices.add(medicalService_1);
 
         return medicalServices;
@@ -313,28 +349,28 @@ public class MedicalServiceEjbImplTest {
         List<MedicamentMedicalService> medicamentMedicalServices = new LinkedList<>();
         List<Medicament> medicaments = this.initMedicaments();
 
-        MedicamentMedicalService medicamentMedicalService_0 = new MedicamentMedicalService.Builder()
+        MedicamentMedicalService medicamentMedicalService_0 = MedicamentMedicalService.builder()
+                .id(0L)
                 .medicament(medicaments.get(0))
                 .count(5)
                 .price(medicaments.get(0).getPrice())
                 .build();
-        medicamentMedicalService_0.setId(0L);
         medicamentMedicalServices.add(medicamentMedicalService_0);
 
-        MedicamentMedicalService medicamentMedicalService_1 = new MedicamentMedicalService.Builder()
+        MedicamentMedicalService medicamentMedicalService_1 = MedicamentMedicalService.builder()
+                .id(1L)
                 .medicament(medicaments.get(1))
                 .count(10)
                 .price(medicaments.get(1).getPrice())
                 .build();
-        medicamentMedicalService_1.setId(1L);
         medicamentMedicalServices.add(medicamentMedicalService_1);
 
-        MedicamentMedicalService medicamentMedicalService_2 = new MedicamentMedicalService.Builder()
+        MedicamentMedicalService medicamentMedicalService_2 = MedicamentMedicalService.builder()
+                .id(2L)
                 .medicament(medicaments.get(2))
                 .count(10)
                 .price(medicaments.get(2).getPrice())
                 .build();
-        medicamentMedicalService_2.setId(2L);
         medicamentMedicalServices.add(medicamentMedicalService_2);
 
         return medicamentMedicalServices;
@@ -344,33 +380,33 @@ public class MedicalServiceEjbImplTest {
     public List<Medicament> initMedicaments() {
         List<Medicament> medicaments = new LinkedList<>();
 
-        Medicament medicament_0 = new Medicament.Builder()
+        Medicament medicament_0 = Medicament.builder()
+                .id(0L)
                 .name("Нулевой медикамент")
                 .price(new BigDecimal(15L))
                 .build();
-        medicament_0.setId(0L);
         medicaments.add(medicament_0);
 
-        Medicament medicament_1 = new Medicament.Builder()
+        Medicament medicament_1 = Medicament.builder()
+                .id(1L)
                 .name("Первый медикамент")
                 .price(new BigDecimal(15L))
                 .build();
-        medicament_1.setId(1L);
         medicaments.add(medicament_1);
 
-        Medicament medicament_2 = new Medicament.Builder()
+        Medicament medicament_2 = Medicament.builder()
+                .id(2L)
                 .name("Второй медикамент")
                 .price(new BigDecimal(15L))
                 .build();
-        medicament_2.setId(2L);
         medicaments.add(medicament_2);
 
-        Medicament medicament_3 = new Medicament.Builder()
+        Medicament medicament_3 = Medicament.builder()
+                .id(3L)
                 .name("Третий медикамент")
                 .price(new BigDecimal(15L))
                 .build();
         medicament_3.setId(3L);
-        medicaments.add(medicament_3);
 
         return medicaments;
     }

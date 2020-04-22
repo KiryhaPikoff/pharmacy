@@ -43,9 +43,6 @@ public class MedicamentEjbImplTest {
         Mockito.when(medicamentDao.getAll())
                 .thenReturn(expectedMedicaments);
 
-        Mockito.when(medicamentMapper.toEntity(Mockito.anyObject()))
-                .thenCallRealMethod();
-
         Mockito.when(medicamentMapper.toViewModel(Mockito.anyObject()))
                 .thenCallRealMethod();
 
@@ -66,11 +63,21 @@ public class MedicamentEjbImplTest {
 
         MedicamentViewModel expectedMedicament = medicamentMapper.toViewModel(this.initMedicaments().get(2));
 
-        Optional<Medicament> returnValue = Optional.of(medicamentMapper.toEntity(expectedMedicament));
+        Optional<Medicament> returnValue = Optional.of(
+                Medicament.builder()
+                        .id(expectedMedicament.getId())
+                        .name(expectedMedicament.getName())
+                        .contraindications(expectedMedicament.getContraindications())
+                        .description(expectedMedicament.getDescription())
+                        .instruction(expectedMedicament.getInstruction())
+                        .price(expectedMedicament.getPrice())
+                        .build()
+        );
         Mockito.when(medicamentDao.findById(idExist))
                 .thenReturn(returnValue);
 
-        Assert.assertEquals(expectedMedicament, medicamentEjbRemote.getById(idExist));
+        MedicamentViewModel actual = medicamentEjbRemote.getById(idExist);
+        Assert.assertEquals(expectedMedicament, actual);
 
         Mockito.verify(medicamentDao, Mockito.times(1))
                 .findById(15L);
@@ -110,18 +117,14 @@ public class MedicamentEjbImplTest {
 
     @Test
     public void getAll() {
-        List<Medicament> expectedMedicaments = this.initMedicaments();
-
-        List<Medicament> actualMedicaments = medicamentEjbRemote.getAll()
-                .stream()
-                .map(medicamentMapper::toEntity)
+        List<MedicamentViewModel> expectedMedicaments = this.initMedicaments().stream()
+                .map(medicamentMapper::toViewModel)
                 .collect(Collectors.toList());
+
+        List<MedicamentViewModel> actualMedicaments = medicamentEjbRemote.getAll();
 
         Mockito.verify(medicamentDao, Mockito.times(1))
                 .getAll();
-
-        Mockito.verify(medicamentMapper, Mockito.times(expectedMedicaments.size()))
-                .toViewModel(Mockito.anyObject());
 
         Assert.assertEquals(
                 expectedMedicaments,
@@ -139,7 +142,7 @@ public class MedicamentEjbImplTest {
         Mockito.when(medicamentDao.existByName(Mockito.anyString()))
                 .thenReturn(false);
 
-        Medicament expectedMedicament = new Medicament.Builder()
+        Medicament expectedMedicament = Medicament.builder()
                 .name("Медикамент T")
                 .price(new BigDecimal(10))
                 .contraindications("Противопоказания T")
@@ -180,7 +183,7 @@ public class MedicamentEjbImplTest {
         Mockito.when(medicamentDao.existByName(Mockito.anyString()))
                 .thenReturn(true);
 
-        Medicament expectedMedicament = new Medicament.Builder()
+        Medicament expectedMedicament = Medicament.builder()
                 .name("Медикамент T")
                 .price(new BigDecimal(10))
                 .contraindications("Противопоказания T")
@@ -216,7 +219,7 @@ public class MedicamentEjbImplTest {
         Mockito.when(medicamentDao.existByName(Mockito.anyString()))
                 .thenReturn(false);
 
-        Medicament expectedMedicament = new Medicament.Builder()
+        Medicament expectedMedicament = Medicament.builder()
                 .name("Name")
                 .price(null)
                 .contraindications(null)
@@ -252,7 +255,7 @@ public class MedicamentEjbImplTest {
         Mockito.when(medicamentDao.existByName(Mockito.anyString()))
                 .thenReturn(false);
 
-        Medicament expectedMedicament = new Medicament.Builder()
+        Medicament expectedMedicament = Medicament.builder()
                 .name(null)
                 .price(null)
                 .contraindications(null)
@@ -313,8 +316,17 @@ public class MedicamentEjbImplTest {
         Mockito.verify(medicamentDao).update(medicamentArgumentCaptor.capture());
         Medicament actualMedicament = medicamentArgumentCaptor.getValue();
 
+        Medicament expected = Medicament.builder()
+                .id(expectedMedicament.getId())
+                .name(expectedMedicament.getName())
+                .description(expectedMedicament.getDescription())
+                .contraindications(expectedMedicament.getContraindications())
+                .instruction(expectedMedicament.getInstruction())
+                .price(expectedMedicament.getPrice())
+                .build();
+
         Assert.assertEquals(
-                medicamentMapper.toEntity(expectedMedicament),
+                expected,
                 actualMedicament
         );
     }
@@ -461,7 +473,7 @@ public class MedicamentEjbImplTest {
     public List<Medicament> initMedicaments() {
         List<Medicament> medicaments = new LinkedList<>();
         medicaments.add(
-                new Medicament.Builder()
+                Medicament.builder()
                         .name("Медикамент 0")
                         .price(new BigDecimal(100))
                         .contraindications("Противопоказания 0")
@@ -470,7 +482,7 @@ public class MedicamentEjbImplTest {
                         .build()
         );
         medicaments.add(
-                new Medicament.Builder()
+                Medicament.builder()
                         .name("Медикамент 1")
                         .price(new BigDecimal(50))
                         .contraindications("Противопоказания 1")
@@ -479,7 +491,7 @@ public class MedicamentEjbImplTest {
                         .build()
         );
         medicaments.add(
-                new Medicament.Builder()
+                Medicament.builder()
                         .name("Медикамент 2")
                         .price(new BigDecimal(30))
                         .contraindications("Противопоказания 2")
@@ -488,7 +500,7 @@ public class MedicamentEjbImplTest {
                         .build()
         );
         medicaments.add(
-                new Medicament.Builder()
+                Medicament.builder()
                         .name("Медикамент 3")
                         .price(new BigDecimal(70))
                         .contraindications("Противопоказания 3")
