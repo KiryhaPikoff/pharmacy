@@ -25,22 +25,19 @@ public class PharmacyMedicament extends AbstractEntity<Long> {
     @ManyToOne(optional = false)
     private Pharmacy pharmacy;
 
-    @OneToMany(mappedBy = "medicalService")
-    @EqualsAndHashCode.Exclude
-    private List<MedicamentMedicalService> medicamentMedicalServices;
-
     @Column(nullable = false)
     @EqualsAndHashCode.Exclude
     private Integer count;
-
-    @Column(nullable = false)
-    private Timestamp receiptDate;
 
     @Override
     @SequenceGenerator(name = "pharmacy_medicament_seq", sequenceName = "pharmacy_medicament_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pharmacy_medicament_seq")
     public Long getId() {
         return super.getId();
+    }
+
+    public static PharmacyMedicament.Builder builder() {
+        return new PharmacyMedicament.Builder();
     }
 
     public static class Builder {
@@ -65,18 +62,8 @@ public class PharmacyMedicament extends AbstractEntity<Long> {
             return this;
         }
 
-        public Builder medicamentMedicalServices(List<MedicamentMedicalService> medicamentMedicalServices) {
-            newPharmacyMedicament.setMedicamentMedicalServices(medicamentMedicalServices);
-            return this;
-        }
-
         public Builder count(Integer count) {
             newPharmacyMedicament.setCount(count);
-            return this;
-        }
-
-        public Builder receiptDate(Timestamp receiptDate) {
-            newPharmacyMedicament.setReceiptDate(receiptDate);
             return this;
         }
 

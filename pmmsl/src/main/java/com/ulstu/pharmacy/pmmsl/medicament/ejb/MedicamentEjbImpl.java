@@ -106,7 +106,7 @@ public class MedicamentEjbImpl implements MedicamentEjbLocal {
      */
     private void add(MedicamentBindingModel medicamentBindingModel) {
         this.medicamentDao.save(
-                new Medicament.Builder()
+                Medicament.builder()
                         .name(medicamentBindingModel.getName())
                         .description(medicamentBindingModel.getDescription())
                         .instruction(medicamentBindingModel.getInstruction())
@@ -121,7 +121,7 @@ public class MedicamentEjbImpl implements MedicamentEjbLocal {
      * @param medicamentBindingModel
      */
     private void update(MedicamentBindingModel medicamentBindingModel) {
-        Medicament updateMedicament = new Medicament.Builder()
+        Medicament updateMedicament = Medicament.builder()
                 .name(medicamentBindingModel.getName())
                 .description(medicamentBindingModel.getDescription())
                 .instruction(medicamentBindingModel.getInstruction())

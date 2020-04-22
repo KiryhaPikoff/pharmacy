@@ -1,13 +1,12 @@
 package com.ulstu.pharmacy.pmmsl.pharmacy.ejb;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Streams;
 import com.ulstu.pharmacy.pmmsl.common.exception.CrudOperationException;
 import com.ulstu.pharmacy.pmmsl.common.exception.MedicamentDiscountException;
 import com.ulstu.pharmacy.pmmsl.medicament.dao.MedicamentDao;
 import com.ulstu.pharmacy.pmmsl.medicament.mapper.MedicamentMapper;
 import com.ulstu.pharmacy.pmmsl.medicament.view.MedicamentViewModel;
-import com.ulstu.pharmacy.pmmsl.pharmacy.binding.MedicamentCountBindingModel;
+import com.ulstu.pharmacy.pmmsl.medicament.binding.MedicamentCountBindingModel;
 import com.ulstu.pharmacy.pmmsl.pharmacy.binding.PharmacyBindingModel;
 import com.ulstu.pharmacy.pmmsl.pharmacy.dao.PharmacyDao;
 import com.ulstu.pharmacy.pmmsl.pharmacy.dao.PharmacyMedicamentDao;
@@ -21,8 +20,6 @@ import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.*;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -78,7 +75,7 @@ public class PharmacyEjbImpl implements PharmacyEjbLocal {
         } else {
             String name = pharmacyBindingModel.getName();
             pharmacyDao.save(
-                    new Pharmacy.Builder()
+                    Pharmacy.builder()
                             .name(Objects.nonNull(name) ? name : "default" ) //TODO вынести дефолтное имя
                             .build()
             );

@@ -20,6 +20,7 @@ public class MedicamentMedicalService extends AbstractEntity<Long> {
     @ManyToOne(optional = false)
     private Medicament medicament;
 
+    @EqualsAndHashCode.Exclude
     @ManyToOne(optional = false)
     private MedicalService medicalService;
 
@@ -34,6 +35,10 @@ public class MedicamentMedicalService extends AbstractEntity<Long> {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "medicament_medical_service_seq")
     public Long getId() {
         return super.getId();
+    }
+
+    public static MedicamentMedicalService.Builder builder() {
+        return new MedicamentMedicalService.Builder();
     }
 
     public static class Builder {

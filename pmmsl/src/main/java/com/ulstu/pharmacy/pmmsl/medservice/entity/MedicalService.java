@@ -1,6 +1,7 @@
 package com.ulstu.pharmacy.pmmsl.medservice.entity;
 
 import com.ulstu.pharmacy.pmmsl.common.entity.AbstractEntity;
+import com.ulstu.pharmacy.pmmsl.medicament.entity.Medicament;
 import lombok.*;
 
 import javax.persistence.*;
@@ -8,6 +9,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -25,7 +27,7 @@ public class MedicalService extends AbstractEntity<Long> {
     @OneToMany(cascade = CascadeType.ALL,
             fetch = FetchType.EAGER,
             mappedBy = "medicalService")
-    private List<MedicamentMedicalService> medicamentMedicalServices;
+    private Set<MedicamentMedicalService> medicamentMedicalServices;
 
     @Transient
     private BigDecimal sumPrice;
@@ -58,6 +60,10 @@ public class MedicalService extends AbstractEntity<Long> {
         return sumPrice;
     }
 
+    public static MedicalService.Builder builder() {
+        return new MedicalService.Builder();
+    }
+
     public static class Builder {
         private MedicalService newMedicalService;
 
@@ -75,7 +81,7 @@ public class MedicalService extends AbstractEntity<Long> {
             return this;
         }
 
-        public Builder medicamentMedicalServices(List<MedicamentMedicalService> medicamentMedicalServices) {
+        public Builder medicamentMedicalServices(Set<MedicamentMedicalService> medicamentMedicalServices) {
             newMedicalService.setMedicamentMedicalServices(medicamentMedicalServices);
             return this;
         }

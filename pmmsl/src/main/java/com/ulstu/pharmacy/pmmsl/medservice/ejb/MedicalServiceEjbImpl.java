@@ -8,7 +8,7 @@ import com.ulstu.pharmacy.pmmsl.medservice.entity.MedicalService;
 import com.ulstu.pharmacy.pmmsl.medservice.entity.MedicamentMedicalService;
 import com.ulstu.pharmacy.pmmsl.medservice.mapper.MedicalServiceMapper;
 import com.ulstu.pharmacy.pmmsl.medservice.view.MedicalServiceViewModel;
-import com.ulstu.pharmacy.pmmsl.pharmacy.binding.MedicamentCountBindingModel;
+import com.ulstu.pharmacy.pmmsl.medicament.binding.MedicamentCountBindingModel;
 import com.ulstu.pharmacy.pmmsl.pharmacy.ejb.PharmacyEjbLocal;
 
 import javax.ejb.Stateless;
@@ -151,7 +151,7 @@ public class MedicalServiceEjbImpl implements MedicalServiceEjbLocal {
         }
 
         /* Инициализация новой услуги. */
-        MedicalService newMedicalService = new MedicalService.Builder()
+        MedicalService newMedicalService = MedicalService.builder()
                 .medicamentMedicalServices(
                         this.formForNewMedicalService(medicamentCountBindingModels)
                 )
@@ -161,11 +161,11 @@ public class MedicalServiceEjbImpl implements MedicalServiceEjbLocal {
     }
 
     /**
-     * Формирует список медикаментов для привязки их к услуге на основе множества моделей MedicamentCountBindingModel.
+     * Формирует медикаменты для привязки их к услуге на основе множества моделей MedicamentCountBindingModel.
      * @param modelsSet
-     * @return список сформированных медикаментов для услуги.
+     * @return множество сформированных медикаментов для услуги.
      */
-    private List<MedicamentMedicalService> formForNewMedicalService(Set<MedicamentCountBindingModel> modelsSet) {
+    private Set<MedicamentMedicalService> formForNewMedicalService(Set<MedicamentCountBindingModel> modelsSet) {
         //TODO задавать размер мапы из количества медикаметов. Написать запрос.
         Map<Long, Medicament> medicamentMap = new HashMap<>();
         this.medicamentDao.getAll()
@@ -174,9 +174,9 @@ public class MedicalServiceEjbImpl implements MedicalServiceEjbLocal {
                         medicament
                 ));
 
-        /* Формирование списка медикаментов привязанных к услуге. */
+        /* Формирование множества медикаментов привязанных к услуге. */
         return modelsSet.stream()
-                .map(medicamentCountBindingModel -> new MedicamentMedicalService.Builder()
+                .map(medicamentCountBindingModel -> MedicamentMedicalService.builder()
                         .medicament(medicamentMap.get(medicamentCountBindingModel.getMedicamentId()))
                         .count(medicamentCountBindingModel.getCount())
                         .price(
@@ -185,6 +185,6 @@ public class MedicalServiceEjbImpl implements MedicalServiceEjbLocal {
                                 ).getPrice()
                         )
                         .build())
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 }

@@ -2,7 +2,7 @@ package com.ulstu.pharmacy.pmmsl.medservice.ejb;
 
 
 import com.ulstu.pharmacy.pmmsl.medservice.view.MedicalServiceViewModel;
-import com.ulstu.pharmacy.pmmsl.pharmacy.binding.MedicamentCountBindingModel;
+import com.ulstu.pharmacy.pmmsl.medicament.binding.MedicamentCountBindingModel;
 
 import javax.ejb.Local;
 import java.sql.Timestamp;

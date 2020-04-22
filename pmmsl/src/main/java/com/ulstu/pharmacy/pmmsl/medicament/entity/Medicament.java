@@ -49,6 +49,10 @@ public class Medicament extends AbstractEntity<Long> {
         return super.getId();
     }
 
+    public static Medicament.Builder builder() {
+        return new Medicament.Builder();
+    }
+
     public static class Builder {
         private Medicament newMedicament;
 
