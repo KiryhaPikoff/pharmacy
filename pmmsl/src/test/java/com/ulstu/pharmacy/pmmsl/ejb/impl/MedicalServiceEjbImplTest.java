@@ -203,17 +203,26 @@ public class MedicalServiceEjbImplTest {
     public void writeOffMedServiceWithMedicamentsNotInStock() {
         MedicalService writeOffedMedicalService = this.initMedicalServices().get(0);
 
+        Mockito.when(medicalServiceDao.existsById(Mockito.anyObject()))
+                .thenReturn(true);
+
         Mockito.when(medicalServiceDao.isAlreadyDiscounted(Mockito.anyObject()))
                 .thenReturn(false);
+
+        Mockito.when(medicalServiceDao.findById(Mockito.anyObject()))
+                .thenReturn(Optional.ofNullable(writeOffedMedicalService));
+
+        Mockito.doThrow(new MedicamentWriteOffException(""))
+                .when(pharmacyEjb)
+                .writeOffMedicaments(Mockito.anySet());
+
 
         Mockito.when(pharmacyEjb.isMedicamentInStocks(Mockito.anyObject()))
                 .thenReturn(false);
 
         medicalServiceEjb.writeOff(writeOffedMedicalService.getId());
 
-        Mockito.verify(pharmacyEjb, Mockito.times(writeOffedMedicalService.getMedicamentMedicalServices().size()))
-                .isMedicamentInStocks(Mockito.anyObject());
-        Mockito.verify(pharmacyEjb, Mockito.never())
+        Mockito.verify(pharmacyEjb)
                 .writeOffMedicaments(Mockito.anyObject());
     }
 
@@ -223,6 +232,9 @@ public class MedicalServiceEjbImplTest {
      */
     public void writeOffMedServiceThatAlreadyWriteOff() {
         MedicalService writeOffedMedicalService = this.initMedicalServices().get(0);
+
+        Mockito.when(medicalServiceDao.existsById(Mockito.anyObject()))
+                .thenReturn(true);
 
         Mockito.when(pharmacyEjb.isMedicamentInStocks(Mockito.anyObject()))
                 .thenReturn(true);
