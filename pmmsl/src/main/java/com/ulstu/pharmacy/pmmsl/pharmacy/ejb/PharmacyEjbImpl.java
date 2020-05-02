@@ -5,6 +5,7 @@ import com.ulstu.pharmacy.pmmsl.common.exception.CrudOperationException;
 import com.ulstu.pharmacy.pmmsl.common.exception.MedicamentWriteOffException;
 import com.ulstu.pharmacy.pmmsl.medicament.binding.MedicamentCountBindingModel;
 import com.ulstu.pharmacy.pmmsl.medicament.dao.MedicamentDao;
+import com.ulstu.pharmacy.pmmsl.medicament.entity.Medicament;
 import com.ulstu.pharmacy.pmmsl.medicament.mapper.MedicamentMapper;
 import com.ulstu.pharmacy.pmmsl.medicament.view.MedicamentViewModel;
 import com.ulstu.pharmacy.pmmsl.pharmacy.binding.PharmacyBindingModel;
@@ -123,7 +124,7 @@ public class PharmacyEjbImpl implements PharmacyEjbLocal {
     @Override
     @Transactional(Transactional.TxType.SUPPORTS)
     public boolean isMedicamentInStocks(MedicamentCountBindingModel medicamentCountBindingModel) {
-        if (Objects.nonNull(this.validateDiscountArgs(medicamentCountBindingModel))) {
+        if (Objects.nonNull(this.checkMedicamentCountArgs(medicamentCountBindingModel))) {
             return false;
         }
         List<PharmacyMedicament> medicamentsInStock = this.getByMedicamentId(
@@ -144,11 +145,23 @@ public class PharmacyEjbImpl implements PharmacyEjbLocal {
      * Метод пополнения медикаментов аптеки по её id.
      *
      * @param pharmacyId                   id аптеки, медикаменты которой хотим пополнить.
-     * @param medicamentCountBindingModels множество медикаментов с количеством для пополнения.
+     * @param medicamentsCountSet множество медикаментов с количеством для пополнения.
      */
     @Override
-    public void addMedicaments(Long pharmacyId, Set<MedicamentCountBindingModel> medicamentCountBindingModels) {
-
+    @Transactional(value = Transactional.TxType.MANDATORY)
+    public void replenishMedicaments(Long pharmacyId, Set<MedicamentCountBindingModel> medicamentsCountSet) {
+        List<String> errors = new LinkedList<>();
+        if (!pharmacyDao.existsById(pharmacyId)) {
+            errors.add("Pharmacy with an id = " + pharmacyId + " not exist; ");
+        } else {
+            errors.addAll(
+                    this.checkMedicamentCountArgs(medicamentsCountSet)
+            );
+            if (!errors.isEmpty()) {
+                throw new MedicamentWriteOffException(String.join(" | ", errors));
+            }
+        }
+        this.applyReplenishment(pharmacyId, medicamentsCountSet);
     }
 
     /**
@@ -159,21 +172,47 @@ public class PharmacyEjbImpl implements PharmacyEjbLocal {
     @Override
     @Transactional(value = Transactional.TxType.MANDATORY)
     public void writeOffMedicaments(Set<MedicamentCountBindingModel> medicamentsCountSet) {
-
-        List<String> errors = this.validateDiscountArgs(medicamentsCountSet);
-
+        List<String> errors = this.checkMedicamentCountArgs(medicamentsCountSet);
         if (!errors.isEmpty()) {
             throw new MedicamentWriteOffException(String.join(" | ", errors));
         } else {
-            this.applyDiscount(medicamentsCountSet);
+            this.applyWriteOff(medicamentsCountSet);
         }
     }
 
     /**
-     * Здесь сожержится логика списания и она применяется к переданному множеству медикаментов.
+     * Здесь содержится логика пополнения и она применяется к переданному множеству медикаментов.
+     * @param pharmacyId id аптеки в которую медикаменты будут пополняться.
      * @param medicamentsCountSet множество медикаментов с количеством для списания.
      */
-    private void applyDiscount(Set<MedicamentCountBindingModel> medicamentsCountSet) {
+    private void applyReplenishment(Long pharmacyId, Set<MedicamentCountBindingModel> medicamentsCountSet) {
+        medicamentsCountSet.forEach(medicamentCount -> {
+            PharmacyMedicament addableMedicament = pharmacyMedicamentDao.getByPharmacyAndMedicamentId(
+                    pharmacyId,
+                    medicamentCount.getMedicamentId()
+            );
+            if(Objects.isNull(addableMedicament)) {
+                addableMedicament = PharmacyMedicament.builder()
+                        .medicament(Medicament.builder().id(medicamentCount.getMedicamentId()).build())
+                        //TODO сомнительно
+                        .pharmacy(Pharmacy.builder().id(pharmacyId).build())
+                        .count(medicamentCount.getCount())
+                        .build();
+                pharmacyMedicamentDao.save(addableMedicament);
+            } else {
+                addableMedicament.setCount(
+                        addableMedicament.getCount() + medicamentCount.getCount()
+                );
+                pharmacyMedicamentDao.update(addableMedicament);
+            }
+        });
+    }
+
+    /**
+     * Здесь содержится логика списания и она применяется к переданному множеству медикаментов.
+     * @param medicamentsCountSet множество медикаментов с количеством для списания.
+     */
+    private void applyWriteOff(Set<MedicamentCountBindingModel> medicamentsCountSet) {
         List<PharmacyMedicament> pharmacyMedicaments = this.pharmacyMedicamentDao.getAll();
         for (MedicamentCountBindingModel medicamentCount : medicamentsCountSet) {
             List<PharmacyMedicament> medicamentsWithThatId = pharmacyMedicaments.stream()
@@ -194,7 +233,6 @@ public class PharmacyEjbImpl implements PharmacyEjbLocal {
                     // Обновляем количество, которое осталось списать
                     restToDiscount -= toDiscount;
                     this.pharmacyMedicamentDao.update(pharmacyMedicament);
-                    // создание движения...
                 }
                 /* Если списали уже достаточно, то выходим из цикла. */
                 if(restToDiscount == 0) {
@@ -216,10 +254,10 @@ public class PharmacyEjbImpl implements PharmacyEjbLocal {
      * @param medicamentsWithCounts
      * @return список ошибок.
      */
-    private List<String> validateDiscountArgs(Set<MedicamentCountBindingModel> medicamentsWithCounts) {
+    private List<String> checkMedicamentCountArgs(Set<MedicamentCountBindingModel> medicamentsWithCounts) {
         List<String> errors = new LinkedList<>();
         for (MedicamentCountBindingModel medicamentWithCount : medicamentsWithCounts) {
-            String error = this.validateDiscountArgs(medicamentWithCount);
+            String error = this.checkMedicamentCountArgs(medicamentWithCount);
             if (Objects.nonNull(error)) {
                 errors.add(error);
             }
@@ -233,7 +271,7 @@ public class PharmacyEjbImpl implements PharmacyEjbLocal {
      * @return строка с описанием ошибок в переданных аргументах
      * Если строка null - ошибок нет.
      */
-    private String validateDiscountArgs(MedicamentCountBindingModel model) {
+    private String checkMedicamentCountArgs(MedicamentCountBindingModel model) {
         StringBuilder errors = new StringBuilder();
 
         if(Objects.isNull(model)) {

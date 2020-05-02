@@ -2,8 +2,8 @@ package com.ulstu.pharmacy.pmmsl.medicament.ejb;
 
 import com.ulstu.pharmacy.pmmsl.common.exception.CrudOperationException;
 import com.ulstu.pharmacy.pmmsl.medicament.binding.MedicamentBindingModel;
+import com.ulstu.pharmacy.pmmsl.medicament.checker.MedicamentChecker;
 import com.ulstu.pharmacy.pmmsl.medicament.dao.MedicamentDao;
-import com.ulstu.pharmacy.pmmsl.medicament.entity.Medicament;
 import com.ulstu.pharmacy.pmmsl.medicament.mapper.MedicamentMapper;
 import com.ulstu.pharmacy.pmmsl.medicament.view.MedicamentViewModel;
 
@@ -21,11 +21,15 @@ public class MedicamentEjbImpl implements MedicamentEjbLocal {
 
     private final MedicamentMapper medicamentMapper;
 
+    private final MedicamentChecker medicamentChecker;
+
     @Inject
     public MedicamentEjbImpl(MedicamentDao medicamentDao,
-                             MedicamentMapper medicamentMapper) {
+                             MedicamentMapper medicamentMapper,
+                             MedicamentChecker medicamentChecker) {
         this.medicamentDao = medicamentDao;
         this.medicamentMapper = medicamentMapper;
+        this.medicamentChecker = medicamentChecker;
     }
 
     /**
@@ -61,20 +65,19 @@ public class MedicamentEjbImpl implements MedicamentEjbLocal {
     @Override
     @Transactional(Transactional.TxType.SUPPORTS)
     public void createOrUpdate(MedicamentBindingModel medicamentBindingModel) {
-        if(Objects.isNull(medicamentBindingModel)) {
-            throw new CrudOperationException("MedicamentBindingModel is null!");
+        if (Objects.isNull(medicamentBindingModel)) {
+            throw new CrudOperationException("MedicamentBindingModel is null; ");
         }
-
-        if(Objects.isNull(medicamentBindingModel.getId())) {
-            String validationErrors = this.validateCreateArgs(medicamentBindingModel);
-            if(Objects.nonNull(validationErrors)) {
-                throw new CrudOperationException(validationErrors);
+        if (Objects.isNull(medicamentBindingModel.getId())) {
+            String errors = this.medicamentChecker.createCheck(medicamentBindingModel);
+            if(!errors.isBlank()) {
+                throw new CrudOperationException(errors);
             }
-            this.add(medicamentBindingModel);
+            this.create(medicamentBindingModel);
         } else {
-            String validationErrors = this.validateUpdateArgs(medicamentBindingModel);
-            if(Objects.nonNull(validationErrors)) {
-                throw new CrudOperationException(validationErrors);
+            String errors = this.medicamentChecker.updateCheck(medicamentBindingModel);
+            if(!errors.isBlank()) {
+                throw new CrudOperationException(errors);
             }
             this.update(medicamentBindingModel);
         }
@@ -88,31 +91,20 @@ public class MedicamentEjbImpl implements MedicamentEjbLocal {
     @Override
     @Transactional(Transactional.TxType.SUPPORTS)
     public void delete(Long id) {
-
-        if(Objects.isNull(id)) {
-            throw new CrudOperationException("Id is null");
+        String validationErrors = this.medicamentChecker.deleteCheck(id);
+        if (!validationErrors.isBlank()) {
+            throw new CrudOperationException(validationErrors);
         }
-
-        if(!this.medicamentDao.existsById(id)) {
-            throw new CrudOperationException("Medicament with an id = " + id + " not exist!");
-        } else {
-            this.medicamentDao.deleteById(id);
-        }
+        this.medicamentDao.deleteById(id);
     }
 
     /**
      * Метод сохранения медикамента в БД.
      * @param medicamentBindingModel
      */
-    private void add(MedicamentBindingModel medicamentBindingModel) {
+    private void create(MedicamentBindingModel medicamentBindingModel) {
         this.medicamentDao.save(
-                Medicament.builder()
-                        .name(medicamentBindingModel.getName())
-                        .description(medicamentBindingModel.getDescription())
-                        .instruction(medicamentBindingModel.getInstruction())
-                        .contraindications(medicamentBindingModel.getContraindications())
-                        .price(medicamentBindingModel.getPrice())
-                        .build()
+                this.medicamentMapper.toEntity(medicamentBindingModel)
         );
     }
 
@@ -121,74 +113,8 @@ public class MedicamentEjbImpl implements MedicamentEjbLocal {
      * @param medicamentBindingModel
      */
     private void update(MedicamentBindingModel medicamentBindingModel) {
-        Medicament updateMedicament = Medicament.builder()
-                .name(medicamentBindingModel.getName())
-                .description(medicamentBindingModel.getDescription())
-                .instruction(medicamentBindingModel.getInstruction())
-                .contraindications(medicamentBindingModel.getContraindications())
-                .price(medicamentBindingModel.getPrice())
-                .build();
-        updateMedicament.setId(medicamentBindingModel.getId());
-        this.medicamentDao.update(updateMedicament);
-    }
-
-    /**
-     * Валидация аргументов для создания медикамента.
-     * @return если строка null - нет ошибок. В противном случае все ошибки перечислены.
-     */
-    private String validateCreateArgs(MedicamentBindingModel medicamentBindingModel) {
-        StringBuilder errors = new StringBuilder();
-
-        if (Objects.isNull(medicamentBindingModel.getName())) {
-            errors.append("Name is null; ");
-        } else {
-            if(this.medicamentDao.existByName(medicamentBindingModel.getName())) {
-                errors.append("Medicament with a name = ")
-                        .append(medicamentBindingModel.getName())
-                        .append(" already exist; ");
-            }
-        }
-        if (Objects.isNull(medicamentBindingModel.getDescription())) {
-            errors.append("Description is null; ");
-        }
-        if (Objects.isNull(medicamentBindingModel.getContraindications())) {
-            errors.append("Contraindications are null; ");
-        }
-        if (Objects.isNull(medicamentBindingModel.getInstruction())) {
-            errors.append("Instruction is null; ");
-        }
-        if (Objects.isNull(medicamentBindingModel.getPrice())) {
-            errors.append("Price is null; ");
-        } else {
-            if (medicamentBindingModel.getPrice().signum() == -1) {
-                errors.append("Price is negative ; ");
-            }
-        }
-
-        return errors.toString().isEmpty() ? null : errors.toString();
-    }
-
-    /**
-     * Валидация аргументов для изменения медикамента.
-     * @return если строка null - нет ошибок. В противном случае все ошибки перечислены.
-     */
-    private String validateUpdateArgs(MedicamentBindingModel medicamentBindingModel) {
-        StringBuilder errors = new StringBuilder();
-
-        if (Objects.isNull(medicamentBindingModel.getId())) {
-            errors.append("Id is null; ");
-        } else {
-            if (this.medicamentDao.existsById(medicamentBindingModel.getId())) {
-                errors.append("Medicament with an id = ")
-                        .append(medicamentBindingModel.getId())
-                        .append(" not exist; ");
-            }
-        }
-        String otherArgsErrors = this.validateCreateArgs(medicamentBindingModel);
-        if (Objects.nonNull(otherArgsErrors)) {
-            errors.append(otherArgsErrors);
-        }
-
-        return errors.toString().isEmpty() ? null : errors.toString();
+        this.medicamentDao.update(
+                this.medicamentMapper.toEntity(medicamentBindingModel)
+        );
     }
 }

@@ -3,7 +3,6 @@ package com.ulstu.pharmacy.pmmsl.supply.ejb;
 import com.ulstu.pharmacy.pmmsl.pharmacy.ejb.PharmacyEjbLocal;
 import com.ulstu.pharmacy.pmmsl.supply.binding.SupplyBindingModel;
 import com.ulstu.pharmacy.pmmsl.supply.dao.SupplyDao;
-import com.ulstu.pharmacy.pmmsl.supply.dao.SupplyMedicamentDao;
 import com.ulstu.pharmacy.pmmsl.supply.mapper.SupplyMapper;
 import com.ulstu.pharmacy.pmmsl.supply.view.SupplyViewModel;
 

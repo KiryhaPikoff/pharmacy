@@ -12,4 +12,6 @@ public abstract class PharmacyMedicamentDao extends AbstractDao<PharmacyMedicame
     }
 
     public abstract List<PharmacyMedicament> getAll();
+
+    public abstract PharmacyMedicament getByPharmacyAndMedicamentId(Long pharmacyId, Long medicamentId);
 }

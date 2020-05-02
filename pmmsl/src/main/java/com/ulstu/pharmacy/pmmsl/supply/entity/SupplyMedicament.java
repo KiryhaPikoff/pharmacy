@@ -33,6 +33,10 @@ public class SupplyMedicament extends AbstractEntity<Long> {
         return super.getId();
     }
 
+    public static SupplyMedicament.Builder builder() {
+        return new SupplyMedicament.Builder();
+    }
+
     public static class Builder {
         private SupplyMedicament newSupplyMedicament;
 

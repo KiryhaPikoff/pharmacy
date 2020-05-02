@@ -44,9 +44,9 @@ public interface PharmacyEjbLocal {
     /**
      * Метод пополнения медикаментов аптеки по её id.
      * @param pharmacyId id аптеки, медикаменты которой хотим пополнить.
-     * @param medicamentCountBindingModels множество медикаментов с количеством для пополнения.
+     * @param medicamentsCountSet множество медикаментов с количеством для пополнения.
      */
-    void addMedicaments(Long pharmacyId, Set<MedicamentCountBindingModel> medicamentCountBindingModels);
+    void replenishMedicaments(Long pharmacyId, Set<MedicamentCountBindingModel> medicamentsCountSet);
 
     /**
      * Метод списания медикаментов с аптек.

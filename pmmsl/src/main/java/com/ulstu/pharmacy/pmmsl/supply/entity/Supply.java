@@ -35,6 +35,10 @@ public class Supply extends AbstractEntity<Long> {
         return super.getId();
     }
 
+    public static Supply.Builder builder() {
+        return new Supply.Builder();
+    }
+
     public static class Builder {
         private Supply newSupply;
 

@@ -3,7 +3,6 @@ package com.ulstu.pharmacy.pmmsl.supply.ejb;
 import com.ulstu.pharmacy.pmmsl.supply.binding.SupplyBindingModel;
 import com.ulstu.pharmacy.pmmsl.supply.view.SupplyViewModel;
 
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.List;
 
