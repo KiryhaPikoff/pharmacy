@@ -1,6 +1,6 @@
-package com.ulstu.pharmacy.pmmsl.report.helper.doc;
+package com.ulstu.pharmacy.pmmsl.report.facade.doc;
 
-import com.ulstu.pharmacy.pmmsl.report.helper.util.Style;
+import com.ulstu.pharmacy.pmmsl.report.facade.util.Style;
 
 import java.io.File;
 
@@ -8,6 +8,9 @@ import java.io.File;
  *  Фасад для работы с .doc файлами.
  */
 public interface DocFacade {
+
+    /** Инициализирует новый документ. */
+    void createNew();
 
     /** Добавляет текст в файл. */
     void append(String text);

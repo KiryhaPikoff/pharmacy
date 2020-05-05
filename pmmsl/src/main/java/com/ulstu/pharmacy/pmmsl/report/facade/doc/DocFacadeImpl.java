@@ -1,6 +1,6 @@
-package com.ulstu.pharmacy.pmmsl.report.helper.doc;
+package com.ulstu.pharmacy.pmmsl.report.facade.doc;
 
-import com.ulstu.pharmacy.pmmsl.report.helper.util.Style;
+import com.ulstu.pharmacy.pmmsl.report.facade.util.Style;
 import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
@@ -8,7 +8,6 @@ import org.apache.poi.xwpf.usermodel.XWPFRun;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.rmi.server.ExportException;
 
 public class DocFacadeImpl implements DocFacade {
 
@@ -16,9 +15,13 @@ public class DocFacadeImpl implements DocFacade {
 
     private XWPFParagraph currentParagraph;
 
-    private final Style DEFAULT_STYLE;
+    private Style DEFAULT_STYLE;
 
-    public DocFacadeImpl() {
+    /**
+     * Инициализирует новый документ.
+     */
+    @Override
+    public void createNew() {
         this.document = new XWPFDocument();
         this.currentParagraph = this.document.createParagraph();
         this.DEFAULT_STYLE = Style.builder()

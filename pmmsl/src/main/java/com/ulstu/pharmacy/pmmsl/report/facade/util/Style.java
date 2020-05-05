@@ -1,4 +1,4 @@
-package com.ulstu.pharmacy.pmmsl.report.helper.util;
+package com.ulstu.pharmacy.pmmsl.report.facade.util;
 
 import lombok.Builder;
 import lombok.Getter;

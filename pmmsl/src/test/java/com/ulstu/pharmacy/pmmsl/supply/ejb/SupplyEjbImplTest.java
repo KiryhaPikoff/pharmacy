@@ -9,7 +9,7 @@ import com.ulstu.pharmacy.pmmsl.supply.binding.SupplyBindingModel;
 import com.ulstu.pharmacy.pmmsl.supply.dao.SupplyDaoImpl;
 import com.ulstu.pharmacy.pmmsl.supply.entity.Supply;
 import com.ulstu.pharmacy.pmmsl.supply.entity.SupplyMedicament;
-import com.ulstu.pharmacy.pmmsl.supply.mapper.SupplyMapper;
+import com.ulstu.pharmacy.pmmsl.supply.mapper.SupplyMapperImpl;
 import com.ulstu.pharmacy.pmmsl.supply.view.SupplyViewModel;
 import junit.framework.Assert;
 import org.junit.Before;
@@ -40,7 +40,7 @@ public class SupplyEjbImplTest {
     private SupplyDaoImpl supplyDao;
 
     @Mock
-    private SupplyMapper supplyMapper;
+    private SupplyMapperImpl supplyMapper;
 
     @InjectMocks
     private SupplyEjbImpl supplyEjb;
@@ -108,10 +108,12 @@ public class SupplyEjbImplTest {
         Assert.assertEquals(expectedFromDate, timestamps.get(0));
         Assert.assertEquals(expectedToDay, timestamps.get(1));
 
+        List<SupplyViewModel> expected = expectedSupplys.stream()
+                .map(supplyMapper::toViewModel)
+                .collect(Collectors.toList());
+
         Assert.assertEquals(
-                expectedSupplys.stream()
-                        .map(supplyMapper::toViewModel)
-                        .collect(Collectors.toList()),
+                expected,
                 actualSupplyViewModels
         );
     }
@@ -169,12 +171,12 @@ public class SupplyEjbImplTest {
                                 Set.of(
                                         SupplyMedicament.builder()
                                                 .id(0L)
-                                                .medicament(medicaments.get(2))
+                                                .medicament(medicaments.get(1))
                                                 .count(15)
                                                 .build(),
                                         SupplyMedicament.builder()
                                                 .id(1L)
-                                                .medicament(medicaments.get(4))
+                                                .medicament(medicaments.get(3))
                                                 .count(3)
                                                 .build()
                                 )

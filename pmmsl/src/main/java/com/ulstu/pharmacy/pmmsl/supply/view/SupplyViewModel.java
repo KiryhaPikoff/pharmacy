@@ -1,10 +1,7 @@
 package com.ulstu.pharmacy.pmmsl.supply.view;
 
 import com.ulstu.pharmacy.pmmsl.medicament.view.MedicamentCountViewModel;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.sql.Timestamp;
 import java.util.Set;
@@ -13,6 +10,7 @@ import java.util.Set;
 @Setter
 @Builder
 @EqualsAndHashCode
+@ToString
 public class SupplyViewModel {
 
     @EqualsAndHashCode.Exclude
