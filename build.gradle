@@ -12,6 +12,7 @@ ext {
     GUAVA_VERSION       = '28.2-jre'
     LOGBACK_VERSION     = '1.2.3'
     APACHE_POI_VERSION  = '4.1.2'
+    ITEXT_VERSION       = '5.5.13.1'
 
     JUNIT_VERSION       = '4.12'
     MOCKITO_VERSION     = '2.0.2-beta'

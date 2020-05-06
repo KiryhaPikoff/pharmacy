@@ -5,6 +5,7 @@ import com.ulstu.pharmacy.pmmsl.medservice.entity.MedicalService;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 public class MedicalServiceDaoImpl extends MedicalServiceDao {
 
@@ -37,5 +38,16 @@ public class MedicalServiceDaoImpl extends MedicalServiceDao {
                 .setParameter("medicalServiceId", medicalServiceId)
                 .getSingleResult()
         );
+    }
+
+    @Override
+    public List<MedicalService> getByIds(Set<Long> ids) {
+        return this.entityManager
+                .createQuery(
+                        "SELECT ms FROM MedicalService ms" +
+                                " WHERE ms.id IN :ids"
+                )
+                .setParameter("ids", ids)
+                .getResultList();
     }
 }

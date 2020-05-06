@@ -55,6 +55,19 @@ public class MedicalServiceEjbImpl implements MedicalServiceEjbLocal {
     }
 
     /**
+     * Получение услуг по их id.
+     *
+     * @param ids
+     * @return
+     */
+    @Override
+    public List<MedicalServiceViewModel> getByIds(Set<Long> ids) {
+        return medicalServiceDao.getByIds(ids).stream()
+                .map(medicalServiceMapper::toViewModel)
+                .collect(Collectors.toList());
+    }
+
+    /**
      * Метод получения списка услуг, дата списания которых входит в указанный период.
      *
      * @param fromDate "С" какого времени.

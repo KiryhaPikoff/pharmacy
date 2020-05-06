@@ -5,6 +5,7 @@ import com.ulstu.pharmacy.pmmsl.medservice.entity.MedicalService;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Set;
 
 public abstract class MedicalServiceDao extends AbstractDao<MedicalService, Long> {
 
@@ -17,4 +18,6 @@ public abstract class MedicalServiceDao extends AbstractDao<MedicalService, Long
     public abstract List<MedicalService> getFromDateToDate(Timestamp from, Timestamp to);
 
     public abstract boolean isAlreadyDiscounted(Long medicalServiceId);
+
+    public abstract List<MedicalService> getByIds(Set<Long> ids);
 }

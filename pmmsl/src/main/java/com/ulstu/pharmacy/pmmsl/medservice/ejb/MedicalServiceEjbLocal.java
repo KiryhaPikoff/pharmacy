@@ -19,6 +19,14 @@ public interface MedicalServiceEjbLocal {
      */
     List<MedicalServiceViewModel> getAll();
 
+
+    /**
+     * Получение услуг по их id.
+     * @param ids
+     * @return
+     */
+    List<MedicalServiceViewModel> getByIds(Set<Long> ids);
+
     /**
      * Метод получения списка услуг, дата списания которых входит в указанный период.
      *
