@@ -35,6 +35,8 @@ dependencies {
     // earlib group: 'log4j', name: 'log4j'
     earlib group: 'org.liquibase',      name: 'liquibase-core',     version: this.LIQUIBASE_VERSION
     earlib group: 'com.google.guava',   name: 'guava',              version: this.GUAVA_VERSION
+    earlib group: 'org.apache.poi', name: 'poi-ooxml',              version: this.APACHE_POI_VERSION
+    earlib group: 'com.itextpdf', name: 'itextpdf',                 version: this.ITEXT_VERSION
 }
 
 ear {
