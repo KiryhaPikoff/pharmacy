@@ -73,8 +73,7 @@ public class DocFacadeImpl implements DocFacade {
                     new FileOutputStream(file)
         );
         } catch (Exception ex) {
-            //TODO логгер
-            throw new RuntimeException("Can't create file..");
+            throw new RuntimeException(ex.getMessage());
         }
         return file;
     }

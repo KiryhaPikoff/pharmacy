@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <f:view contentType="text/html" id="fview">
+        <h:head>
+                <p:layout fullPage="true" style="background-color:#FFFFFF;">
+
+                    <p:layoutUnit position="north" styleClass="north-panel" size="35" id="north" >
+                        <h:outputText value="Здесь могла быть ваша реклама.." style="font: bold"/>
+                    </p:layoutUnit>
+
+                    <p:layoutUnit  position="west" styleClass="" style="width: auto; display:none;" id="west">
+                        <h:form id="menuForm">
+                            <p:panelMenu style="width:250px">
+                                <p:submenu label="Справочник">
+                                    <p:menuitem value="Медикаменты" icon="pi pi-calendar-plus" />
+                                    <p:menuitem value="Аптеки"  icon="pi pi-home" />
+                                </p:submenu>
+                                <p:submenu label="Отчёты">
+                                    <p:menuitem value="Движение медикаментов"/>
+                                </p:submenu>
+                            </p:panelMenu>
+                        </h:form>
+                    </p:layoutUnit>
+
+                    <p:layoutUnit styleClass="layoutUnitCenter" position="center">
+                        <h:form id="mainForm">
+                            <p:messages autoUpdate="true" id="msgs" showDetail="true" showSummary="true" />
+                            <ui:insert name="content" />
+                        </h:form>
+                    </p:layoutUnit>
+
+                </p:layout>
+        </h:head>
+    </f:view>
+</html>

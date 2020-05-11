@@ -1,4 +1,5 @@
 rootProject.name = 'pharmacy'
 include 'ejb'
 include 'pmmsl'
+include 'web'
 

@@ -77,7 +77,7 @@ public class PharmacyEjbImpl implements PharmacyEjbLocal {
             String name = pharmacyBindingModel.getName();
             pharmacyDao.save(
                     Pharmacy.builder()
-                            .name(Objects.nonNull(name) ? name : "default" ) //TODO вынести дефолтное имя
+                            .name(Objects.nonNull(name) ? name : "default" )
                             .build()
             );
         }

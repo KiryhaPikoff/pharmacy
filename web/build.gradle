@@ -1,0 +1,47 @@
+plugins {
+    id 'war'
+}
+
+group 'com.ulstu.pharmacy'
+version '1.0'
+
+compileJava.options.encoding = 'UTF-8'
+compileTestJava.options.encoding = 'UTF-8'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url 'http://repository.primefaces.org' }
+}
+
+dependencies {
+    //-----------------------------< Javax >----------------------------------------------------------------------------
+    // https://mvnrepository.com/artifact/javax/javaee-api
+    implementation      group: 'javax', name: 'javaee-api',                 version: this.JAVAX_VERSION
+
+    //-----------------------------< JSF >------------------------------------------------------------------------------
+    // https://mvnrepository.com/artifact/com.sun.faces/jsf-api
+    implementation group: 'com.sun.faces', name: 'jsf-api', version: '2.2.4'
+    // https://mvnrepository.com/artifact/com.sun.faces/jsf-impl
+    implementation group: 'com.sun.faces', name: 'jsf-impl', version: '2.2.20'
+
+    //-----------------------------< PrimeFaces >-----------------------------------------------------------------------
+    // https://mvnrepository.com/artifact/org.primefaces/primefaces
+    implementation group: 'org.primefaces', name: 'primefaces',             version: this.PRIME_FACES_VERSION
+
+    // https://mvnrepository.com/artifact/org.primefaces.themes/all-themes
+    implementation group: 'org.primefaces.themes', name: 'all-themes', version: '1.0.10'
+
+    //-----------------------------< Lombok >---------------------------------------------------------------------------
+    // https://mvnrepository.com/artifact/org.projectlombok/lombok
+    annotationProcessor group: 'org.projectlombok', name: 'lombok',         version: this.LOMBOK_VERSION
+    implementation      group: 'org.projectlombok', name: 'lombok',         version: this.LOMBOK_VERSION
+
+    //-----------------------------< Logback >--------------------------------------------------------------------------
+    // https://mvnrepository.com/artifact/ch.qos.logback/logback-classic
+    implementation      group: 'ch.qos.logback', name: 'logback-classic',   version: this.LOGBACK_VERSION
+
+    //-----------------------------< PMMSL >----------------------------------------------------------------------------
+    // https://mvnrepository.com/artifact/ch.qos.logback/logback-classic
+    providedCompile     group: 'com.ulstu.pharmacy', name: 'pmmsl',         version: this.PMMSL_VERSION
+}

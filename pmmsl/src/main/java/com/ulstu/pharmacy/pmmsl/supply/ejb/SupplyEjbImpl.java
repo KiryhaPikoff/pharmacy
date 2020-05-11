@@ -45,13 +45,10 @@ public class SupplyEjbImpl implements SupplyEjbLocal {
     @Override
     @Transactional(Transactional.TxType.MANDATORY)
     public void create(SupplyBindingModel supplyBindingModel) {
-        //TODO проверка значений
-        // пополнение в аптеке
         pharmacyEjbLocal.replenishMedicaments(
                 supplyBindingModel.getPharmacyId(),
                 supplyBindingModel.getMedicamentCountSet()
         );
-        //TODO формирование сущности
         Supply newSupply = Supply.builder()
                 //TODO рабочее?
                 .pharmacy(Pharmacy.builder().id(supplyBindingModel.getPharmacyId()).build())
@@ -64,7 +61,6 @@ public class SupplyEjbImpl implements SupplyEjbLocal {
                         ).collect(Collectors.toSet())
                 )
                 .build();
-        // сохранение
         supplyDao.save(newSupply);
     }
 
@@ -77,7 +73,6 @@ public class SupplyEjbImpl implements SupplyEjbLocal {
      */
     @Override
     public List<SupplyViewModel> getFromDateToDate(Timestamp fromDate, Timestamp toDate) {
-
         StringBuilder errors = new StringBuilder();
         errors.append(Objects.isNull(fromDate) ? "DateFrom is null; "           : "");
         errors.append(Objects.isNull(toDate)   ? "DateTo is null; "             : "");

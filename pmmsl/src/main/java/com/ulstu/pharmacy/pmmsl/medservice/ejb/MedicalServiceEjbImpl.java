@@ -173,6 +173,8 @@ public class MedicalServiceEjbImpl implements MedicalServiceEjbLocal {
                 .build();
 
         this.medicalServiceDao.save(newMedicalService);
+        //TODO может быть ошибка
+      //  this.writeOff(newMedicalService.getId());
     }
 
     /**
@@ -181,7 +183,6 @@ public class MedicalServiceEjbImpl implements MedicalServiceEjbLocal {
      * @return множество сформированных медикаментов для услуги.
      */
     private Set<MedicamentMedicalService> formForNewMedicalService(Set<MedicamentCountBindingModel> modelsSet) {
-        //TODO задавать размер мапы из количества медикаметов. Написать запрос.
         Map<Long, Medicament> medicamentMap = new HashMap<>();
         this.medicamentDao.getAll()
                 .forEach(medicament -> medicamentMap.put(

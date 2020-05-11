@@ -2,6 +2,7 @@ package com.ulstu.pharmacy.pmmsl.medicament.view;
 
 import lombok.*;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Getter
@@ -9,7 +10,7 @@ import java.math.BigDecimal;
 @Builder
 @ToString
 @EqualsAndHashCode
-public class MedicamentViewModel {
+public class MedicamentViewModel implements Serializable {
 
     @EqualsAndHashCode.Exclude
     private Long id;

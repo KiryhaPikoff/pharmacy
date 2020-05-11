@@ -124,7 +124,6 @@ public class ReportEjbImpl implements ReportEjbLocal {
      */
     @Override
     public FileModel createPdfMedicamentMovementReport(Timestamp fromDate, Timestamp toDate) {
-        //TODO проверка на даты?!
         var medicamentMovements = this.getMedicamentMovementFromToDate(fromDate, toDate);
         return pdfTemplate.getMedicamentMovement(medicamentMovements);
     }

@@ -30,7 +30,7 @@ public class PdfFacadeImpl implements PdfFacade {
             document.open();
             this.currentParagraph = new Paragraph();
         } catch (Exception ex) {
-            //TODO доделать
+            throw new RuntimeException(ex.getMessage());
         }
     }
 
@@ -53,7 +53,7 @@ public class PdfFacadeImpl implements PdfFacade {
             document.add(currentParagraph);
             this.currentParagraph = new Paragraph();
         } catch (Exception ex) {
-            //TODO доделать
+            throw new RuntimeException(ex.getMessage());
         }
     }
 

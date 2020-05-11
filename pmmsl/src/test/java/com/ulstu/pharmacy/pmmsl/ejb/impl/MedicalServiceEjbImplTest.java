@@ -190,8 +190,6 @@ public class MedicalServiceEjbImplTest {
         Mockito.verify(medicalServiceDao).update(medicalServiceArgumentCaptor.capture());
         MedicalService actualMedicalService = medicalServiceArgumentCaptor.getValue();
 
-        //TODO доделать
-
         Assert.assertNotNull(actualMedicalService.getProvisionDate());
     }
 
