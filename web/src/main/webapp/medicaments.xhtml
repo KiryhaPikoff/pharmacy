@@ -1,0 +1,72 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                template="templates/menu.xhtml">
+    <ui:define name="metadata">
+    </ui:define>
+
+    <ui:define name="content">
+
+        <style type="text/css">
+            .logo {
+                width: 5%;
+            }
+
+            .detail {
+                width: 95%;
+                padding-left: 20px;
+            }
+
+            .detail td {
+                font-size: 20px;
+            }
+
+            .ui-datascroller .ui-datascroller-item {
+                border-bottom: 1px solid #A8A8A8;
+                padding: 25px 10px;
+                /* with the exported variables from Nova and Luna Themes*/
+                border-bottom-color: var(--input-border-color, #A8A8A8);
+            }
+        </style>
+
+        <h:body>
+            <h:form id="mainForm">
+                <p:dataScroller value="#{medicamentController.medicaments}" var="medicament" chunkSize="10">
+                    <f:facet name="header">
+                        <h:outputText value="Список медикаментов" style="font-size: 20px; font: bold" />
+                    </f:facet>
+
+                    <h:panelGrid columns="2" style="width:100%" columnClasses="detail,logo">
+                        <p:outputPanel>
+                            <h:panelGrid columns="2" cellpadding="5">
+                                <h:outputText value="Название:" />
+                                <h:outputText value="#{medicament.name}" style="font-weight: bold"/>
+                                <h:outputText value="Цена:" />
+                                <h:outputText value="#{medicament.price}" style="font-weight: bold"/>
+                            </h:panelGrid>
+                        </p:outputPanel>
+
+                        <p:outputPanel>
+                            <p:commandLink update=":medicamentDetail" oncomplete="PF('medicamentDialog').show()">
+                                <h:outputText value="Информация" styleClass="pi pi-info-circle"/>
+                                <f:setPropertyActionListener value="#{medicament}" target="#{medicamentController.selectedMedicament}" />
+                            </p:commandLink>
+
+                            <p:commandLink update=":medicamentCreateUpdateDetail" oncomplete="PF('medicamentCreateUpdateDialog').show()" style="margin-top:20px; width: 100%;">
+                                <h:outputText value="Изменить" styleClass="pi pi-plus" style="margin-top:20px;"/>
+                                <f:setPropertyActionListener value="#{medicament}" target="#{medicamentController.selectedMedicament}" />
+                            </p:commandLink>
+
+                            <p:commandLink oncomplete="PF('medicamentDeleteDialog').show()" style="margin-top:20px;">
+                                <h:outputText value="Удалить" styleClass="pi pi-trash" style="margin-top:20px;"/>
+                                <f:setPropertyActionListener value="#{medicament}" target="#{medicamentController.selectedMedicament}" />
+                            </p:commandLink>
+                        </p:outputPanel>
+                    </h:panelGrid>
+                </p:dataScroller>
+            </h:form>
+        </h:body>
+    </ui:define>
+</ui:composition>

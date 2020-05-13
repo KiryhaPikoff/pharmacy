@@ -7,6 +7,7 @@
       xmlns:f="http://java.sun.com/jsf/core">
 
     <f:view contentType="text/html" id="fview">
+
         <h:head>
                 <p:layout fullPage="true" style="background-color:#FFFFFF;">
 
@@ -15,10 +16,14 @@
                     </p:layoutUnit>
 
                     <p:layoutUnit  position="west" styleClass="" style="width: auto; display:none;" id="west">
+                        <h:commandLink />
                         <h:form id="menuForm">
                             <p:panelMenu style="width:250px">
+                                <p:submenu label="Навигация">
+                                    <p:menuitem value="Главная" icon="pi pi-compass" url="http://localhost:8080/web-1.0/"/>
+                                </p:submenu>
                                 <p:submenu label="Справочник">
-                                    <p:menuitem value="Медикаменты" icon="pi pi-calendar-plus" />
+                                    <p:menuitem value="Медикаменты" icon="pi pi-calendar-plus" url="http://localhost:8080/web-1.0/medicaments.xhtml"/>
                                     <p:menuitem value="Аптеки"  icon="pi pi-home" />
                                 </p:submenu>
                                 <p:submenu label="Отчёты">
@@ -29,13 +34,50 @@
                     </p:layoutUnit>
 
                     <p:layoutUnit styleClass="layoutUnitCenter" position="center">
-                        <h:form id="mainForm">
-                            <p:messages autoUpdate="true" id="msgs" showDetail="true" showSummary="true" />
                             <ui:insert name="content" />
-                        </h:form>
                     </p:layoutUnit>
 
                 </p:layout>
         </h:head>
+
+        <p:dialog widgetVar="medicamentDialog" header="Медикамент" modal="true" dynamic="true" showEffect="fade" hideEffect="fade" resizable="false">
+            <p:outputPanel id="medicamentDetail" style="text-align:center;">
+                <p:panelGrid  style="max-width: 800px" columns="2" columnClasses="label,value">
+                    <h:outputText value="Название" />
+                    <h:outputText value="#{medicamentController.selectedMedicament.name}" />
+                    <h:outputText value="Цена" />
+                    <h:outputText value="#{medicamentController.selectedMedicament.price}" />
+                    <h:outputText value="Описание" />
+                    <h:outputText value="#{medicamentController.selectedMedicament.description}" />
+                    <h:outputText value="Инструкция к применению" />
+                    <h:outputText value="#{medicamentController.selectedMedicament.instruction}" />
+                    <h:outputText value="Противопоказания" />
+                    <h:outputText value="#{medicamentController.selectedMedicament.contraindications}" />
+                </p:panelGrid>
+            </p:outputPanel>
+        </p:dialog>
+
+        <p:dialog widgetVar="medicamentCreateUpdateDialog" header="Медикамент" modal="true" dynamic="true" showEffect="fade" hideEffect="fade" resizable="false">
+            <p:outputPanel id="medicamentCreateUpdateDetail" style="text-align:left; max-width: 500px">
+                <h:outputText value="Название:" />
+                <h:inputText value="#{medicamentController.selectedMedicament.name}" style="width: 100%;"/>
+                <h:outputText value="Цена:" />
+                <h:inputText value="#{medicamentController.selectedMedicament.price}" style="width: 100%;"/>
+                <h:outputText value="Описание:" />
+                <h:inputTextarea value="#{medicamentController.selectedMedicament.description}" style="width: 100%; min-width: 100%; max-width: 100%;"/>
+                <h:outputText value="Инструкция к применению:" />
+                <h:inputTextarea value="#{medicamentController.selectedMedicament.instruction}" style="width: 100%; min-width: 100%; max-width: 100%;"/>
+                <h:outputText value="Противопоказания:" />
+                <h:inputTextarea value="#{medicamentController.selectedMedicament.contraindications}" style="width: 100%; min-width: 100%; max-width: 100%;"/>
+            </p:outputPanel>
+        </p:dialog>
+
+        <p:dialog widgetVar="medicamentDeleteDialog" rendered="true" modal="true" dynamic="true" showEffect="fade" hideEffect="fade" resizable="false">
+            <p:outputPanel id="medicamentDeletion" style="text-align:center;">
+                <h:outputText value="Вы действительно хотите удалить медикамент: " />
+                <h:outputText value="#{medicamentController.selectedMedicament.name}" />
+                <p:commandButton value="Удалить" icon="pi pi-trash" action="#{medicamentController.deleteMedicament()}" style="margin-top:20px; width: 100%;"/>
+            </p:outputPanel>
+        </p:dialog>
     </f:view>
 </html>
