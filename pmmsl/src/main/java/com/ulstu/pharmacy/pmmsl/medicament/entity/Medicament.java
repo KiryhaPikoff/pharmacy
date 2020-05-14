@@ -5,7 +5,10 @@ import com.ulstu.pharmacy.pmmsl.medservice.entity.MedicamentMedicalService;
 import com.ulstu.pharmacy.pmmsl.pharmacy.entity.PharmacyMedicament;
 import lombok.*;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -16,6 +19,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
+@SequenceGenerator(name = "default_gen", sequenceName = "medicament_seq", allocationSize = 1)
 /** Медикамент. */
 public class Medicament extends AbstractEntity<Long> {
 
@@ -43,13 +47,6 @@ public class Medicament extends AbstractEntity<Long> {
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "medicalService")
     private List<MedicamentMedicalService> medicamentMedicalServices;
-
-    @Override
-    @SequenceGenerator(name = "medicament_seq", sequenceName = "medicament_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "medicament_seq")
-    public Long getId() {
-        return super.getId();
-    }
 
     public static Medicament.Builder builder() {
         return new Medicament.Builder();

@@ -3,7 +3,7 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:f="http://java.sun.com/jsf/core"
-                template="templates/menu.xhtml">
+                template="templates/main-template.xhtml">
     <ui:define name="metadata">
     </ui:define>
 
@@ -54,10 +54,10 @@
                                 <f:setPropertyActionListener value="#{medicament}" target="#{medicamentController.selectedMedicament}" />
                             </p:commandLink>
 
-                            <p:commandLink update=":medicamentCreateUpdateDetail" oncomplete="PF('medicamentCreateUpdateDialog').show()" style="margin-top:20px; width: 100%;">
+                    <!--        <p:commandLink update=":medicamentCreateUpdateDetail" oncomplete="PF('medicamentCreateUpdateDialog').show()" style="margin-top:20px; width: 100%;">
                                 <h:outputText value="Изменить" styleClass="pi pi-plus" style="margin-top:20px;"/>
                                 <f:setPropertyActionListener value="#{medicament}" target="#{medicamentController.selectedMedicament}" />
-                            </p:commandLink>
+                            </p:commandLink>    !-->
 
                             <p:commandLink oncomplete="PF('medicamentDeleteDialog').show()" style="margin-top:20px;">
                                 <h:outputText value="Удалить" styleClass="pi pi-trash" style="margin-top:20px;"/>

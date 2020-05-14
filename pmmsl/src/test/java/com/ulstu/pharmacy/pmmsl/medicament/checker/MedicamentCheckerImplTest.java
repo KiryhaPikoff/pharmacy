@@ -34,7 +34,7 @@ public class MedicamentCheckerImplTest {
 
     @Test
     public void createValidationCorrect() {
-        Mockito.when(medicamentDao.existByName(Mockito.anyString()))
+        Mockito.when(medicamentDao.existByNameAndNotId(Mockito.anyString(), Mockito.anyLong()))
                 .thenReturn(false);
 
         String errors = medicamentValidator.createCheck(
@@ -48,7 +48,7 @@ public class MedicamentCheckerImplTest {
                         .build()
         );
 
-        Mockito.verify(medicamentDao).existByName(Mockito.anyString());
+        Mockito.verify(medicamentDao).existByNameAndNotId(Mockito.anyString(), Mockito.anyLong());
 
         Assert.assertTrue(errors.isBlank());
     }
@@ -80,7 +80,7 @@ public class MedicamentCheckerImplTest {
 
     @Test
     public void createValidationNameExist() {
-        Mockito.when(medicamentDao.existByName(Mockito.anyString()))
+        Mockito.when(medicamentDao.existByNameAndNotId(Mockito.anyString(), Mockito.anyLong()))
                 .thenReturn(true);
 
         String errors = medicamentValidator.createCheck(
@@ -94,7 +94,7 @@ public class MedicamentCheckerImplTest {
                         .build()
         );
 
-        Mockito.verify(medicamentDao).existByName(Mockito.anyString());
+        Mockito.verify(medicamentDao).existByNameAndNotId(Mockito.anyString(), Mockito.anyLong());
 
         Assert.assertFalse(errors.isBlank());
     }
@@ -105,7 +105,7 @@ public class MedicamentCheckerImplTest {
         Mockito.when(medicamentDao.existsById(Mockito.anyLong()))
                 .thenReturn(true);
 
-        Mockito.when(medicamentDao.existByName(Mockito.anyString()))
+        Mockito.when(medicamentDao.existByNameAndNotId(Mockito.anyString(), Mockito.anyLong()))
                 .thenReturn(false);
 
         String errors = medicamentValidator.updateCheck(
@@ -119,7 +119,7 @@ public class MedicamentCheckerImplTest {
                         .build()
         );
 
-        Mockito.verify(medicamentDao).existByName(Mockito.anyString());
+        Mockito.verify(medicamentDao).existByNameAndNotId(Mockito.anyString(), Mockito.anyLong());
 
         Assert.assertTrue(errors.isBlank());
     }

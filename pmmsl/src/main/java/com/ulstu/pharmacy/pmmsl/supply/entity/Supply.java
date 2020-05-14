@@ -15,6 +15,7 @@ import java.util.Set;
 @AllArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = false)
+@SequenceGenerator(name = "default_gen", sequenceName = "supply_seq", allocationSize = 1)
 public class Supply extends AbstractEntity<Long> {
 
     @Column(nullable = false, updatable = false)
@@ -27,13 +28,6 @@ public class Supply extends AbstractEntity<Long> {
             cascade = CascadeType.ALL,
             fetch = FetchType.EAGER)
     private Set<SupplyMedicament> supplyMedicaments;
-
-    @Override
-    @SequenceGenerator(name = "supply_seq", sequenceName = "supply_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "supply_seq")
-    public Long getId() {
-        return super.getId();
-    }
 
     public static Supply.Builder builder() {
         return new Supply.Builder();

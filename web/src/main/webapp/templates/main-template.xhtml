@@ -22,10 +22,16 @@
                                 <p:submenu label="Навигация">
                                     <p:menuitem value="Главная" icon="pi pi-compass" url="http://localhost:8080/web-1.0/"/>
                                 </p:submenu>
+
                                 <p:submenu label="Справочник">
                                     <p:menuitem value="Медикаменты" icon="pi pi-calendar-plus" url="http://localhost:8080/web-1.0/medicaments.xhtml"/>
                                     <p:menuitem value="Аптеки"  icon="pi pi-home" />
                                 </p:submenu>
+
+                                <p:submenu label="Действия">
+                                    <p:menuitem value="Добавить медикамент" icon="pi pi-calendar-plus" url="http://localhost:8080/web-1.0/medicament-creation.xhtml"/>
+                                </p:submenu>
+
                                 <p:submenu label="Отчёты">
                                     <p:menuitem value="Движение медикаментов"/>
                                 </p:submenu>
@@ -54,21 +60,6 @@
                     <h:outputText value="Противопоказания" />
                     <h:outputText value="#{medicamentController.selectedMedicament.contraindications}" />
                 </p:panelGrid>
-            </p:outputPanel>
-        </p:dialog>
-
-        <p:dialog widgetVar="medicamentCreateUpdateDialog" header="Медикамент" modal="true" dynamic="true" showEffect="fade" hideEffect="fade" resizable="false">
-            <p:outputPanel id="medicamentCreateUpdateDetail" style="text-align:left; max-width: 500px">
-                <h:outputText value="Название:" />
-                <h:inputText value="#{medicamentController.selectedMedicament.name}" style="width: 100%;"/>
-                <h:outputText value="Цена:" />
-                <h:inputText value="#{medicamentController.selectedMedicament.price}" style="width: 100%;"/>
-                <h:outputText value="Описание:" />
-                <h:inputTextarea value="#{medicamentController.selectedMedicament.description}" style="width: 100%; min-width: 100%; max-width: 100%;"/>
-                <h:outputText value="Инструкция к применению:" />
-                <h:inputTextarea value="#{medicamentController.selectedMedicament.instruction}" style="width: 100%; min-width: 100%; max-width: 100%;"/>
-                <h:outputText value="Противопоказания:" />
-                <h:inputTextarea value="#{medicamentController.selectedMedicament.contraindications}" style="width: 100%; min-width: 100%; max-width: 100%;"/>
             </p:outputPanel>
         </p:dialog>
 

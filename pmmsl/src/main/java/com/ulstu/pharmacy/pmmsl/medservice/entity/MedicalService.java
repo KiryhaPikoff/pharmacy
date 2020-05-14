@@ -16,6 +16,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
+@SequenceGenerator(name = "default_gen", sequenceName = "medical_service_seq", allocationSize = 1)
 /** Медицинская услуга. */
 public class MedicalService extends AbstractEntity<Long> {
 
@@ -29,13 +30,6 @@ public class MedicalService extends AbstractEntity<Long> {
 
     @Transient
     private BigDecimal sumPrice;
-
-    @Override
-    @SequenceGenerator(name = "medical_service_seq", sequenceName = "medical_service_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "medical_service_seq")
-    public Long getId() {
-        return super.getId();
-    }
 
     /**
      * Метод подсчитывающий цену медицинской услуги.

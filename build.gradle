@@ -4,22 +4,29 @@ plugins {
 
 ext {
 
-    JAVAX_VERSION       = '8.0'
-    LOMBOK_VERSION      = '1.18.12'
-    LIQUIBASE_VERSION   = '3.1.0'
-    POSTGRES_VERSION    = '42.2.9'
-    HIBERNATE_VERSION   = '5.4.12.Final'
-    GUAVA_VERSION       = '28.2-jre'
-    LOGBACK_VERSION     = '1.2.3'
-    APACHE_POI_VERSION  = '4.1.2'
-    ITEXT_VERSION       = '5.5.13.1'
-    JSF_VERSION         = '2.3'
-    PRIME_FACES_VERSION = '8.0'
+    JAVAX_VERSION                   = '8.0'
 
-    JUNIT_VERSION       = '4.12'
-    MOCKITO_VERSION     = '2.0.2-beta'
+    LIQUIBASE_VERSION               = '3.1.0'
+    POSTGRES_VERSION                = '42.2.9'
+    HIBERNATE_VERSION               = '5.4.12.Final'
 
-    PMMSL_VERSION       = '1.0'
+    LOMBOK_VERSION                  = '1.18.12'
+    GUAVA_VERSION                   = '28.2-jre'
+
+    LOGBACK_VERSION                 = '1.2.3'
+
+    APACHE_POI_VERSION              = '4.1.2'
+    ITEXT_VERSION                   = '5.5.13.1'
+
+    PRIME_FACES_VERSION             = '8.0'
+    PRIME_FACES_THEMES_VERSION      = '1.0.10'
+    JSF_API_VERSION                 = '2.2.4'
+    JSF_IMPL_VERSION                = '2.2.20'
+
+    JUNIT_VERSION                   = '4.12'
+    MOCKITO_VERSION                 = '2.0.2-beta'
+
+    PMMSL_VERSION                   = '1.0'
 }
 
 group 'com.ulstu.pharmacy'

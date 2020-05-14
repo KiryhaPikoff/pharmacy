@@ -4,7 +4,10 @@ import com.ulstu.pharmacy.pmmsl.common.entity.AbstractEntity;
 import com.ulstu.pharmacy.pmmsl.medicament.entity.Medicament;
 import lombok.*;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import java.math.BigDecimal;
 
 @Entity
@@ -14,6 +17,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = false)
+@SequenceGenerator(name = "default_gen", sequenceName = "medicament_medical_service_seq", allocationSize = 1)
 /** Связь медикамента и медицинской услуги. */
 public class MedicamentMedicalService extends AbstractEntity<Long> {
 
@@ -31,13 +35,6 @@ public class MedicamentMedicalService extends AbstractEntity<Long> {
 
     @Column(nullable = false, scale = 2, updatable = false)
     private BigDecimal price;
-
-    @Override
-    @SequenceGenerator(name = "medicament_medical_service_seq", sequenceName = "medicament_medical_service_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "medicament_medical_service_seq")
-    public Long getId() {
-        return super.getId();
-    }
 
     public static MedicamentMedicalService.Builder builder() {
         return new MedicamentMedicalService.Builder();

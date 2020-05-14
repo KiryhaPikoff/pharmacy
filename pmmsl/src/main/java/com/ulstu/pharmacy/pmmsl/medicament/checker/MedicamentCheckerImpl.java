@@ -32,7 +32,12 @@ public class MedicamentCheckerImpl implements MedicamentChecker {
         if (Objects.isNull(medicamentBindingModel.getName())) {
             errors.append("Name is null; ");
         } else {
-            if(this.medicamentDao.existByName(medicamentBindingModel.getName())) {
+            boolean isMedicamentNonUnique = this.medicamentDao
+                    .existByNameAndNotId(
+                            medicamentBindingModel.getName(),
+                            Objects.nonNull(medicamentBindingModel.getId())
+                                    ? medicamentBindingModel.getId() : -1);
+            if(isMedicamentNonUnique) {
                 errors.append("Medicament with a name = ")
                         .append(medicamentBindingModel.getName())
                         .append(" already exist; ");

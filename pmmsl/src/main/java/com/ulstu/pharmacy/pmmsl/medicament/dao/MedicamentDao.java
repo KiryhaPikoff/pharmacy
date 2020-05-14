@@ -13,5 +13,5 @@ public abstract class MedicamentDao extends AbstractDao<Medicament, Long> {
 
     public abstract List<Medicament> getAll();
 
-    public abstract boolean existByName(String medicamentName);
+    public abstract boolean existByNameAndNotId(String medicamentName, Long medicamentId);
 }

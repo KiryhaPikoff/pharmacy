@@ -1,21 +1,16 @@
 package medicament;
 
+import com.ulstu.pharmacy.pmmsl.medicament.binding.MedicamentBindingModel;
 import com.ulstu.pharmacy.pmmsl.medicament.ejb.MedicamentEjbLocal;
 import com.ulstu.pharmacy.pmmsl.medicament.view.MedicamentViewModel;
+import helper.MessagesHelper;
 import lombok.Getter;
 import lombok.Setter;
-import org.primefaces.event.SelectEvent;
-import org.w3c.dom.ls.LSOutput;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.inject.Model;
-import javax.faces.annotation.ManagedProperty;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
 import javax.inject.Inject;
-import javax.inject.Named;
 import java.io.Serializable;
 import java.util.List;
 
@@ -32,9 +27,12 @@ public class MedicamentController implements Serializable {
 
     private MedicamentViewModel selectedMedicament;
 
+    private String s;
+
     @PostConstruct
     public void initValues() {
         this.medicaments = medicamentEjb.getAll();
+        this.selectedMedicament = MedicamentViewModel.builder().build();
     }
 
     @Inject
@@ -48,8 +46,30 @@ public class MedicamentController implements Serializable {
         );
     }
 
+    public void createOrUpdate() {
+        try {
+            this.medicamentEjb.createOrUpdate(
+                    MedicamentBindingModel.builder()
+                            .id(selectedMedicament.getId())
+                            .name(selectedMedicament.getName())
+                            .price(selectedMedicament.getPrice())
+                            .description(selectedMedicament.getDescription())
+                            .contraindications(selectedMedicament.getContraindications())
+                            .instruction(selectedMedicament.getInstruction())
+                            .build()
+            );
+        } catch (Exception ex) {
+            MessagesHelper.errorMessage(ex);
+        }
+    }
 
-    public void printV() {
-        System.out.println("qweqwe");
+    public String getS() {
+        System.out.println("GET " + s);
+        return s;
+    }
+
+    public void setS(String s) {
+        System.out.println("SET " + s);
+        this.s = s;
     }
 }

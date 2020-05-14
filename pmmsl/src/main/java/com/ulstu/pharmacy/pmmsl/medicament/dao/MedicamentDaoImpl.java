@@ -14,12 +14,14 @@ public class MedicamentDaoImpl extends MedicamentDao {
     }
 
     @Override
-    public boolean existByName(String medicamentName) {
+    public boolean existByNameAndNotId(String medicamentName, Long medicamentId) {
         long notesCount = (long) this.entityManager
                 .createQuery("SELECT COUNT(m.name) FROM Medicament m" +
-                        " WHERE m.name = :name")
+                        " WHERE m.name = :name AND m.id <> :id")
                 .setParameter("name", medicamentName)
+                .setParameter("id", medicamentId)
                 .getSingleResult();
+        System.out.println(medicamentId + " " + medicamentName + " " + notesCount);
         return notesCount != 0;
     }
 }
