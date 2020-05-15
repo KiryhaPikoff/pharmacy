@@ -7,68 +7,70 @@
       xmlns:f="http://java.sun.com/jsf/core">
 
     <f:view contentType="text/html" id="fview">
-
         <h:head>
+            <h:form id="mainForm">
+
+                <h:outputStylesheet library = "css" name = "styles.css" />
+
                 <p:layout fullPage="true" style="background-color:#FFFFFF;">
 
-                    <p:layoutUnit position="north" styleClass="north-panel" size="35" id="north" >
-                        <h:outputText value="Здесь могла быть ваша реклама.." style="font: bold"/>
-                    </p:layoutUnit>
+                        <p:layoutUnit position="north" styleClass="north-panel" size="35" id="north" >
+                            <h:outputText value="Здесь могла быть ваша реклама.." style="font: bold"/>
+                        </p:layoutUnit>
 
-                    <p:layoutUnit  position="west" styleClass="" style="width: auto; display:none;" id="west">
-                        <h:commandLink />
-                        <h:form id="menuForm">
-                            <p:panelMenu style="width:250px">
-                                <p:submenu label="Навигация">
-                                    <p:menuitem value="Главная" icon="pi pi-compass" url="http://localhost:8080/web-1.0/"/>
-                                </p:submenu>
+                        <p:layoutUnit  position="west" styleClass="" style="width: auto; display:none;" id="west">
+                            <h:commandLink />
+                                <p:panelMenu style="width:250px">
+                                    <p:submenu label="Навигация">
+                                        <p:menuitem value="Главная" icon="pi pi-compass" url="http://localhost:8080/web-1.0/"/>
+                                    </p:submenu>
 
-                                <p:submenu label="Справочник">
-                                    <p:menuitem value="Медикаменты" icon="pi pi-calendar-plus" url="http://localhost:8080/web-1.0/medicaments.xhtml"/>
-                                    <p:menuitem value="Аптеки"  icon="pi pi-home" />
-                                </p:submenu>
+                                    <p:submenu label="Справочник">
+                                        <p:menuitem value="Медикаменты" icon="pi pi-calendar-plus" url="http://localhost:8080/web-1.0/medicaments.xhtml"/>
+                                        <p:menuitem value="Аптеки"  icon="pi pi-home" />
+                                    </p:submenu>
 
-                                <p:submenu label="Действия">
-                                    <p:menuitem value="Добавить медикамент" icon="pi pi-calendar-plus" url="http://localhost:8080/web-1.0/medicament-creation.xhtml"/>
-                                </p:submenu>
+                                    <p:submenu label="Действия">
+                                        <p:menuitem value="Добавить медикамент" icon="pi pi-calendar-plus" url="http://localhost:8080/web-1.0/medicament-creation.xhtml"/>
+                                    </p:submenu>
 
-                                <p:submenu label="Отчёты">
-                                    <p:menuitem value="Движение медикаментов"/>
-                                </p:submenu>
-                            </p:panelMenu>
-                        </h:form>
-                    </p:layoutUnit>
+                                    <p:submenu label="Отчёты">
+                                        <p:menuitem value="Движение медикаментов"/>
+                                    </p:submenu>
+                                </p:panelMenu>
+                        </p:layoutUnit>
 
-                    <p:layoutUnit styleClass="layoutUnitCenter" position="center">
-                            <ui:insert name="content" />
-                    </p:layoutUnit>
+                        <p:layoutUnit styleClass="layoutUnitCenter" position="center">
+                                <ui:insert name="content" />
+                        </p:layoutUnit>
 
                 </p:layout>
+            </h:form>
+
+            <p:dialog widgetVar="medicamentDialog" header="Медикамент" modal="true" dynamic="true" showEffect="fade" hideEffect="fade" resizable="false">
+                <p:outputPanel id="medicamentDetail" style="text-align:center;">
+                    <p:panelGrid  style="max-width: 800px" columns="2" columnClasses="label,value">
+                        <h:outputText value="Название" />
+                        <h:outputText value="#{medicamentController.selectedMedicament.name}" />
+                        <h:outputText value="Цена" />
+                        <h:outputText value="#{medicamentController.selectedMedicament.price}" />
+                        <h:outputText value="Описание" />
+                        <h:outputText value="#{medicamentController.selectedMedicament.description}" />
+                        <h:outputText value="Инструкция к применению" />
+                        <h:outputText value="#{medicamentController.selectedMedicament.instruction}" />
+                        <h:outputText value="Противопоказания" />
+                        <h:outputText value="#{medicamentController.selectedMedicament.contraindications}" />
+                    </p:panelGrid>
+                </p:outputPanel>
+            </p:dialog>
+
+            <p:dialog widgetVar="medicamentDeleteDialog" header="Удалить?" rendered="true" modal="true" dynamic="true" showEffect="fade" hideEffect="fade" resizable="false" styleClass="deleteMedicamentDialog">
+                <p:outputPanel id="medicamentDeletion" styleClass="medicamentDeletePanel">
+                    <h:outputText value="Вы действительно хотите удалить медикамент: " />
+                    <h:outputText value="#{medicamentController.selectedMedicament.name}?" />
+                    <p:commandButton value="Удалить" icon="pi pi-trash" action="#{medicamentController.deleteMedicament()}" style="margin-top:20px; width: 100%;"/>
+                </p:outputPanel>
+            </p:dialog>
         </h:head>
-
-        <p:dialog widgetVar="medicamentDialog" header="Медикамент" modal="true" dynamic="true" showEffect="fade" hideEffect="fade" resizable="false">
-            <p:outputPanel id="medicamentDetail" style="text-align:center;">
-                <p:panelGrid  style="max-width: 800px" columns="2" columnClasses="label,value">
-                    <h:outputText value="Название" />
-                    <h:outputText value="#{medicamentController.selectedMedicament.name}" />
-                    <h:outputText value="Цена" />
-                    <h:outputText value="#{medicamentController.selectedMedicament.price}" />
-                    <h:outputText value="Описание" />
-                    <h:outputText value="#{medicamentController.selectedMedicament.description}" />
-                    <h:outputText value="Инструкция к применению" />
-                    <h:outputText value="#{medicamentController.selectedMedicament.instruction}" />
-                    <h:outputText value="Противопоказания" />
-                    <h:outputText value="#{medicamentController.selectedMedicament.contraindications}" />
-                </p:panelGrid>
-            </p:outputPanel>
-        </p:dialog>
-
-        <p:dialog widgetVar="medicamentDeleteDialog" rendered="true" modal="true" dynamic="true" showEffect="fade" hideEffect="fade" resizable="false">
-            <p:outputPanel id="medicamentDeletion" style="text-align:center;">
-                <h:outputText value="Вы действительно хотите удалить медикамент: " />
-                <h:outputText value="#{medicamentController.selectedMedicament.name}" />
-                <p:commandButton value="Удалить" icon="pi pi-trash" action="#{medicamentController.deleteMedicament()}" style="margin-top:20px; width: 100%;"/>
-            </p:outputPanel>
-        </p:dialog>
     </f:view>
 </html>

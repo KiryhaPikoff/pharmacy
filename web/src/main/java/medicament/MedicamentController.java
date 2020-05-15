@@ -27,8 +27,6 @@ public class MedicamentController implements Serializable {
 
     private MedicamentViewModel selectedMedicament;
 
-    private String s;
-
     @PostConstruct
     public void initValues() {
         this.medicaments = medicamentEjb.getAll();
@@ -40,13 +38,15 @@ public class MedicamentController implements Serializable {
         this.medicamentEjb = medicamentEjb;
     }
 
-    public void deleteMedicament() {
+    public String deleteMedicament() {
         this.medicamentEjb.delete(
                 selectedMedicament.getId()
         );
+        MessagesHelper.infoMessage("Медикамент" + selectedMedicament.getName() + " успешно удален!");
+        return "refresh";
     }
 
-    public void createOrUpdate() {
+    public String createOrUpdate() {
         try {
             this.medicamentEjb.createOrUpdate(
                     MedicamentBindingModel.builder()
@@ -60,16 +60,9 @@ public class MedicamentController implements Serializable {
             );
         } catch (Exception ex) {
             MessagesHelper.errorMessage(ex);
+            return "fail";
         }
-    }
-
-    public String getS() {
-        System.out.println("GET " + s);
-        return s;
-    }
-
-    public void setS(String s) {
-        System.out.println("SET " + s);
-        this.s = s;
+        MessagesHelper.infoMessage("Медикамент успешно добавлен/обновлен!");
+        return "success";
     }
 }

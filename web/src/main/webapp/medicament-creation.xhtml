@@ -2,34 +2,66 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
                 template="templates/main-template.xhtml">
     <ui:define name="metadata">
     </ui:define>
 
     <ui:define name="content">
         <h:body>
-            <h:form id="mainForm">
+            <p:panel header="Создание или обновление медикамента:">
 
-                <p:outputPanel id="medicamentCreateUpdateDetail" style="text-align:left; max-width: 500px">
-                    <p:messages id="messages" showDetail="true" closable="true">
-                        <p:autoUpdate />
-                    </p:messages>
-                    <h:outputText value="QWE:" />
-                    <h:inputText value="#{medicamentController.s}" style="width: 100%;"/>
-                    <h:outputText value="Название:" />
-                    <h:inputText value="#{medicamentController.selectedMedicament.name}" style="width: 100%;"/>
-                    <h:outputText value="Цена:" />
-                    <h:inputText value="#{medicamentController.selectedMedicament.price}" style="width: 100%;"/>
-                    <h:outputText value="Описание:" />
-                    <h:inputTextarea value="#{medicamentController.selectedMedicament.description}" style="width: 100%; min-width: 100%; max-width: 100%;"/>
-                    <h:outputText value="Инструкция к применению:" />
-                    <h:inputTextarea value="#{medicamentController.selectedMedicament.instruction}" style="width: 100%; min-width: 100%; max-width: 100%;"/>
-                    <h:outputText value="Противопоказания:" />
-                    <h:inputTextarea value="#{medicamentController.selectedMedicament.contraindications}" style="width: 100%; min-width: 100%; max-width: 100%;"/>
-                </p:outputPanel>
-                <p:commandButton value="Сохранить" icon="pi pi-save" action="#{medicamentController.createOrUpdate}" />
+                <p:messages id="messages">
+                    <p:autoUpdate />
+                </p:messages>
 
-            </h:form>
+                <p:panelGrid id="medicamentCreateUpdatePanel"
+                             columns="1" layout="grid"
+                             cellpadding="5"
+                             style="text-align:left; max-width: 500px"
+                             columnClasses="names, detail">
+
+                    <h:outputLabel for="name" value="Название:" style="font-weight:bold"/>
+                    <h:inputText id="name"
+                                 value="#{medicamentController.selectedMedicament.name}"
+                                 required="true"
+                                 requiredMessage="Поле 'Название' является обязательным!"
+                                 style="width: 100%; " />
+
+                    <h:outputLabel for="price" value="Цена:" style="font-weight:bold"/>
+                    <h:inputText id="price"
+                                 value="#{medicamentController.selectedMedicament.price}"
+                                 required="true"
+                                 requiredMessage="Поле 'Цена' является обязательным!"
+                                 validatorMessage="Поле 'Цена' не должно быть меньше нуля!"
+                                 style="width: 100%;">
+                        <f:validateLongRange minimum="0" />
+                    </h:inputText>
+
+                    <h:outputLabel for="description" value="Описание:" style="font-weight:bold"/>
+                    <h:inputTextarea id="description"
+                                     value="#{medicamentController.selectedMedicament.description}"
+                                     required="true"
+                                     requiredMessage="Поле 'Описание' является обязательным!"
+                                     style="width: 100%; min-width: 100%; max-width: 100%; min-height: 100px;" />
+
+                    <h:outputLabel for="instruction" value="Инструкция к применению:" style="font-weight:bold"/>
+                    <h:inputTextarea id="instruction"
+                                     value="#{medicamentController.selectedMedicament.instruction}"
+                                     required="true"
+                                     requiredMessage="Поле 'Инструкция к применению' является обязательным!"
+                                     style="width: 100%; min-width: 100%; max-width: 100%; min-height: 100px;" />
+
+                    <h:outputLabel for="contraindications" value="Противопоказания:" style="font-weight:bold"/>
+                    <h:inputTextarea id="contraindications"
+                                     value="#{medicamentController.selectedMedicament.contraindications}"
+                                     required="true"
+                                     requiredMessage="Поле 'Противопоказания' является обязательным!"
+                                     style="width: 100%; min-width: 100%; max-width: 100%; min-height: 100px;" />
+                </p:panelGrid>
+
+                <p:commandButton value="Сохранить" icon="pi pi-save" action="#{medicamentController.createOrUpdate}" style="margin-top: 20px" />
+            </p:panel>
         </h:body>
     </ui:define>
 </ui:composition>
