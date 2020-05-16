@@ -13,6 +13,7 @@ import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -25,6 +26,8 @@ public class MedicamentController implements Serializable {
     private List<MedicamentViewModel> medicaments;
 
     private MedicamentViewModel selectedMedicament;
+
+    private Long idForUpdate;
 
     @PostConstruct
     public void initValues() {
@@ -66,8 +69,12 @@ public class MedicamentController implements Serializable {
     }
 
     public void initMedicamentById() {
-        this.selectedMedicament = this.medicamentEjb.getById(
-                this.selectedMedicament.getId()
-        );
+        if(this.idForUpdate == null) {
+            this.selectedMedicament = MedicamentViewModel.builder().build();
+        } else {
+            this.selectedMedicament = this.medicamentEjb.getById(
+                    this.idForUpdate
+            );
+        }
     }
 }

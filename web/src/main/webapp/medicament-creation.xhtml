@@ -9,7 +9,7 @@
         <h:body>
 
             <f:metadata>
-                <f:viewParam name="id" value="#{medicamentController.selectedMedicament.id}"/>
+                <f:viewParam name="id" required="false" value="#{medicamentController.idForUpdate}"/>
                 <f:viewAction action="#{medicamentController.initMedicamentById}"/>
             </f:metadata>
 
