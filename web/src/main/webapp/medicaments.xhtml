@@ -1,8 +1,8 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
                 template="templates/main-template.xhtml">
 
     <ui:define name="metadata">
@@ -27,18 +27,17 @@
                     </p:outputPanel>
 
                     <p:outputPanel>
-                        <p:commandLink update=":medicamentDetail" oncomplete="PF('medicamentDialog').show()">
+                        <p:commandLink update=":medicamentDetail" oncomplete="PF('medicamentDialog').show()" styleClass="ui-button" style="width: 100%; margin-bottom: 20px">
                             <h:outputText value="Информация" styleClass="pi pi-info-circle"/>
                             <f:setPropertyActionListener value="#{medicament}" target="#{medicamentController.selectedMedicament}" />
                         </p:commandLink>
 
-                        <p:commandLink oncomplete="PF('medicamentCreateUpdateDialog').show()" style="margin-top:20px; width: 100%;">
-                            <h:outputText value="Изменить" styleClass="pi pi-plus" style="margin-top:20px;"/>
-                            <f:setPropertyActionListener value="#{medicament}" target="#{medicamentController.selectedMedicament}" />
-                        </p:commandLink>
+                        <p:link outcome="toUpdate" value="Изменить" styleClass="ui-button" style="width: 100%">
+                            <f:param name="id" value="#{medicament.id}" />
+                        </p:link>
 
-                        <p:commandLink oncomplete="PF('medicamentDeleteDialog').show()">
-                            <h:outputText value="Удалить" styleClass="pi pi-trash" style="margin-top:20px;"/>
+                        <p:commandLink oncomplete="PF('medicamentDeleteDialog').show()" styleClass="ui-button" style="width: 100%; margin-top: 20px">
+                            <h:outputText value="Удалить" styleClass="pi pi-trash"/>
                             <f:setPropertyActionListener value="#{medicament}" target="#{medicamentController.selectedMedicament}" />
                         </p:commandLink>
                     </p:outputPanel>

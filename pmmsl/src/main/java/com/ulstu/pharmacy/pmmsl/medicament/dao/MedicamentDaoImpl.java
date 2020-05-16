@@ -21,7 +21,6 @@ public class MedicamentDaoImpl extends MedicamentDao {
                 .setParameter("name", medicamentName)
                 .setParameter("id", medicamentId)
                 .getSingleResult();
-        System.out.println(medicamentId + " " + medicamentName + " " + notesCount);
         return notesCount != 0;
     }
 }

@@ -1,15 +1,19 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
                 template="templates/main-template.xhtml">
-    <ui:define name="metadata">
-    </ui:define>
 
     <ui:define name="content">
         <h:body>
-            <p:panel header="Создание или обновление медикамента:">
+
+            <f:metadata>
+                <f:viewParam name="id" value="#{medicamentController.selectedMedicament.id}"/>
+                <f:viewAction action="#{medicamentController.initMedicamentById}"/>
+            </f:metadata>
+
+            <p:panel header="Создание или обновление медикамента:" styleClass="header">
 
                 <p:messages id="messages">
                     <p:autoUpdate />

@@ -20,7 +20,6 @@ import java.util.List;
 @ManagedBean
 public class MedicamentController implements Serializable {
 
-
     private MedicamentEjbLocal medicamentEjb;
 
     private List<MedicamentViewModel> medicaments;
@@ -64,5 +63,11 @@ public class MedicamentController implements Serializable {
         }
         MessagesHelper.infoMessage("Медикамент успешно добавлен/обновлен!");
         return "success";
+    }
+
+    public void initMedicamentById() {
+        this.selectedMedicament = this.medicamentEjb.getById(
+                this.selectedMedicament.getId()
+        );
     }
 }

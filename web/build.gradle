@@ -20,10 +20,8 @@ dependencies {
     implementation      group: 'javax', name: 'javaee-api',                 version: this.JAVAX_VERSION
 
     //-----------------------------< JSF >------------------------------------------------------------------------------
-    // https://mvnrepository.com/artifact/com.sun.faces/jsf-api
-    implementation      group: 'com.sun.faces', name: 'jsf-api',            version: this.JSF_API_VERSION
-    // https://mvnrepository.com/artifact/com.sun.faces/jsf-impl
-    implementation      group: 'com.sun.faces', name: 'jsf-impl',           version: this.JSF_IMPL_VERSION
+    // https://mvnrepository.com/artifact/javax.faces/javax.faces-api
+    providedCompile group: 'javax.faces', name: 'javax.faces-api',          version: this.JAVAX_FACES_VERSION
 
     //-----------------------------< PrimeFaces >-----------------------------------------------------------------------
     // https://mvnrepository.com/artifact/org.primefaces/primefaces

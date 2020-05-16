@@ -20,8 +20,7 @@ ext {
 
     PRIME_FACES_VERSION             = '8.0'
     PRIME_FACES_THEMES_VERSION      = '1.0.10'
-    JSF_API_VERSION                 = '2.2.4'
-    JSF_IMPL_VERSION                = '2.2.20'
+    JAVAX_FACES_VERSION             = '2.3'
 
     JUNIT_VERSION                   = '4.12'
     MOCKITO_VERSION                 = '2.0.2-beta'
