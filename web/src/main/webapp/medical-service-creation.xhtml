@@ -1,0 +1,21 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                template="templates/main-template.xhtml">
+
+    <ui:define name="content">
+        <h:body>
+
+            <p:panel header="Формирование услуги:" styleClass="header" style="text-align: center">
+                <p:messages id="messages">
+                    <p:autoUpdate />
+                </p:messages>
+
+
+                <p:commandButton value="Сохранить" icon="pi pi-save" action="#{medicamentController.createOrUpdate}" style="margin-top: 20px" />
+            </p:panel>
+        </h:body>
+    </ui:define>
+</ui:composition>
