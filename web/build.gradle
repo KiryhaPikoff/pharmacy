@@ -21,7 +21,7 @@ dependencies {
 
     //-----------------------------< JSF >------------------------------------------------------------------------------
     // https://mvnrepository.com/artifact/javax.faces/javax.faces-api
-    providedCompile group: 'javax.faces', name: 'javax.faces-api',          version: this.JAVAX_FACES_VERSION
+    providedCompile     group: 'javax.faces', name: 'javax.faces-api',          version: this.JAVAX_FACES_VERSION
 
     //-----------------------------< PrimeFaces >-----------------------------------------------------------------------
     // https://mvnrepository.com/artifact/org.primefaces/primefaces

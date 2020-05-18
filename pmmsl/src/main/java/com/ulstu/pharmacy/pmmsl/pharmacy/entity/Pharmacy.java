@@ -3,10 +3,7 @@ package com.ulstu.pharmacy.pmmsl.pharmacy.entity;
 import com.ulstu.pharmacy.pmmsl.common.entity.AbstractEntity;
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
+import javax.persistence.*;
 import java.util.Set;
 
 @Entity

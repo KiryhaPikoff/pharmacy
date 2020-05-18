@@ -15,14 +15,18 @@
         <class>com.ulstu.pharmacy.pmmsl.medservice.entity.MedicamentMedicalService</class>
         <class>com.ulstu.pharmacy.pmmsl.pharmacy.entity.Pharmacy</class>
         <class>com.ulstu.pharmacy.pmmsl.pharmacy.entity.PharmacyMedicament</class>
+        <class>com.ulstu.pharmacy.pmmsl.supply.entity.Supply</class>
+        <class>com.ulstu.pharmacy.pmmsl.supply.entity.SupplyMedicament</class>
 
         <properties>
-            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
-            <property name="hibernate.hbm2ddl.auto" value="none"/>
-            <property name="hibernate.current_session_context_class" value="jta"/>
-            <property name="show_sql" value="true"/>
-            <property name="hibernate.show_sql" value="true"/>
-            <property name="hibernate.jpa.compliance.global_id_generators" value="false"/>
+            <property name="hibernate.hbm2ddl.auto"                         value="none"/>
+            <property name="hibernate.current_session_context_class"        value="jta"/>
+            <property name="show_sql"                                       value="true"/>
+            <property name="hibernate.show_sql"                             value="true" />
+            <property name="hibernate.format_sql"                           value="true"/>
+            <property name="hibernate.use_sql_comments"                     value="true"/>
+    <!--    <property name="hibernate.generate_statistics"                  value="true"/>  !-->
+            <property name="hibernate.jpa.compliance.global_id_generators"  value="false"/>
         </properties>
 
     </persistence-unit>

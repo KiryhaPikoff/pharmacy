@@ -3,17 +3,23 @@
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:f="http://xmlns.jcp.org/jsf/core"
-                template="templates/main-template.xhtml">
+                template="../templates/main-template.xhtml">
 
     <ui:define name="content">
         <h:body>
+
+            <title>Медикамент</title>
 
             <f:metadata>
                 <f:viewParam name="id" required="false" value="#{medicamentController.idForUpdate}"/>
                 <f:viewAction action="#{medicamentController.initMedicamentById}"/>
             </f:metadata>
 
-            <p:panel header="Создание или обновление медикамента:" styleClass="header" style="text-align: center" >
+            <p:panel>
+                <f:facet name="header">
+                    <h:outputText value="Создание или обновление медикамента:" style="font-size: 20px; font: bold" />
+                </f:facet>
+
                 <p:messages id="messages">
                     <p:autoUpdate />
                 </p:messages>

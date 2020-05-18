@@ -13,7 +13,6 @@ import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import java.io.Serializable;
 import java.util.List;
-import java.util.Objects;
 
 @Getter
 @Setter
@@ -45,7 +44,7 @@ public class MedicamentController implements Serializable {
                 selectedMedicament.getId()
         );
         MessagesHelper.infoMessage("Медикамент" + selectedMedicament.getName() + " успешно удален!");
-        return "refresh";
+        return "refreshMedicaments";
     }
 
     public String createOrUpdate() {
@@ -65,7 +64,7 @@ public class MedicamentController implements Serializable {
             return "fail";
         }
         MessagesHelper.infoMessage("Медикамент успешно добавлен/обновлен!");
-        return "success";
+        return "successMedicamentCreation";
     }
 
     public void initMedicamentById() {

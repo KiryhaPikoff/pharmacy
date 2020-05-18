@@ -10,6 +10,7 @@ import java.util.Objects;
 import java.util.Set;
 
 @Entity
+@Table(name = "medical_service")
 @Getter
 @Setter
 @ToString(callSuper = true)
@@ -20,7 +21,7 @@ import java.util.Set;
 /** Медицинская услуга. */
 public class MedicalService extends AbstractEntity<Long> {
 
-    @Column(nullable = true)
+    @Column(name = "provision_date", nullable = true)
     private Timestamp provisionDate;
 
     @OneToMany(cascade = CascadeType.ALL,
@@ -47,7 +48,7 @@ public class MedicalService extends AbstractEntity<Long> {
                             )
                     )
                     .reduce(BigDecimal.ZERO, BigDecimal::add)
-            : null;
+            : BigDecimal.ZERO;
         }
         return sumPrice;
     }

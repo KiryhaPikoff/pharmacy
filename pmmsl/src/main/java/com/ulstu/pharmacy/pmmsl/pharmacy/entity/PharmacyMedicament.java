@@ -4,12 +4,10 @@ import com.ulstu.pharmacy.pmmsl.common.entity.AbstractEntity;
 import com.ulstu.pharmacy.pmmsl.medicament.entity.Medicament;
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
+import javax.persistence.*;
 
 @Entity
+@Table(name = "pharmacy_medicament")
 @Getter
 @Setter
 @NoArgsConstructor

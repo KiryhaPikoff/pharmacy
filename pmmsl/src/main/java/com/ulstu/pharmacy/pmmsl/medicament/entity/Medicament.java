@@ -5,10 +5,7 @@ import com.ulstu.pharmacy.pmmsl.medservice.entity.MedicamentMedicalService;
 import com.ulstu.pharmacy.pmmsl.pharmacy.entity.PharmacyMedicament;
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
 

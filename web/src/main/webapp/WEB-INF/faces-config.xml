@@ -5,28 +5,37 @@
     http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd">
 
     <navigation-rule>
-        <from-view-id>/medicaments.xhtml</from-view-id>
+        <from-view-id>/medicaments/medicaments-dictionary.xhtml</from-view-id>
         <navigation-case>
-            <from-outcome>refresh</from-outcome>
-            <to-view-id>/medicaments.xhtml</to-view-id>
+            <from-outcome>refreshMedicaments</from-outcome>
+            <to-view-id>/medicaments/medicaments-dictionary.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
     </navigation-rule>
 
     <navigation-rule>
-        <from-view-id>/medicament-creation.xhtml</from-view-id>
+        <from-view-id>/medicaments/medicament-creation.xhtml</from-view-id>
         <navigation-case>
-            <from-outcome>success</from-outcome>
-            <to-view-id>/medicaments.xhtml?id=-1</to-view-id>
+            <from-outcome>successMedicamentCreation</from-outcome>
+            <to-view-id>/medicaments/medicaments-dictionary.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
     </navigation-rule>
 
     <navigation-rule>
-        <from-view-id>/medicaments.xhtml</from-view-id>
+        <from-view-id>/medicaments/medicaments-dictionary.xhtml</from-view-id>
         <navigation-case>
-            <from-outcome>toUpdate</from-outcome>
-            <to-view-id>/medicament-creation.xhtml</to-view-id>
+            <from-outcome>toUpdateMedicament</from-outcome>
+            <to-view-id>/medicaments/medicament-creation.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+    </navigation-rule>
+
+    <navigation-rule>
+        <from-view-id>/medservices/medical-services-dictionary.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>toViewMedicalServiceById</from-outcome>
+            <to-view-id>/medservices/medical-service-view.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
     </navigation-rule>

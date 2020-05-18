@@ -1,0 +1,37 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                template="../templates/main-template.xhtml">
+
+    <ui:define name="content">
+        <h:body>
+
+            <title>Услуги</title>
+
+            <p:dataScroller value="#{medicalServiceBrowsingBean.medicalServices}" var="medservice" chunkSize="10">
+                <f:facet name="header">
+                    <h:outputText value="Список услуг" style="font-size: 20px; font: bold" />
+                </f:facet>
+
+                <h:panelGrid columns="2" style="width:100%" columnClasses="detail,buttons">
+                    <p:outputPanel>
+                        <h:panelGrid columns="2" cellpadding="5">
+                            <h:outputText value="Дата формирования:" />
+                            <h:outputText value="#{medservice.provisionDate}" style="font-weight: bold"/>
+                            <h:outputText value="Сумма:" />
+                            <h:outputText value="#{medservice.sumPrice}" style="font-weight: bold"/>
+                        </h:panelGrid>
+                    </p:outputPanel>
+
+                    <p:outputPanel>
+                        <p:link outcome="toViewMedicalServiceById" value="Информация" styleClass="ui-button" style="width: 100%">
+                            <f:param name="id" value="#{medservice.id}" />
+                        </p:link>
+                    </p:outputPanel>
+                </h:panelGrid>
+            </p:dataScroller>
+        </h:body>
+    </ui:define>
+</ui:composition>

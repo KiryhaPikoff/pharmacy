@@ -1,11 +1,26 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
                 xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
                 template="templates/main-template.xhtml">
    <ui:define name="metadata">
    </ui:define>
 
    <ui:define name="content">
-            <p:outputLabel value="Привет, это моя главная страница!"/>
+
+       <title>Главная</title>
+
+       <p:panel>
+           <f:facet name="header">
+               <h:outputText value="Главная" style="font-size: 20px; font: bold" />
+           </f:facet>
+
+           <p:messages id="messages">
+               <p:autoUpdate />
+           </p:messages>
+
+           <p:outputLabel value="Привет, это моя главная страница!"/>
+       </p:panel>
    </ui:define>
 </ui:composition>

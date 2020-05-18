@@ -4,13 +4,11 @@ import com.ulstu.pharmacy.pmmsl.common.entity.AbstractEntity;
 import com.ulstu.pharmacy.pmmsl.medicament.entity.Medicament;
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
+import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
+@Table(name = "medicament_medical_service")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -28,6 +26,7 @@ public class MedicamentMedicalService extends AbstractEntity<Long> {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @ManyToOne(optional = false)
+    @JoinColumn(name = "medical_service_id")
     private MedicalService medicalService;
 
     @Column(nullable = false, updatable = false)

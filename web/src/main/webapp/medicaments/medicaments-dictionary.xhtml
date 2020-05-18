@@ -3,13 +3,15 @@
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:f="http://xmlns.jcp.org/jsf/core"
-                template="templates/main-template.xhtml">
+                template="../templates/main-template.xhtml">
 
     <ui:define name="metadata">
     </ui:define>
 
     <ui:define name="content">
         <h:body>
+
+            <title>Медикаменты</title>
 
             <p:dataScroller value="#{medicamentController.medicaments}" var="medicament" chunkSize="10">
                 <f:facet name="header">
@@ -32,7 +34,7 @@
                             <f:setPropertyActionListener value="#{medicament}" target="#{medicamentController.selectedMedicament}" />
                         </p:commandLink>
 
-                        <p:link outcome="toUpdate" value="Изменить" styleClass="ui-button" style="width: 100%">
+                        <p:link outcome="toUpdateMedicament" value="Изменить" styleClass="ui-button" style="width: 100%">
                             <f:param name="id" value="#{medicament.id}" />
                         </p:link>
 
