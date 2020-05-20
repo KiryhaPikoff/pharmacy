@@ -1,9 +1,9 @@
-package medicament;
+package com.ulstu.pharmacy.web.medicament;
 
 import com.ulstu.pharmacy.pmmsl.medicament.binding.MedicamentBindingModel;
 import com.ulstu.pharmacy.pmmsl.medicament.ejb.MedicamentEjbLocal;
 import com.ulstu.pharmacy.pmmsl.medicament.view.MedicamentViewModel;
-import helper.MessagesHelper;
+import com.ulstu.pharmacy.web.helper.MessagesHelper;
 import lombok.Getter;
 import lombok.Setter;
 

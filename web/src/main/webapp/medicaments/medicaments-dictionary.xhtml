@@ -13,7 +13,7 @@
 
             <title>Медикаменты</title>
 
-            <p:dataScroller value="#{medicamentController.medicaments}" var="medicament" chunkSize="10">
+            <p:dataScroller value="#{medicamentController.medicaments}" var="medicamentCount" chunkSize="10">
                 <f:facet name="header">
                     <h:outputText value="Список медикаментов" style="font-size: 20px; font: bold" />
                 </f:facet>
@@ -22,25 +22,25 @@
                     <p:outputPanel>
                         <h:panelGrid columns="2" cellpadding="5">
                             <h:outputText value="Название:" />
-                            <h:outputText value="#{medicament.name}" style="font-weight: bold"/>
+                            <h:outputText value="#{medicamentCount.name}" style="font-weight: bold"/>
                             <h:outputText value="Цена:" />
-                            <h:outputText value="#{medicament.price}" style="font-weight: bold"/>
+                            <h:outputText value="#{medicamentCount.price}" style="font-weight: bold"/>
                         </h:panelGrid>
                     </p:outputPanel>
 
                     <p:outputPanel>
                         <p:commandLink update=":medicamentDetail" oncomplete="PF('medicamentDialog').show()" styleClass="ui-button" style="width: 100%; margin-bottom: 20px">
                             <h:outputText value="Информация" styleClass="pi pi-info-circle"/>
-                            <f:setPropertyActionListener value="#{medicament}" target="#{medicamentController.selectedMedicament}" />
+                            <f:setPropertyActionListener value="#{medicamentCount}" target="#{medicamentController.selectedMedicament}" />
                         </p:commandLink>
 
                         <p:link outcome="toUpdateMedicament" value="Изменить" styleClass="ui-button" style="width: 100%">
-                            <f:param name="id" value="#{medicament.id}" />
+                            <f:param name="id" value="#{medicamentCount.id}" />
                         </p:link>
 
                         <p:commandLink oncomplete="PF('medicamentDeleteDialog').show()" styleClass="ui-button" style="width: 100%; margin-top: 20px">
                             <h:outputText value="Удалить" styleClass="pi pi-trash"/>
-                            <f:setPropertyActionListener value="#{medicament}" target="#{medicamentController.selectedMedicament}" />
+                            <f:setPropertyActionListener value="#{medicamentCount}" target="#{medicamentController.selectedMedicament}" />
                         </p:commandLink>
                     </p:outputPanel>
                 </h:panelGrid>

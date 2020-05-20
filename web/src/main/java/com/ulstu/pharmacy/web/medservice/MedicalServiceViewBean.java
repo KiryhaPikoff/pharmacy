@@ -1,12 +1,10 @@
-package medservice;
+package com.ulstu.pharmacy.web.medservice;
 
-import com.ulstu.pharmacy.pmmsl.medicament.view.MedicamentViewModel;
 import com.ulstu.pharmacy.pmmsl.medservice.ejb.MedicalServiceEjbLocal;
 import com.ulstu.pharmacy.pmmsl.medservice.view.MedicalServiceViewModel;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.inject.Inject;

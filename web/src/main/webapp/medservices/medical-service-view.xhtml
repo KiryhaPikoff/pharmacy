@@ -26,7 +26,7 @@
 
                 <h:outputText value="Услуга на сумму: #{medicalServiceViewBean.medicalService.sumPrice}" style="font-size: 18px;" />
 
-                <p:dataScroller value="#{medicalServiceViewBean.medicalService.medicamentsWithCount}" var="medicament" chunkSize="10">
+                <p:dataScroller value="#{medicalServiceViewBean.medicalService.medicamentsWithCount}" var="medicamentCount" chunkSize="10">
                     <f:facet name="header">
                         <h:outputText value="Список медикаментов" style="font-size: 15px; font: bold" />
                     </f:facet>
@@ -35,9 +35,9 @@
                         <p:outputPanel>
                             <h:panelGrid columns="2" cellpadding="5">
                                 <h:outputText value="Название:" />
-                                <h:outputText value="#{medicament.name}" style="font-weight: bold"/>
+                                <h:outputText value="#{medicamentCount.name}" style="font-weight: bold"/>
                                 <h:outputText value="Количество:" />
-                                <h:outputText value="#{medicament.count} шт." style="font-weight: bold"/>
+                                <h:outputText value="#{medicamentCount.count} шт." style="font-weight: bold"/>
                             </h:panelGrid>
                         </p:outputPanel>
                     </h:panelGrid>

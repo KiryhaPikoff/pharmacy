@@ -1,7 +1,5 @@
-package medservice;
+package com.ulstu.pharmacy.web.medservice;
 
-import com.ulstu.pharmacy.pmmsl.medicament.ejb.MedicamentEjbLocal;
-import com.ulstu.pharmacy.pmmsl.medicament.view.MedicamentViewModel;
 import com.ulstu.pharmacy.pmmsl.medservice.ejb.MedicalServiceEjbLocal;
 import com.ulstu.pharmacy.pmmsl.medservice.view.MedicalServiceViewModel;
 import lombok.Getter;
