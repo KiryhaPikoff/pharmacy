@@ -54,8 +54,6 @@ public class MedicalServiceCreationBean {
     }
 
     public void addToSelected(MedicamentCountViewModel medicament) {
-        System.out.println("COUNT " + this.count);
-        System.out.println("ADDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD");
         if (selectedMedicaments.contains(medicament)) {
             selectedMedicaments.stream()
                     .filter(medicamentInList -> medicamentInList.equals(medicament))

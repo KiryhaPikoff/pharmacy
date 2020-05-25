@@ -25,6 +25,8 @@ ext {
     JUNIT_VERSION                   = '4.12'
     MOCKITO_VERSION                 = '2.0.2-beta'
 
+    KOHONEN_VERSION                 = '1.0'
+
     PMMSL_VERSION                   = '1.0'
 }
 
@@ -32,6 +34,7 @@ group 'com.ulstu.pharmacy'
 version '1.0'
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
@@ -48,6 +51,7 @@ dependencies {
     earlib group: 'com.google.guava',   name: 'guava',              version: this.GUAVA_VERSION
     earlib group: 'org.apache.poi', name: 'poi-ooxml',              version: this.APACHE_POI_VERSION
     earlib group: 'com.itextpdf', name: 'itextpdf',                 version: this.ITEXT_VERSION
+    earlib group: 'org', name:'kohonen',                            version: this.KOHONEN_VERSION
     earlib group: 'org.primefaces', name: 'primefaces',             version: this.PRIME_FACES_VERSION
 }
 

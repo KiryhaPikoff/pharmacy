@@ -37,14 +37,6 @@ public interface MedicalServiceEjbLocal {
     List<MedicalServiceViewModel> getFromDateToDate(Timestamp fromDate, Timestamp toDate);
 
     /**
-     * Метод списания услуги. Списываются все медикаменты в нужном количестве,
-     * объявленные в этой услуге.
-     *
-     * @param id id списываемой услуги.
-     */
-    void writeOff(Long id);
-
-    /**
      * Метод создания услуги. Услуга формируется на основе списка медикамнтов, где каждому из них
      * сопоставлено необходимое количество.
      *

@@ -1,7 +1,6 @@
 package com.ulstu.pharmacy.pmmsl.medservice.ejb;
 
 import com.ulstu.pharmacy.pmmsl.common.exception.CrudOperationException;
-import com.ulstu.pharmacy.pmmsl.common.exception.MedicamentWriteOffException;
 import com.ulstu.pharmacy.pmmsl.medicament.binding.MedicamentCountBindingModel;
 import com.ulstu.pharmacy.pmmsl.medicament.dao.MedicamentDao;
 import com.ulstu.pharmacy.pmmsl.medicament.entity.Medicament;
@@ -95,44 +94,6 @@ public class MedicalServiceEjbImpl implements MedicalServiceEjbLocal {
     }
 
     /**
-     * Метод списания услуги. Списываются все медикаменты в нужном количестве,
-     * объявленные в этой услуге.
-     *
-     * @param id id списываемой услуги.
-     */
-    @Override
-    @Transactional(Transactional.TxType.MANDATORY)
-    public void writeOff(Long id) {
-
-        StringBuilder errors = new StringBuilder();
-        errors.append(Objects.isNull(id) ? "An id is null; "
-                : !medicalServiceDao.existsById(id) ? "MedicalService with an id = " + id + " not exist; "
-                : medicalServiceDao.isAlreadyDiscounted(id) ? "MedicalService with an id = " + id + " already writeOff." : "");
-
-        if(!errors.toString().isBlank()) {
-            throw new MedicamentWriteOffException(errors.toString());
-        }
-
-        MedicalService discountedMedicalService = this.medicalServiceDao.findById(id).get();
-
-        pharmacyEjbLocal.writeOffMedicaments(
-                discountedMedicalService.getMedicamentMedicalServices()
-                        .stream()
-                        .map(medicamentMedicalService -> MedicamentCountBindingModel.builder()
-                               .medicamentId(medicamentMedicalService.getMedicament().getId())
-                               .count(medicamentMedicalService.getCount())
-                               .build())
-                        .collect(Collectors.toSet())
-        );
-
-        discountedMedicalService.setProvisionDate(
-                new Timestamp(System.currentTimeMillis())
-        );
-
-        this.medicalServiceDao.update(discountedMedicalService);
-    }
-
-    /**
      * Метод создания услуги. Услуга формируется на основе списка медикамнтов, где каждому из них
      * сопоставлено необходимое количество.
      *
@@ -172,9 +133,13 @@ public class MedicalServiceEjbImpl implements MedicalServiceEjbLocal {
                 )
                 .build();
 
+        pharmacyEjbLocal.writeOffMedicaments(medicamentCountBindingModels);
+
+        newMedicalService.setProvisionDate(
+                new Timestamp(System.currentTimeMillis())
+        );
+
         this.medicalServiceDao.save(newMedicalService);
-        //TODO может быть ошибка
-      //  this.writeOff(newMedicalService.getId());
     }
 
     /**

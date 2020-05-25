@@ -19,9 +19,10 @@
                     <p:autoUpdate />
                 </p:messages>
 
-                <p:panelGrid columns="2" style="width:100%">
+                <p:panelGrid columns="2" style="width:100%; align-items: stretch">
                     <p:dataScroller value="#{medicalServiceCreationBean.medicamentsInstock}" var="medicamentCount"
-                                    chunkSize="10">
+                                    chunkSize="10"
+                                    style="width: 100%">
                         <f:facet name="header">
                             Выберите медикаменты:
                         </f:facet>
@@ -39,12 +40,14 @@
                             <p:outputPanel>
                                     <p:spinner value="#{medicalServiceCreationBean.count}" min="1" max="#{medicamentCount.count}"/>
                                     <!-- Наверное будет баг с последним количеством -->
-                                    <p:commandButton update="@this" value="Добавить" action="#{medicalServiceCreationBean.addToSelected(medicamentCount)}" />
+                                    <p:commandButton value="Добавить" action="#{medicalServiceCreationBean.addToSelected(medicamentCount)}" />
                             </p:outputPanel>
                         </h:panelGrid>
                     </p:dataScroller>
 
-                    <p:dataScroller value="#{medicalServiceCreationBean.selectedMedicaments}" var="selectedMedicament" chunkSize="10">
+                    <p:dataScroller value="#{medicalServiceCreationBean.selectedMedicaments}" var="selectedMedicament"
+                                    chunkSize="10"
+                                    style="width: 100%;">
                         <f:facet name="header">
                             Вы выбрали:
                         </f:facet>

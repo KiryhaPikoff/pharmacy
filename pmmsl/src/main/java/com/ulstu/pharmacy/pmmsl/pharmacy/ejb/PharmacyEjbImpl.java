@@ -107,8 +107,10 @@ public class PharmacyEjbImpl implements PharmacyEjbLocal {
                 medicamentsStream,
                 medicamentsCountStream,
                 (medicament, count) -> {
-                    Integer newCount = result.containsKey(medicament) ? result.get(medicament) + count : count;
-                    result.put(medicament, newCount);
+                    if(count > 0) {
+                        Integer newCount = result.containsKey(medicament) ? result.get(medicament) + count : count;
+                        result.put(medicament, newCount);
+                    }
                 }
         );
         return result;

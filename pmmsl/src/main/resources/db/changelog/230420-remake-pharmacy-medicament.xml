@@ -11,9 +11,7 @@
 !-->
     <changeSet id="pharmacy_medicament_delete_receipt_date_column" author="Pikoff">
         <preConditions onFail="MARK_RAN">
-            <not>
-                <columnExists tableName="pharmacy_medicament" columnName="receipt_date"/>
-            </not>
+            <columnExists tableName="pharmacy_medicament" columnName="receipt_date"/>
         </preConditions>
         <dropColumn tableName="pharmacy_medicament" columnName="receipt_date"/>
     </changeSet>

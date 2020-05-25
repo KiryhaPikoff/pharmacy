@@ -21,7 +21,7 @@ import java.util.Set;
 /** Медицинская услуга. */
 public class MedicalService extends AbstractEntity<Long> {
 
-    @Column(name = "provision_date", nullable = true)
+    @Column(name = "provision_date", nullable = false)
     private Timestamp provisionDate;
 
     @OneToMany(cascade = CascadeType.ALL,

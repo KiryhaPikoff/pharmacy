@@ -1,0 +1,55 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                template="../templates/main-template.xhtml">
+
+    <ui:define name="metadata">
+    </ui:define>
+
+    <ui:define name="content">
+        <h:body>
+
+            <script>
+                function removeLegend()
+                {
+                    this.cfg.legend = {
+                        show: false
+                    };
+                }
+            </script>
+
+            <title>Классификация медикаменов</title>
+
+            <p:panel>
+                <f:facet name="header">
+                    <h:outputText value="Классификация медикаментов" style="font-size: 20px; font: bold;" />
+                </f:facet>
+
+                <p:chart type="line" model="#{medicamentClassifierBean.lineModel}" style="width:75%;height:100%;" widgetVar="chart"/>
+
+                <p:dataScroller value="#{medicamentClassifierBean.classifiedMedicaments.keySet().toArray()}" var="medicamentClass">
+
+                    <p:dataScroller value="#{medicamentClassifierBean.classifiedMedicaments.get(medicamentClass)}" var="medicament">
+                        <f:facet name="header">
+                            <h:outputText value="Ценовая категория: " />
+                            <h:outputText value="#{medicamentClass.threshold}" style="font-weight: bold"/>
+                        </f:facet>
+
+                        <h:panelGrid columns="2" style="width:100%" columnClasses="detail">
+                            <p:outputPanel>
+                                <h:panelGrid columns="2" cellpadding="5">
+                                    <h:outputText value="Название:" />
+                                    <h:outputText value="#{medicament.name}" style="font-weight: bold"/>
+                                    <h:outputText value="Цена:" />
+                                    <h:outputText value="#{medicament.price}" style="font-weight: bold"/>
+                                </h:panelGrid>
+                            </p:outputPanel>
+                        </h:panelGrid>
+                    </p:dataScroller>
+                </p:dataScroller>
+            </p:panel>
+        </h:body>
+    </ui:define>
+</ui:composition>
