@@ -24,9 +24,7 @@
                     <p:autoUpdate />
                 </p:messages>
 
-                <p:panelGrid id="medicamentCreateUpdatePanel"
-                             columns="1" layout="grid"
-                             cellpadding="5"
+                <p:panel id="medicamentCreateUpdatePanel"
                              style="text-align:left; max-width: 500px"
                              columnClasses="names, detail">
 
@@ -67,7 +65,7 @@
                                      required="true"
                                      requiredMessage="Поле 'Противопоказания' является обязательным!"
                                      style="width: 100%; min-width: 100%; max-width: 100%; min-height: 100px;" />
-                </p:panelGrid>
+                </p:panel>
 
                 <p:commandButton value="Сохранить" icon="pi pi-save" action="#{medicamentController.createOrUpdate}" style="margin-top: 20px" />
             </p:panel>

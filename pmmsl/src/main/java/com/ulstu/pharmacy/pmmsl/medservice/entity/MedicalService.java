@@ -25,8 +25,8 @@ public class MedicalService extends AbstractEntity<Long> {
     private Timestamp provisionDate;
 
     @OneToMany(cascade = CascadeType.ALL,
-            fetch = FetchType.EAGER,
-            mappedBy = "medicalService")
+            fetch = FetchType.EAGER)
+    @JoinColumn(name = "medical_service_id")
     private Set<MedicamentMedicalService> medicamentMedicalServices;
 
     @Transient

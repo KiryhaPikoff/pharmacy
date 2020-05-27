@@ -10,67 +10,77 @@
 
             <title>Услуга</title>
 
-            <p:panel>
+            <p:messages id="messages">
+                <p:autoUpdate />
+            </p:messages>
+
+            <p:panel id="mainPanel">
                 <f:facet name="header">
                     <h:outputText value="Формирование услуги:" style="font-size: 20px; font: bold" />
                 </f:facet>
 
-                <p:messages id="messages">
-                    <p:autoUpdate />
-                </p:messages>
-
-                <p:panelGrid columns="2" style="width:100%; align-items: stretch">
-                    <p:dataScroller value="#{medicalServiceCreationBean.medicamentsInstock}" var="medicamentCount"
-                                    chunkSize="10"
-                                    style="width: 100%">
-                        <f:facet name="header">
-                            Выберите медикаменты:
-                        </f:facet>
-
-                        <h:panelGrid columns="2" style="width:100%" columnClasses="detail,buttons">
-                            <p:outputPanel>
-                                <h:panelGrid columns="2" cellpadding="5">
-                                    <h:outputText value="Название: " />
-                                    <h:outputText value="#{medicamentCount}" />
-                                    <h:outputText value="Количество: " />
-                                    <h:outputText value="#{medicamentCount.count} шт." />
-                                </h:panelGrid>
-                            </p:outputPanel>
-
-                            <p:outputPanel>
-                                    <p:spinner value="#{medicalServiceCreationBean.count}" min="1" max="#{medicamentCount.count}"/>
-                                    <!-- Наверное будет баг с последним количеством -->
-                                    <p:commandButton value="Добавить" action="#{medicalServiceCreationBean.addToSelected(medicamentCount)}" />
-                            </p:outputPanel>
-                        </h:panelGrid>
-                    </p:dataScroller>
-
-                    <p:dataScroller value="#{medicalServiceCreationBean.selectedMedicaments}" var="selectedMedicament"
-                                    chunkSize="10"
-                                    style="width: 100%;">
-                        <f:facet name="header">
-                            Вы выбрали:
-                        </f:facet>
-
-                        <h:panelGrid columns="2" style="width:100%" columnClasses="logo,detail">
-                            <p:outputPanel>
-                                <h:panelGrid columns="2" cellpadding="5">
-                                    <h:outputText value="Название: " />
-                                    <h:outputText value="#{selectedMedicament}" />
-                                    <h:outputText value="Количество: " />
-                                    <h:outputText value="#{selectedMedicament.count} шт." />
-                                </h:panelGrid>
-                            </p:outputPanel>
-
-
-                            <p:outputPanel>
-                                <p:commandButton value="Убрать" action="#{medicalServiceCreationBean.removeFromSelected(medicamentCount)}" />
-                            </p:outputPanel>
-                        </h:panelGrid>
-                    </p:dataScroller>
+                <p:panelGrid columns="2" columnClasses="buttons, buttons">
+                    <p:outputLabel value="Медикамент: "/>
+                    <p:outputLabel value="#{medicalServiceCreationBean.selectedMedicament} "/>
+                    <p:outputLabel value="Количество: "/>
+                    <p:spinner id="countSpinner" value="#{medicalServiceCreationBean.count}" min="1" max="#{medicalServiceCreationBean.selectedMedicament.count}"/>
+                    <p:commandButton value="Добавить в список" update=":mainForm:mainPanel" action="#{medicalServiceCreationBean.addToSelected}"/>
                 </p:panelGrid>
 
-                <p:commandButton value="Сохранить" icon="pi pi-save" action="#{medicalServiceCreationBean.createMedicalService}" style="margin-top: 20px" />
+                <p:dataScroller value="#{medicalServiceCreationBean.medicamentsInStock}" var="medicamentCount"
+                                chunkSize="10"
+                                style="width: 100%; margin-top: 15px">
+
+                    <f:facet name="header">
+                        Выберите медикаменты:
+                    </f:facet>
+
+                    <h:panelGrid columns="2" style="width:100%;" columnClasses="detail,buttons">
+                        <p:outputPanel>
+                            <h:panelGrid columns="2" cellpadding="5">
+                                <h:outputText value="Название: " />
+                                <h:outputText value="#{medicamentCount}" />
+                                <h:outputText value="Количество: " />
+                                <h:outputText value="#{medicamentCount.count} шт." />
+                            </h:panelGrid>
+                        </p:outputPanel>
+
+                        <p:outputPanel>
+                            <p:commandButton value="Выбрать" update=":mainForm:mainPanel">
+                                <f:setPropertyActionListener target="#{medicalServiceCreationBean.selectedMedicament}" value="#{medicamentCount}"/>
+                            </p:commandButton>
+                        </p:outputPanel>
+                    </h:panelGrid>
+                </p:dataScroller>
+
+                <p:dataTable id="dataTable" var="selectedMedicament" value="#{medicalServiceCreationBean.selectedMedicaments}">
+                    <f:facet name="header">
+                        Вы выбрали:
+                    </f:facet>
+
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Название медикамента" />
+                        </f:facet>
+                        <h:outputText value="#{selectedMedicament}" />
+                    </p:column>
+
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Количество" />
+                        </f:facet>
+                        <h:outputText value="#{selectedMedicament.count}" />
+                    </p:column>
+
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Убрать" />
+                        </f:facet>
+                        <h:commandButton value="Убрать" action="#{medicalServiceCreationBean.removeFromSelected(selectedMedicament)}" />
+                    </p:column>
+                </p:dataTable>
+
+                <p:commandButton value="Сохранить" icon="pi pi-save" update=":mainForm:mainPanel" action="#{medicalServiceCreationBean.createMedicalService}" style="margin-top: 20px" />
             </p:panel>
         </h:body>
     </ui:define>

@@ -29,18 +29,21 @@ public class MedicalServiceCreationBean {
 
     private PharmacyEjbLocal pharmacyEjb;
 
-    private List<MedicamentCountViewModel> medicamentsInstock;
+    private List<MedicamentCountViewModel> medicamentsInStock;
 
     private List<MedicamentCountViewModel> selectedMedicaments;
+
+    private MedicamentCountViewModel selectedMedicament;
 
     private Integer count;
 
     @PostConstruct
     public void initValues() {
-        this.medicamentsInstock = this.toList(
+        this.medicamentsInStock = this.toList(
                 pharmacyEjb.getPharmacyMedicamentsInStock()
         );
         this.selectedMedicaments = new LinkedList<>();
+        this.count = 0;
     }
 
     @Inject
@@ -53,33 +56,55 @@ public class MedicalServiceCreationBean {
         this.pharmacyEjb = pharmacyEjb;
     }
 
-    public void addToSelected(MedicamentCountViewModel medicament) {
-        if (selectedMedicaments.contains(medicament)) {
-            selectedMedicaments.stream()
-                    .filter(medicamentInList -> medicamentInList.equals(medicament))
-                    .findFirst()
-                    .ifPresent(foundMedicament -> foundMedicament.setCount(foundMedicament.getCount() + 1));
-        } else {
-            selectedMedicaments.add(
-                    MedicamentCountViewModel.builder()
-                            .medicament(medicament.getMedicament())
-                            .count(medicament.getCount())
-                            .build()
-            );
+    public void addToSelected() {
+        MedicamentCountViewModel medicamentFromStock = this.getMedicamentFromStock(selectedMedicament);
+        if (medicamentFromStock.getCount() > 0) {
+            medicamentFromStock.setCount(medicamentFromStock.getCount() - this.count);
+            if (selectedMedicaments.contains(selectedMedicament)) {
+                MedicamentCountViewModel foundMedicament = this.getMedicamentFromSelected(selectedMedicament);
+                foundMedicament.setCount(foundMedicament.getCount() + this.count);
+            } else {
+                selectedMedicaments.add(
+                        MedicamentCountViewModel.builder()
+                                .medicament(selectedMedicament.getMedicament())
+                                .count(this.count)
+                                .build()
+                );
+            }
         }
+    }
+
+    private MedicamentCountViewModel getMedicamentFromSelected(MedicamentCountViewModel medicament) {
+        return selectedMedicaments.stream()
+                .filter(medicamentInList -> medicamentInList.equals(medicament))
+                .findFirst().get();
+    }
+
+    private MedicamentCountViewModel getMedicamentFromStock(MedicamentCountViewModel medicament) {
+        return medicamentsInStock.stream()
+                .filter(medicamentInList -> medicamentInList.equals(medicament))
+                .findFirst().get();
     }
 
     public void removeFromSelected(MedicamentCountViewModel medicament) {
         selectedMedicaments.remove(medicament);
+        medicamentsInStock.stream()
+                .filter(medicamentInList -> medicamentInList.equals(medicament))
+                .findFirst()
+                .ifPresent(foundMedicament -> foundMedicament.setCount(medicament.getCount()));
     }
 
     public String createMedicalService() {
         try {
+            if (this.selectedMedicaments.isEmpty()) {
+                throw new RuntimeException(new Throwable("Список медикаментов пустой! Выберите медикаменты."));
+            }
             this.medicalServiceEjb.create(this.toSet(this.selectedMedicaments));
+            return "successMedicalServiceCreation";
         } catch (Exception ex) {
             MessagesHelper.errorMessage(ex);
         }
-        return "successMedicalServiceCreation";
+       return "fail";
     }
 
     private List<MedicamentCountViewModel> toList(Map<MedicamentViewModel, Integer> medicamentsWithCount) {
