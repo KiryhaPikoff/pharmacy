@@ -1,6 +1,6 @@
-package com.ulstu.pharmacy.pmmsl.classifire.medicament.ejb;
+package com.ulstu.pharmacy.classifire.medicament.ejb;
 
-import com.ulstu.pharmacy.pmmsl.classifire.medicament.category.PriceCategory;
+import com.ulstu.pharmacy.classifire.medicament.category.PriceCategory;
 import com.ulstu.pharmacy.pmmsl.medicament.view.MedicamentViewModel;
 
 import javax.ejb.Local;

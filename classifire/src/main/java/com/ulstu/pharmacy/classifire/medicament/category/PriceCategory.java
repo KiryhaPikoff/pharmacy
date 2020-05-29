@@ -1,4 +1,4 @@
-package com.ulstu.pharmacy.pmmsl.classifire.medicament.category;
+package com.ulstu.pharmacy.classifire.medicament.category;
 
 import lombok.Builder;
 import lombok.Getter;

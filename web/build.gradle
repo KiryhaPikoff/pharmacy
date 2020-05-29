@@ -21,7 +21,7 @@ dependencies {
 
     //-----------------------------< JSF >------------------------------------------------------------------------------
     // https://mvnrepository.com/artifact/javax.faces/javax.faces-api
-    providedCompile     group: 'javax.faces', name: 'javax.faces-api',          version: this.JAVAX_FACES_VERSION
+    providedCompile     group: 'javax.faces', name: 'javax.faces-api',      version: this.JAVAX_FACES_VERSION
 
     //-----------------------------< PrimeFaces >-----------------------------------------------------------------------
     // https://mvnrepository.com/artifact/org.primefaces/primefaces
@@ -42,11 +42,15 @@ dependencies {
     // https://mvnrepository.com/artifact/ch.qos.logback/logback-classic
     providedCompile     group: 'com.ulstu.pharmacy', name: 'pmmsl',         version: this.PMMSL_VERSION
 
-    //-----------------------------< MAIL >----------------------------------------------------------------------------
+    //-----------------------------< MAIL >-----------------------------------------------------------------------------
     // https://mvnrepository.com/artifact/ch.qos.logback/logback-classic
     providedCompile     group: 'com.ulstu.pharmacy', name: 'mail',          version: this.MAIL_VERSION
 
-    //-----------------------------< MAIL >----------------------------------------------------------------------------
+    //-----------------------------< REPORT >---------------------------------------------------------------------------
     // https://mvnrepository.com/artifact/ch.qos.logback/logback-classic
-    providedCompile     group: 'com.ulstu.pharmacy', name: 'report',        version: this.MAIL_VERSION
+    providedCompile     group: 'com.ulstu.pharmacy', name: 'report',        version: this.REPORT_VERSION
+
+    //-----------------------------< CLASSIFIRE >-----------------------------------------------------------------------
+    // https://mvnrepository.com/artifact/ch.qos.logback/logback-classic
+    providedCompile     group: 'com.ulstu.pharmacy', name: 'classifire',    version: this.CLASSIFIRE_VERSION
 }

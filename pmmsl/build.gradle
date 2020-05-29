@@ -24,8 +24,6 @@ dependencies {
     annotationProcessor group: 'org.projectlombok', name: 'lombok',         version: this.LOMBOK_VERSION
     implementation      group: 'org.projectlombok', name: 'lombok',         version: this.LOMBOK_VERSION
 
-    implementation      group: 'org', name:'kohonen',                       version: this.KOHONEN_VERSION
-
     //-----------------------------< Hibernate >------------------------------------------------------------------------
     // https://mvnrepository.com/artifact/org.hibernate/hibernate-core
     implementation      group: 'org.hibernate', name: 'hibernate-core',     version: this.HIBERNATE_VERSION, ext: 'pom'

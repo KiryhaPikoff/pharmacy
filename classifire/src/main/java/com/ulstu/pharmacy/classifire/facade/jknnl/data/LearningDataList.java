@@ -1,4 +1,4 @@
-package com.ulstu.pharmacy.pmmsl.classifire.facade.jknnl.data;
+package com.ulstu.pharmacy.classifire.facade.jknnl.data;
 
 import kohonen.LearningDataModel;
 

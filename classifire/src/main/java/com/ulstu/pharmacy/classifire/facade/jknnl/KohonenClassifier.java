@@ -1,7 +1,7 @@
-package com.ulstu.pharmacy.pmmsl.classifire.facade.jknnl;
+package com.ulstu.pharmacy.classifire.facade.jknnl;
 
-import com.ulstu.pharmacy.pmmsl.classifire.facade.ClassifierFacade;
-import com.ulstu.pharmacy.pmmsl.classifire.facade.jknnl.data.LearningDataList;
+import com.ulstu.pharmacy.classifire.facade.ClassifierFacade;
+import com.ulstu.pharmacy.classifire.facade.jknnl.data.LearningDataList;
 import kohonen.DefaultNetworkModel;
 import kohonen.LearningDataModel;
 import kohonen.WTALearningFunction;

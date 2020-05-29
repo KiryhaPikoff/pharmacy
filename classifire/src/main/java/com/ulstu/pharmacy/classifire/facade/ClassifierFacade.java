@@ -1,4 +1,4 @@
-package com.ulstu.pharmacy.pmmsl.classifire.facade;
+package com.ulstu.pharmacy.classifire.facade;
 
 import java.util.List;
 

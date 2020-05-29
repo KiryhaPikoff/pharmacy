@@ -1,7 +1,7 @@
 package com.ulstu.pharmacy.web.medicament;
 
-import com.ulstu.pharmacy.pmmsl.classifire.medicament.category.PriceCategory;
-import com.ulstu.pharmacy.pmmsl.classifire.medicament.ejb.MedicamentPriceClassifierEjbLocal;
+import com.ulstu.pharmacy.classifire.medicament.category.PriceCategory;
+import com.ulstu.pharmacy.classifire.medicament.ejb.MedicamentPriceClassifierEjbLocal;
 import com.ulstu.pharmacy.pmmsl.medicament.view.MedicamentViewModel;
 import lombok.Getter;
 import lombok.Setter;

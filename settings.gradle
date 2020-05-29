@@ -3,3 +3,5 @@ include 'pmmsl'
 include 'web'
 include 'mail'
 include 'report'
+include 'classifire'
+
