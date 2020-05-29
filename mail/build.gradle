@@ -1,0 +1,29 @@
+plugins {
+    id 'java'
+}
+
+compileJava.options.encoding = 'UTF-8'
+compileTestJava.options.encoding = 'UTF-8'
+
+group 'com.ulstu.pharmacy'
+version '1.0'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+    //-----------------------------< Javax >----------------------------------------------------------------------------
+    // https://mvnrepository.com/artifact/javax/javaee-api
+    implementation      group: 'javax', name: 'javaee-api',                             version: this.JAVAX_VERSION
+
+    //-----------------------------< Lombok >---------------------------------------------------------------------------
+    // https://mvnrepository.com/artifact/org.projectlombok/lombok
+    annotationProcessor group: 'org.projectlombok', name: 'lombok',                     version: this.LOMBOK_VERSION
+    implementation      group: 'org.projectlombok', name: 'lombok',                     version: this.LOMBOK_VERSION
+
+    //-----------------------------< Apache Configuration >-------------------------------------------------------------
+    // https://mvnrepository.com/artifact/commons-configuration/commons-configuration
+    implementation      group: 'commons-configuration', name: 'commons-configuration',   version: this.APACHE_CONFIG_VERSION
+}

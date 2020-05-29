@@ -50,7 +50,6 @@ public class SupplyEjbImpl implements SupplyEjbLocal {
                 supplyBindingModel.getMedicamentCountSet()
         );
         Supply newSupply = Supply.builder()
-                //TODO рабочее?
                 .pharmacy(Pharmacy.builder().id(supplyBindingModel.getPharmacyId()).build())
                 .date(new Timestamp(System.currentTimeMillis()))
                 .supplyMedicaments(supplyBindingModel.getMedicamentCountSet().stream()

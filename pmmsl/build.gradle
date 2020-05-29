@@ -49,14 +49,6 @@ dependencies {
     // https://mvnrepository.com/artifact/com.google.guava/guava
     compile             group: 'com.google.guava', name: 'guava',           version: this.GUAVA_VERSION
 
-    //-----------------------------< ApachePOI Office >-----------------------------------------------------------------
-    // https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml
-    implementation      group: 'org.apache.poi', name: 'poi-ooxml',         version: this.APACHE_POI_VERSION
-
-    //-----------------------------< IText >----------------------------------------------------------------------------
-    // https://mvnrepository.com/artifact/com.itextpdf/itextpdf
-    implementation      group: 'com.itextpdf', name: 'itextpdf',            version: this.ITEXT_VERSION
-
     //-----------------------------< JUnit >----------------------------------------------------------------------------
     // https://mvnrepository.com/artifact/junit/junit
     testCompile         group: 'junit', name: 'junit',                      version: this.JUNIT_VERSION

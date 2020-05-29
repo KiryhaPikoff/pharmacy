@@ -41,4 +41,12 @@ dependencies {
     //-----------------------------< PMMSL >----------------------------------------------------------------------------
     // https://mvnrepository.com/artifact/ch.qos.logback/logback-classic
     providedCompile     group: 'com.ulstu.pharmacy', name: 'pmmsl',         version: this.PMMSL_VERSION
+
+    //-----------------------------< MAIL >----------------------------------------------------------------------------
+    // https://mvnrepository.com/artifact/ch.qos.logback/logback-classic
+    providedCompile     group: 'com.ulstu.pharmacy', name: 'mail',          version: this.MAIL_VERSION
+
+    //-----------------------------< MAIL >----------------------------------------------------------------------------
+    // https://mvnrepository.com/artifact/ch.qos.logback/logback-classic
+    providedCompile     group: 'com.ulstu.pharmacy', name: 'report',        version: this.MAIL_VERSION
 }

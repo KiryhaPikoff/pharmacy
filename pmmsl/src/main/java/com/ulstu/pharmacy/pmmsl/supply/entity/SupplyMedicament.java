@@ -18,6 +18,7 @@ import javax.persistence.*;
 public class SupplyMedicament extends AbstractEntity<Long> {
 
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @ManyToOne(optional = false)
     private Supply supply;
 

@@ -91,7 +91,7 @@ public class MedicalServiceCreationBean {
         medicamentsInStock.stream()
                 .filter(medicamentInList -> medicamentInList.equals(medicament))
                 .findFirst()
-                .ifPresent(foundMedicament -> foundMedicament.setCount(medicament.getCount()));
+                .ifPresent(foundMedicament -> foundMedicament.setCount(foundMedicament.getCount() + medicament.getCount()));
     }
 
     public String createMedicalService() {

@@ -1,0 +1,76 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                template="../templates/main-template.xhtml">
+
+    <ui:define name="content">
+        <h:body>
+
+            <title>Движение медикаментов</title>
+
+            <p:messages id="messages">
+                <p:autoUpdate />
+            </p:messages>
+
+            <p:panel>
+                <f:facet name="header">
+                    <h:outputText value="Отчет по движению медикаментов" style="font-size: 20px; font: bold" />
+                </f:facet>
+
+                <p:panelGrid columns="2" style="width: 500px">
+                    <p:outputLabel for="range" value="Период: " />
+                    <p:datePicker id="range" selectionMode="range" value="#{medicamentMovementBean.fromToDates}" required="true" requiredMessage="Поле 'Период' является обязательным!" readonlyInput="true"/>
+                    <p:outputLabel for="mail" value="Почта: " />
+                    <p:inputText id="mail"
+                                 value="#{medicamentMovementBean.mailAddressTo}"
+                                 required="true"
+                                 requiredMessage="Поле 'Почта' является обязательным!"
+                                 validatorMessage="Поле 'Почта' не является почтой!">
+                        <f:validateRegex pattern="[a-zA-Z0-9_]+@[a-zA-Z0-9]+\.[a-zA-Z0-9]+"/>
+                    </p:inputText>
+                </p:panelGrid>
+
+                <p:commandButton value="Сформировать" update="dataPanel" action="#{medicamentMovementBean.createReportAndSendToMail()}" />
+
+                <p:commandButton value="Скачать в .pdf" icon="pi pi-download" ajax="true" onclick="PrimeFaces.monitorDownload(start, stop);" action="#{medicamentMovementBean.downloadFile()}">
+                    <p:fileDownload value="#{medicamentMovementBean.downloadFile()}" />
+                </p:commandButton>
+            </p:panel>
+
+            <p:panel id="dataPanel">
+                <p:dataTable var="dataRow" value="#{medicamentMovementBean.data}">
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Тип движения" />
+                        </f:facet>
+                        <h:outputText value="#{dataRow.getMovementType().getType()}" />
+                    </p:column>
+
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Название медикамента" />
+                        </f:facet>
+                        <h:outputText value="#{dataRow.medicamentName}" />
+                    </p:column>
+
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Количество" />
+                        </f:facet>
+                        <h:outputText value="#{dataRow.count}" />
+                    </p:column>
+
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Дата" />
+                        </f:facet>
+                        <h:outputText value="#{dataRow.date}" />
+                    </p:column>
+                </p:dataTable>
+            </p:panel>
+
+        </h:body>
+    </ui:define>
+</ui:composition>
