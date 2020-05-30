@@ -35,13 +35,15 @@ public class DocTemplateImpl implements DocTemplate {
         docFacade.createNew();
         docFacade.append("Список услуг с использованными медикаментами", headerStyle);
         docFacade.newLine();
-        medicalServiceModels.forEach(medicalServiceModel -> {
+        for (var medicalServiceModel : medicalServiceModels) {
             docFacade.append(medicalServiceModel.getDate().toString(), dateStyle);
             docFacade.newLine();
             medicalServiceModel.getMedicamentsCount().forEach(medicamentCountModel -> {
                 docFacade.append("\t" + medicamentCountModel.getMedicamentName());
+                docFacade.newLine();
             });
-        });
+            docFacade.newLine();
+        }
 
         return this.toFileModel(
                 docFacade.createFile()
@@ -51,7 +53,7 @@ public class DocTemplateImpl implements DocTemplate {
     private FileModel toFileModel(File file) {
         return FileModel.builder()
                 .title(file.getName())
-                .extension(FileExtension.DOC)
+                .fileExtension(FileExtension.DOC)
                 .file(file)
                 .build();
     }

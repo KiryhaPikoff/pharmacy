@@ -62,7 +62,7 @@ public class XlsTemplateImpl implements XlsTemplate {
     private FileModel toFileModel(File file) {
         return FileModel.builder()
                 .title(file.getName())
-                .extension(FileExtension.XLS)
+                .fileExtension(FileExtension.XLS)
                 .file(file)
                 .build();
     }

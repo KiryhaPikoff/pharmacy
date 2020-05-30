@@ -79,7 +79,7 @@ public class DocFacadeImpl implements DocFacade {
     }
 
     private String generateFileTitle() {
-        return String.valueOf(System.currentTimeMillis());
+        return System.currentTimeMillis() + ".doc";
     }
 
     private void applyStyle(XWPFRun run, Style style) {

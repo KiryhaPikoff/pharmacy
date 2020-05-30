@@ -65,6 +65,6 @@ public class XlsFacadeImpl implements XlsFacade {
     }
 
     private String generateFileTitle() {
-        return String.valueOf(System.currentTimeMillis());
+        return System.currentTimeMillis() + ".xls";
     }
 }

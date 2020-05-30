@@ -5,6 +5,7 @@ import com.ulstu.pharmacy.mail.facade.model.MailMessage;
 import com.ulstu.pharmacy.report.ReportEjbLocal;
 import com.ulstu.pharmacy.report.model.MedicamentMovementReportViewModel;
 import com.ulstu.pharmacy.report.template.FileModel;
+import com.ulstu.pharmacy.web.helper.DownloadHelper;
 import com.ulstu.pharmacy.web.helper.MessagesHelper;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,7 +29,7 @@ import java.util.Objects;
 @Setter
 @ViewScoped
 @ManagedBean
-public class MedicamentMovementBean {
+public class MedicamentMovementReportBean {
 
     private List<Date> fromToDates;
 
@@ -79,17 +80,7 @@ public class MedicamentMovementBean {
                 throw new RuntimeException(new Throwable("Выберите период!"));
             }
             this.createFile();
-            return DefaultStreamedContent.builder()
-                    .name(new Date() + ".pdf")
-                    .contentType("file/pdf")
-                    .stream(() -> {
-                        try {
-                            return new FileInputStream(this.reportFile.getFile());
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
-                        }
-                        return null;
-                    }).build();
+            return DownloadHelper.download(reportFile);
         } catch (Exception ex) {
             MessagesHelper.errorMessage(ex);
         }

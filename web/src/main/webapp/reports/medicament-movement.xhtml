@@ -20,11 +20,11 @@
                 </f:facet>
 
                 <p:panelGrid columns="2" style="width: 500px">
-                    <p:outputLabel for="range" value="Период: " />
-                    <p:datePicker id="range" selectionMode="range" value="#{medicamentMovementBean.fromToDates}" required="true" requiredMessage="Поле 'Период' является обязательным!" readonlyInput="true"/>
-                    <p:outputLabel for="mail" value="Почта: " />
+                    <p:outputLabel for="range" value="Период" />
+                    <p:datePicker id="range" selectionMode="range" value="#{medicamentMovementReportBean.fromToDates}" required="true" requiredMessage="Поле 'Период' является обязательным!" readonlyInput="true"/>
+                    <p:outputLabel for="mail" value="Почта" />
                     <p:inputText id="mail"
-                                 value="#{medicamentMovementBean.mailAddressTo}"
+                                 value="#{medicamentMovementReportBean.mailAddressTo}"
                                  required="true"
                                  requiredMessage="Поле 'Почта' является обязательным!"
                                  validatorMessage="Поле 'Почта' не является почтой!">
@@ -32,15 +32,15 @@
                     </p:inputText>
                 </p:panelGrid>
 
-                <p:commandButton value="Сформировать" update="dataPanel" action="#{medicamentMovementBean.createReportAndSendToMail()}" />
+                <p:commandButton value="Сформировать" update="dataPanel" action="#{medicamentMovementReportBean.createReportAndSendToMail()}" style="margin-top: 10px"/>
 
-                <p:commandButton value="Скачать в .pdf" icon="pi pi-download" ajax="true" onclick="PrimeFaces.monitorDownload(start, stop);" action="#{medicamentMovementBean.downloadFile()}">
-                    <p:fileDownload value="#{medicamentMovementBean.downloadFile()}" />
+                <p:commandButton value="Скачать в .pdf" icon="pi pi-download" ajax="true" onclick="PrimeFaces.monitorDownload(start, stop);" action="#{medicamentMovementReportBean.downloadFile()}" style="margin-left: 15px">
+                    <p:fileDownload value="#{medicamentMovementReportBean.downloadFile()}" />
                 </p:commandButton>
             </p:panel>
 
             <p:panel id="dataPanel">
-                <p:dataTable var="dataRow" value="#{medicamentMovementBean.data}">
+                <p:dataTable var="dataRow" value="#{medicamentMovementReportBean.data}">
                     <p:column>
                         <f:facet name="header">
                             <h:outputText value="Тип движения" />

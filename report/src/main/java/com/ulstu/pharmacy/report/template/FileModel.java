@@ -11,7 +11,7 @@ public class FileModel {
 
     private final String title;
 
-    private final FileExtension extension;
+    private final FileExtension fileExtension;
 
     private final File file;
 }

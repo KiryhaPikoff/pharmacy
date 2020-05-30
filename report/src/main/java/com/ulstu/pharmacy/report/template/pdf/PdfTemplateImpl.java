@@ -52,7 +52,7 @@ public class PdfTemplateImpl implements PdfTemplate {
     private FileModel toFileModel(File file) {
         return FileModel.builder()
                 .title(file.getName())
-                .extension(FileExtension.PDF)
+                .fileExtension(FileExtension.PDF)
                 .file(file)
                 .build();
     }
