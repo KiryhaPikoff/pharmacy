@@ -14,7 +14,7 @@ repositories {
 
 dependencies {
 
-    //-----------------------------< Javax >----------------------------------------------------------------------------
+//-----------------------------< Javax >----------------------------------------------------------------------------
     // https://mvnrepository.com/artifact/javax/javaee-api
     implementation      group: 'javax', name: 'javaee-api',                             version: this.JAVAX_VERSION
 

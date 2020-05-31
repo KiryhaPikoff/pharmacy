@@ -21,13 +21,14 @@
 
                         <p:layoutUnit position="north" styleClass="north-panel" size="35" id="north" >
                             <h:outputText value="Здесь могла быть ваша реклама.." style="font: bold"/>
+                            <h:commandLink value="Выйти" style="float: right; margin-right: 1%" action="#{loginBean.logout()}"/>
                         </p:layoutUnit>
 
                         <p:layoutUnit  position="west" styleClass="" style="width: auto; display:none;" id="west">
                             <h:commandLink />
                                 <p:panelMenu style="width:300px">
                                     <p:submenu label="Навигация">
-                                        <p:menuitem value="Главная" icon="pi pi-compass" url="http://localhost:8080/web-1.0/"/>
+                                        <p:menuitem value="Главная" icon="pi pi-compass" url="http://localhost:8080/web-1.0/index.xhtml"/>
                                     </p:submenu>
 
                                     <p:submenu label="Справочник">

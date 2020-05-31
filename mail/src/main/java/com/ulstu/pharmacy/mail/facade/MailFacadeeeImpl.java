@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 public class MailFacadeeeImpl implements MailFacade {
 
-    Properties mailProperties;
+    private Properties mailProperties;
 
     @Override
     @SneakyThrows

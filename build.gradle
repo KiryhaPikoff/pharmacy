@@ -32,6 +32,7 @@ ext {
     MAIL_VERSION                    = '1.0'
     REPORT_VERSION                  = '1.0'
     CLASSIFIRE_VERSION              = '1.0'
+    LOGIN_VERSION                   = '1.0'
 }
 
 group 'com.ulstu.pharmacy'
@@ -51,6 +52,7 @@ dependencies {
     deploy project(':mail')
     deploy project(':report')
     deploy project(':classifire')
+    deploy project(':login')
     // The following dependencies will become ear libs and will
     // be placed in a dir configured via the libDirName property
     // earlib group: 'log4j', name: 'log4j'

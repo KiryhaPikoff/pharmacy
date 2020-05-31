@@ -1,0 +1,32 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                template="templates/main-template.xhtml">
+
+    <ui:define name="content">
+        <div align="center" style="margin-top: 15%">
+            <p:panel style="height: 200px; width: 300px">
+                <p:messages id="messages">
+                    <p:autoUpdate />
+                </p:messages>
+                <f:facet name="header">
+                    <h:outputText value="Вход" style="font-size: 20px; font: bold" />
+                </f:facet>
+                <h:panelGrid columns="2" cellpadding="5">
+                    <h:outputLabel for="username" value="Логин:" />
+                    <p:inputText id="username" value="#{loginBean.login}" required="true" />
+
+                    <h:outputLabel for="password" value="Пароль:" />
+                    <p:password id="password" value="#{loginBean.password}" required="true" converter="CharArrayConverter" />
+
+                    <f:facet name="footer">
+                        <p:commandButton value="Войти" action="#{loginBean.validate()}" />
+                    </f:facet>
+                </h:panelGrid>
+            </p:panel>
+        </div>
+    </ui:define>
+
+</ui:composition>

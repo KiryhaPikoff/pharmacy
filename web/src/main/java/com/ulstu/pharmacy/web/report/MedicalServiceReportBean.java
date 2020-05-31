@@ -5,7 +5,6 @@ import com.ulstu.pharmacy.mail.facade.model.MailMessage;
 import com.ulstu.pharmacy.pmmsl.medservice.ejb.MedicalServiceEjbLocal;
 import com.ulstu.pharmacy.pmmsl.medservice.view.MedicalServiceViewModel;
 import com.ulstu.pharmacy.report.ReportEjbLocal;
-import com.ulstu.pharmacy.report.model.MedicalServiceReportViewModel;
 import com.ulstu.pharmacy.web.helper.MessagesHelper;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,7 +14,6 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.mail.internet.InternetAddress;
-
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;

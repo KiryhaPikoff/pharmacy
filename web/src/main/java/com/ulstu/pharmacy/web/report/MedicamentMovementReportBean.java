@@ -9,7 +9,6 @@ import com.ulstu.pharmacy.web.helper.DownloadHelper;
 import com.ulstu.pharmacy.web.helper.MessagesHelper;
 import lombok.Getter;
 import lombok.Setter;
-import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
 import javax.annotation.PostConstruct;
@@ -17,8 +16,6 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.mail.internet.InternetAddress;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.LinkedList;

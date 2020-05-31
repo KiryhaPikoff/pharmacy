@@ -13,6 +13,14 @@ public class MessagesHelper {
                 );
     }
 
+    public static void errorMessage(String text) {
+        FacesContext.getCurrentInstance()
+                .addMessage(
+                        null,
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ошибка! " +  text, "")
+                );
+    }
+
     public static void errorMessage(Exception ex) {
         FacesContext.getCurrentInstance()
                 .addMessage(
