@@ -10,5 +10,5 @@ import java.util.Map;
 @Local
 public interface MedicamentPriceClassifierEjbLocal {
 
-    Map<PriceCategory, List<MedicamentViewModel>> classify();
+    Map<PriceCategory, List<MedicamentViewModel>> classify(Integer priceClassCount);
 }

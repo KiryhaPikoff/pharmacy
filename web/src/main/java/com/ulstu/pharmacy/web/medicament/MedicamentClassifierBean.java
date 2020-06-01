@@ -3,6 +3,7 @@ package com.ulstu.pharmacy.web.medicament;
 import com.ulstu.pharmacy.classifire.medicament.category.PriceCategory;
 import com.ulstu.pharmacy.classifire.medicament.ejb.MedicamentPriceClassifierEjbLocal;
 import com.ulstu.pharmacy.pmmsl.medicament.view.MedicamentViewModel;
+import com.ulstu.pharmacy.web.helper.MessagesHelper;
 import lombok.Getter;
 import lombok.Setter;
 import org.primefaces.model.chart.Axis;
@@ -17,6 +18,7 @@ import javax.inject.Inject;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -30,15 +32,28 @@ public class MedicamentClassifierBean {
 
     private LineChartModel lineModel;
 
+    private final Integer DEFAULT_CLASS_COUNT = 4;
+
+    private Integer classCount;
+
     @PostConstruct
     public void init() {
-        this.classifiedMedicaments = this.medicamentClassifierEjb.classify();
-        this.createLineModels();
+        this.classify();
     }
 
     @Inject
     public void setMedicamentClassifierEjb(MedicamentPriceClassifierEjbLocal medicamentClassifierEjb) {
         this.medicamentClassifierEjb = medicamentClassifierEjb;
+    }
+
+    public void classify() {
+        try {
+            classCount = Objects.isNull(classCount) ? DEFAULT_CLASS_COUNT : classCount;
+            this.classifiedMedicaments = this.medicamentClassifierEjb.classify(classCount);
+            this.createLineModels();
+        } catch (Exception ex) {
+            MessagesHelper.errorMessage(ex);
+        }
     }
 
     private void createLineModels() {

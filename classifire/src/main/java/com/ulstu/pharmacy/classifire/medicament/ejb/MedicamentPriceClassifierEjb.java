@@ -7,10 +7,7 @@ import com.ulstu.pharmacy.pmmsl.medicament.view.MedicamentViewModel;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -20,8 +17,6 @@ public class MedicamentPriceClassifierEjb implements MedicamentPriceClassifierEj
 
     private final ClassifierFacade classifier;
 
-    private final Integer priceClassCount = 4;
-
     @Inject
     public MedicamentPriceClassifierEjb(MedicamentEjbLocal medicamentEjb,
                                         ClassifierFacade classifier) {
@@ -30,8 +25,14 @@ public class MedicamentPriceClassifierEjb implements MedicamentPriceClassifierEj
     }
 
     @Override
-    public Map<PriceCategory, List<MedicamentViewModel>> classify() {
+    public Map<PriceCategory, List<MedicamentViewModel>> classify(Integer priceClassCount) {
         var medicaments = medicamentEjb.getAll();
+
+        boolean isPriceCountInvalid = !this.checkPriceCount(priceClassCount, medicaments);
+
+        if (isPriceCountInvalid) {
+            throw new RuntimeException("Некорректное число классов");
+        }
 
         List<double[]> classWeights = classifier.classify(
                 this.createDataClassifier(medicaments),
@@ -39,6 +40,13 @@ public class MedicamentPriceClassifierEjb implements MedicamentPriceClassifierEj
         );
 
         return this.distributeToClassesWeights(medicaments, classWeights);
+    }
+
+    private boolean checkPriceCount(Integer priceClassCount, List<MedicamentViewModel> data) {
+        int dataRowCount = data.size();
+        return Objects.nonNull(priceClassCount) &&
+               priceClassCount > 1 &&
+               priceClassCount <= Math.sqrt(dataRowCount);
     }
 
     private Map<PriceCategory, List<MedicamentViewModel>> distributeToClassesWeights(

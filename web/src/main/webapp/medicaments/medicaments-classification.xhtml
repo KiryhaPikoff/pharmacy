@@ -22,14 +22,24 @@
 
             <title>Классификация медикаменов</title>
 
-            <p:panel>
+            <p:panel id="mainPanel">
                 <f:facet name="header">
                     <h:outputText value="Классификация медикаментов" style="font-size: 20px; font: bold;" />
                 </f:facet>
 
-                <p:chart type="line" model="#{medicamentClassifierBean.lineModel}" style="width:75%;height:100%;" widgetVar="chart"/>
+                <p:messages id="messages">
+                    <p:autoUpdate />
+                </p:messages>
 
-                <p:dataScroller value="#{medicamentClassifierBean.classifiedMedicaments.keySet().toArray()}" var="medicamentClass">
+                <p:panelGrid columns="2">
+                    <p:outputLabel value="Количество классов: " />
+                    <p:inputText value="#{medicamentClassifierBean.classCount}"/>
+                </p:panelGrid>
+                <p:commandButton value="Классифицировать" action="#{medicamentClassifierBean.classify()}" update=":mainForm:mainPanel" icon="pi pi-th-large" style="margin-top: 15px;"/>
+
+                <p:chart type="line" model="#{medicamentClassifierBean.lineModel}" style="max-width: 800px; margin-top: 10px" widgetVar="chart"/>
+
+                <p:dataScroller value="#{medicamentClassifierBean.classifiedMedicaments.keySet().toArray()}" var="medicamentClass" style="margin-top: 10px">
 
                     <p:dataScroller value="#{medicamentClassifierBean.classifiedMedicaments.get(medicamentClass)}" var="medicament">
                         <f:facet name="header">
