@@ -7,10 +7,8 @@ import com.ulstu.pharmacy.web.helper.SessionHelper;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 

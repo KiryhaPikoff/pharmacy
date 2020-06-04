@@ -58,7 +58,7 @@ public class MedicamentClassifierBean {
 
     private void createLineModels() {
         lineModel = initLinearModel();
-        lineModel.setTitle("Цены медикаментов по категориям");
+        lineModel.setTitle("Цены медикаментов по кластерам");
         lineModel.setExtender("removeLegend");
         Axis yAxis = lineModel.getAxis(AxisType.Y);
         yAxis.setMin(0);
@@ -66,7 +66,6 @@ public class MedicamentClassifierBean {
                 .flatMap(priceCategoryListEntry -> priceCategoryListEntry.getValue().stream())
                 .max(Comparator.comparingInt(o -> o.getPrice().intValue())
         ).get().getPrice());
-
         Axis xAxis = lineModel.getAxis(AxisType.X);
         xAxis.setMin(1);
         xAxis.setMax(this.classifiedMedicaments.values().stream()

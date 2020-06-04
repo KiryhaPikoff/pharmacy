@@ -14,7 +14,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = false)
-@SequenceGenerator(name = "default_gen", sequenceName = "pharmacy_medicament_seq", allocationSize = 1)
+@SequenceGenerator(name = "default_gen", sequenceName = "pharmcy_medicament_seq", allocationSize = 1)
 /** Свзяь аптеки и медикамента. */
 public class PharmacyMedicament extends AbstractEntity<Long> {
 

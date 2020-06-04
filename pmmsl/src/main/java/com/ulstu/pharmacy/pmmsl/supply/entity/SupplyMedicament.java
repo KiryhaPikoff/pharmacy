@@ -22,11 +22,11 @@ public class SupplyMedicament extends AbstractEntity<Long> {
     @ManyToOne(optional = false)
     private Supply supply;
 
+    @EqualsAndHashCode.Include
     @ManyToOne(optional = false)
     private Medicament medicament;
 
     @Column(nullable = false, updatable = false)
-    @EqualsAndHashCode.Exclude
     private Integer count;
 
     public static SupplyMedicament.Builder builder() {

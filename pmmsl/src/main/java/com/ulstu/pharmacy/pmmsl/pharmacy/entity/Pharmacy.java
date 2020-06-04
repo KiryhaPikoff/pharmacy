@@ -23,6 +23,7 @@ public class Pharmacy extends AbstractEntity<Long> {
     @Column(nullable = false)
     private String name;
 
+    @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "pharmacy")
     private Set<PharmacyMedicament> pharmacyMedicaments;
 

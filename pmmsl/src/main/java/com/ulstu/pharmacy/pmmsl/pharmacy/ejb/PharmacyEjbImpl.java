@@ -189,11 +189,17 @@ public class PharmacyEjbImpl implements PharmacyEjbLocal {
      */
     private void applyReplenishment(Long pharmacyId, Set<MedicamentCountBindingModel> medicamentsCountSet) {
         medicamentsCountSet.forEach(medicamentCount -> {
-            PharmacyMedicament addableMedicament = pharmacyMedicamentDao.getByPharmacyAndMedicamentId(
-                    pharmacyId,
-                    medicamentCount.getMedicamentId()
-            );
-            if(Objects.isNull(addableMedicament)) {
+            PharmacyMedicament addableMedicament;
+            try {
+                addableMedicament = pharmacyMedicamentDao.getByPharmacyAndMedicamentId(
+                        pharmacyId,
+                        medicamentCount.getMedicamentId()
+                );
+                addableMedicament.setCount(
+                        addableMedicament.getCount() + medicamentCount.getCount()
+                );
+                pharmacyMedicamentDao.update(addableMedicament);
+            } catch (Exception ex) {
                 addableMedicament = PharmacyMedicament.builder()
                         .medicament(Medicament.builder().id(medicamentCount.getMedicamentId()).build())
                         //TODO сомнительно
@@ -201,11 +207,6 @@ public class PharmacyEjbImpl implements PharmacyEjbLocal {
                         .count(medicamentCount.getCount())
                         .build();
                 pharmacyMedicamentDao.save(addableMedicament);
-            } else {
-                addableMedicament.setCount(
-                        addableMedicament.getCount() + medicamentCount.getCount()
-                );
-                pharmacyMedicamentDao.update(addableMedicament);
             }
         });
     }

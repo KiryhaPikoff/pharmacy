@@ -57,7 +57,8 @@ public class SupplyEjbImpl implements SupplyEjbLocal {
                                 .medicament(Medicament.builder().id(medicamentCountBindingModel.getMedicamentId()).build())
                                 .count(medicamentCountBindingModel.getCount())
                                 .build()
-                        ).collect(Collectors.toSet())
+                        )
+                        .collect(Collectors.toSet())
                 )
                 .build();
         supplyDao.save(newSupply);

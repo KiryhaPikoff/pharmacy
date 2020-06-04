@@ -39,7 +39,7 @@ public class KohonenClassifier implements ClassifierFacade {
 
         DefaultNetworkModel network = new DefaultNetworkModel(data.get(0).length, maxWeights, topology);
 
-        ConstantFunctionalFactor constantFactor = new ConstantFunctionalFactor(0.98);
+        ConstantFunctionalFactor constantFactor = new ConstantFunctionalFactor(0.85);
 
         LearningDataModel learningData = new LearningDataList(data);
 
