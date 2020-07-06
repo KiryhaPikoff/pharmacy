@@ -48,9 +48,10 @@ public class LoginBean {
     }
 
     @SneakyThrows
-    public void logout() {
+    public String logout() {
         HttpSession session = SessionHelper.getSession();
         session.invalidate();
-        FacesContext.getCurrentInstance().getExternalContext().redirect("login.xhtml");
+       // FacesContext.getCurrentInstance().getExternalContext().redirect("login.xhtml");
+        return "logout";
     }
 }

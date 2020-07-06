@@ -54,6 +54,8 @@
                     </p:column>
                 </p:dataTable>
 
+                <p:commandButton value="Сохранить" icon="pi pi-save" update=":mainForm:mainPanel" action="#{medicalServiceCreationBean.createMedicalService}" style="margin-top: 20px" />
+
                 <p:dataScroller value="#{medicalServiceCreationBean.medicamentsInStock}" var="medicamentCount"
                                 chunkSize="10"
                                 style="width: 100%; margin-top: 15px">
@@ -80,8 +82,7 @@
                     </h:panelGrid>
                 </p:dataScroller>
 
-                <p:commandButton value="Сохранить" icon="pi pi-save" update=":mainForm:mainPanel" action="#{medicalServiceCreationBean.createMedicalService}" style="margin-top: 20px" />
-            </p:panel>
+             </p:panel>
         </h:body>
     </ui:define>
 </ui:composition>
